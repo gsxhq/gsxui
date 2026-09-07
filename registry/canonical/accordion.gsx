@@ -9,7 +9,7 @@ import (
 // mechanism. The root's data-name is descriptive; matching item name
 // attributes provide exclusive-open behavior without JavaScript.
 component Accordion(name string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-name={name} { attrs... } data-gsxui-slot-accordion>{ children }</div>
+	<div data-name={name} class={ accordion.Root() } { attrs... } data-gsxui-slot-accordion>{ children }</div>
 }
 
 component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) {

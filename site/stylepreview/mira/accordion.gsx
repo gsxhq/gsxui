@@ -9,7 +9,14 @@ import (
 // mechanism. The root's data-name is descriptive; matching item name
 // attributes provide exclusive-open behavior without JavaScript.
 component Accordion(name string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-name={name} { attrs... } data-gsxui-slot-accordion>{ children }</div>
+	<div
+		data-name={name}
+		class={ "overflow-hidden rounded-md border flex w-full flex-col" }
+		{ attrs... }
+		data-gsxui-slot-accordion
+	>
+		{ children }
+	</div>
 }
 
 component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) {
@@ -47,6 +54,14 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 // the same box.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
 	<div class={ "px-2 text-xs/relaxed overflow-hidden" } { attrs.Without("class")... } data-gsxui-slot-accordion-content>
-		<div class={ "pt-0 pb-4", attrs.Class() } data-gsxui-slot-accordion-content-inner>{ children }</div>
+		<div
+			class={
+				"pt-0 pb-4 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+				attrs.Class()
+			}
+			data-gsxui-slot-accordion-content-inner
+		>
+			{ children }
+		</div>
 	</div>
 }

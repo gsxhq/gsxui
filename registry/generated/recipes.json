@@ -3,6 +3,10 @@
   "components": {
     "accordion": {
       "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
         "content": {
           "base": true,
           "dimensions": {}
@@ -1634,6 +1638,17 @@
     "luma": {
       "accordion": {
         "slots": {
+          "": {
+            "base": [
+              "overflow-hidden",
+              "rounded-2xl",
+              "border",
+              "flex",
+              "w-full",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
           "content": {
             "base": [
               "px-4",
@@ -1645,7 +1660,11 @@
           "content-inner": {
             "base": [
               "pt-0",
-              "pb-4"
+              "pb-4",
+              "[\u0026_a]:underline",
+              "[\u0026_a]:underline-offset-3",
+              "[\u0026_a]:hover:text-foreground",
+              "[\u0026_p:not(:last-child)]:mb-4"
             ],
             "dimensions": {}
           },
@@ -6408,6 +6427,14 @@
     "lyra": {
       "accordion": {
         "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-full",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
           "content": {
             "base": [
               "text-xs",
@@ -6418,7 +6445,11 @@
           "content-inner": {
             "base": [
               "pt-0",
-              "pb-2.5"
+              "pb-2.5",
+              "[\u0026_a]:underline",
+              "[\u0026_a]:underline-offset-3",
+              "[\u0026_a]:hover:text-foreground",
+              "[\u0026_p:not(:last-child)]:mb-4"
             ],
             "dimensions": {}
           },
@@ -11148,6 +11179,17 @@
     "maia": {
       "accordion": {
         "slots": {
+          "": {
+            "base": [
+              "overflow-hidden",
+              "rounded-2xl",
+              "border",
+              "flex",
+              "w-full",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
           "content": {
             "base": [
               "px-4",
@@ -11159,7 +11201,11 @@
           "content-inner": {
             "base": [
               "pt-0",
-              "pb-4"
+              "pb-4",
+              "[\u0026_a]:underline",
+              "[\u0026_a]:underline-offset-3",
+              "[\u0026_a]:hover:text-foreground",
+              "[\u0026_p:not(:last-child)]:mb-4"
             ],
             "dimensions": {}
           },
@@ -15881,6 +15927,17 @@
     "mira": {
       "accordion": {
         "slots": {
+          "": {
+            "base": [
+              "overflow-hidden",
+              "rounded-md",
+              "border",
+              "flex",
+              "w-full",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
           "content": {
             "base": [
               "px-2",
@@ -15892,7 +15949,11 @@
           "content-inner": {
             "base": [
               "pt-0",
-              "pb-4"
+              "pb-4",
+              "[\u0026_a]:underline",
+              "[\u0026_a]:underline-offset-3",
+              "[\u0026_a]:hover:text-foreground",
+              "[\u0026_p:not(:last-child)]:mb-4"
             ],
             "dimensions": {}
           },
@@ -20652,6 +20713,14 @@
     "nova": {
       "accordion": {
         "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-full",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
           "content": {
             "base": [
               "text-sm",
@@ -20662,7 +20731,11 @@
           "content-inner": {
             "base": [
               "pt-0",
-              "pb-2.5"
+              "pb-2.5",
+              "[\u0026_a]:underline",
+              "[\u0026_a]:underline-offset-3",
+              "[\u0026_a]:hover:text-foreground",
+              "[\u0026_p:not(:last-child)]:mb-4"
             ],
             "dimensions": {}
           },
@@ -25431,6 +25504,17 @@
     "rhea": {
       "accordion": {
         "slots": {
+          "": {
+            "base": [
+              "overflow-hidden",
+              "rounded-2xl",
+              "border",
+              "flex",
+              "w-full",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
           "content": {
             "base": [
               "px-4",
@@ -25442,7 +25526,11 @@
           "content-inner": {
             "base": [
               "pt-0",
-              "pb-4"
+              "pb-4",
+              "[\u0026_a]:underline",
+              "[\u0026_a]:underline-offset-3",
+              "[\u0026_a]:hover:text-foreground",
+              "[\u0026_p:not(:last-child)]:mb-4"
             ],
             "dimensions": {}
           },
@@ -30210,6 +30298,14 @@
     "sera": {
       "accordion": {
         "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-full",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
           "content": {
             "base": [
               "text-sm",
@@ -30220,7 +30316,11 @@
           "content-inner": {
             "base": [
               "pt-0",
-              "pb-4"
+              "pb-4",
+              "[\u0026_a]:underline",
+              "[\u0026_a]:underline-offset-3",
+              "[\u0026_a]:hover:text-foreground",
+              "[\u0026_p:not(:last-child)]:mb-4"
             ],
             "dimensions": {}
           },
@@ -35011,6 +35111,14 @@
     "vega": {
       "accordion": {
         "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-full",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
           "content": {
             "base": [
               "text-sm",
@@ -35021,7 +35129,11 @@
           "content-inner": {
             "base": [
               "pt-0",
-              "pb-4"
+              "pb-4",
+              "[\u0026_a]:underline",
+              "[\u0026_a]:underline-offset-3",
+              "[\u0026_a]:hover:text-foreground",
+              "[\u0026_p:not(:last-child)]:mb-4"
             ],
             "dimensions": {}
           },

@@ -269,15 +269,38 @@ var slotOverrides = map[string]map[string]slotOverride{
 		// Same naming mismatch as dialog's cn-dialog-close above.
 		"cn-sheet-close": {slot: "close-button", ok: true},
 	},
-	// Components whose upstream section carries a bare root rule
-	// (`cn-<component>`) but whose gsxui shape declares no root slot at all:
-	// the root element is purely structural (no recipe class of its own),
-	// matching each shape's own doc comment and confirmed against
-	// registry/styles/nova/<component>.css, which likewise has no base rule
-	// for it. Not a porting gap — the same architecture decision Accordion's
-	// shape doc comment already explains.
+	// Accordion's root maps like Button's: the per-style `.cn-accordion` rule
+	// (present in luma/maia/mira/rhea only — `overflow-hidden rounded-2xl
+	// border`, mira's `rounded-md`; the other four style sheets have no such
+	// rule) PLUS the style-invariant base string the shared Radix component
+	// hardcodes alongside the class (apps/v4/registry/bases/radix/ui/
+	// accordion.tsx: "cn-accordion flex w-full flex-col"). This entry used to
+	// read {ok: false} — "the root element is purely structural" — which was
+	// confirmed against registry/styles/nova/accordion.css alone and is only
+	// nova's truth; it dropped four styles' outer frame and all eight styles'
+	// flex column. The four styles with no `.cn-accordion` rule get the base
+	// string through Transform's ordinary nova fallback, so every style ends
+	// up with a root rule.
+	//
+	// AccordionContent's inner div takes its own `extra` from the same base
+	// file ("cn-accordion-content-inner h-(--radix-accordion-content-height)
+	// [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground
+	// [&_p:not(:last-child)]:mb-4"). Only the Radix measured-height variable
+	// is dropped — this port animates through `::details-content` and has no
+	// `--radix-accordion-content-height` to read (see the accordion ledger's
+	// CSS-only-animation MECHANISM). The link and paragraph rules are prose
+	// styling for whatever the caller puts inside the panel, style-invariant
+	// in all 8 styles, and were being dropped wholesale: the identical trio
+	// already rides `.gsxui-recipe-alert-title`/`-description`, which is
+	// where its shape here comes from.
 	"accordion": {
-		"cn-accordion": {ok: false},
+		"cn-accordion": {slot: "", ok: true, extra: []string{
+			"flex", "w-full", "flex-col",
+		}},
+		"cn-accordion-content-inner": {slot: "content-inner", ok: true, extra: []string{
+			"[&_a]:underline", "[&_a]:underline-offset-3",
+			"[&_a]:hover:text-foreground", "[&_p:not(:last-child)]:mb-4",
+		}},
 	},
 	// Button's root recipe rule needs content from TWO upstream files, not
 	// one: style-<name>.css's own per-style `.cn-button` rule (theme colors,

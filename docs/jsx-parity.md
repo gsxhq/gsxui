@@ -606,6 +606,51 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
 - MECHANISM: `ui/tabs/tabs.js` (click + roving ArrowLeft/ArrowRight, both ordinary bubbling events — no `{ capture: true }` needed) re-stamps `data-state`/`aria-selected`/`tabindex` on every trigger and `data-state`/`hidden` on every panel by scoping to `closest("[data-gsxui-tabs]")`, then emits `gsxui:change` on the root with `{ value }` — the same closest-root delegation idiom as dialog's `rootOf`, and the same `gsxui:*` CustomEvent-as-API idiom as dialog's `gsxui:open`/`gsxui:close`.
 
 ## accordion
+- FIX (`Accordion` root, 2026-09-07 — a real drift, not a ledgered
+  divergence): the root `<div>` rendered with no class at all in every style.
+  `registry/canonical/shapes/accordion.go` declared no root slot, and
+  `internal/stylegen/port`'s mapping table backed that up with a
+  `"cn-accordion": {ok: false}` entry reading "the root element is purely
+  structural." Both were checked against `registry/styles/nova/accordion.css`
+  and are only nova's truth. Upstream's root is
+  `cn(\"cn-accordion flex w-full flex-col\", className)`
+  (`apps/v4/registry/bases/radix/ui/accordion.tsx` — the base that pairs with
+  the `style-<name>.css` sheets this port reads, not
+  `new-york-v4/ui/accordion.tsx`, whose Root carries no class), and four of the
+  eight style sheets give `.cn-accordion` real presentation on top of that
+  style-invariant base: `overflow-hidden rounded-2xl border` in luma, maia and
+  rhea, `overflow-hidden rounded-md border` in mira. Nothing anywhere in the
+  port supplied either half — `assets/css/foundation.css` has no
+  `[data-gsxui-slot-accordion]` rule of any kind — so in those four styles the
+  whole outer frame upstream draws around the item stack was missing (the
+  items' own `not-last:border-b` dividers rendered as bare lines with no
+  border, no corner radius and no overflow clipping to sit inside), and in all
+  eight the root laid out as a block box rather than the `w-full` flex column
+  upstream lays out. Fixed the way `button`'s root already was: the shape
+  declares the root slot, `accordion.gsx` applies `accordion.Root()`, the
+  mapping entry becomes a `{slot: "", ok: true, extra: [...]}` carrying the
+  style-invariant base string, and each `registry/styles/<style>/accordion.css`
+  gains its `.gsxui-recipe-accordion` rule — the four with an upstream rule
+  from that rule plus the base string, the other four (lyra, nova, sera, vega,
+  which have no `.cn-accordion` at all) from the base string alone, marked
+  `carried` like every other counterpart-less rule. Verified by re-running
+  `stylegen port --style all` against the pinned checkout: it reproduces all
+  eight rules byte-for-byte and still reports `unmapped=0`.
+- FIX (`AccordionContent` prose, 2026-09-07 — same root cause, same bump):
+  `.gsxui-recipe-accordion-content-inner` carried only its per-style padding
+  (`pt-0 pb-4`, nova/lyra's `pb-2.5`), because that is all
+  `.cn-accordion-content-inner` says in each of the 8 style sheets. The inner
+  div's other four utilities live in the base string beside the class —
+  `[&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground
+  [&_p:not(:last-child)]:mb-4` — and were dropped with it, so a link inside an
+  accordion panel rendered with no underline and no hover colour, and a
+  multi-paragraph panel lost its inter-paragraph spacing. Added as an `extra`
+  in all 8 styles. This is the identical trio (plus the identical paragraph
+  rule) `.gsxui-recipe-alert-title`/`-description` already carry, which is
+  where the correction's shape comes from. Deliberately NOT carried from the
+  same base string: `h-(--radix-accordion-content-height)`, Radix's measured
+  height — this port animates through `::details-content` and has no such
+  variable to read (see the CSS-only-animation MECHANISM below).
 - WIN: Radix's `AccordionPrimitive.Root`+`Item` client state machine (`type="single"`/`"multiple"`, `collapsible`, `value`/`onValueChange`, keyboard-nav Item coordination) is replaced by grouped native `<details name="…">`: the browser itself enforces "opening one member of a group closes the rest," zero JS, zero client state to keep in sync with the server-rendered markup. Verified interactively (dev/preview.html): opening Item 2 closes Item 1 with no script involved at all.
 - GAP: same shape as tabs' `value` — grouping-by-name is a real browser mechanism, not client-side context, so nothing exists for a root to propagate down to its items. The caller passes the same `name` to `Accordion` and to every `AccordionItem` in the group explicitly. `Accordion`'s own `data-name` stamp is a readability/debugging aid only — nothing reads it back (there is no `accordion.js`).
 - WIN: `AccordionItem`'s `open bool` server-renders the initial expanded/collapsed state as the native `open` boolean attribute (zero value `false` = collapsed, matching shadcn's Radix default of nothing expanded until interacted with) — thereafter, opening/closing and the exclusive-group behavior are entirely native, no hydration step to reconcile.

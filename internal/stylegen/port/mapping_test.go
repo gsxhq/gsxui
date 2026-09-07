@@ -93,11 +93,13 @@ func TestSlotFor(t *testing.T) {
 		wantSlot  string
 		wantOK    bool
 	}{
-		// accordion's root has no gsxui slot at all (purely structural div —
-		// see registry/canonical/shapes/accordion.go and the slotOverrides
-		// doc comment in mapping.go), a declared override, not the plain
-		// prefix-strip path.
-		{"root slot has no gsxui slot", "accordion", "cn-accordion", "", false},
+		// accordion's root maps onto the root slot through a declared
+		// override (which also carries the shared Radix base string as
+		// extra), not the plain prefix-strip path — same shape as button's.
+		{"root slot maps to root", "accordion", "cn-accordion", "", true},
+		// accordion's content-inner likewise: same slot the prefix strip
+		// would give, but declared so the override can carry its extra.
+		{"content-inner keeps its slot", "accordion", "cn-accordion-content-inner", "content-inner", true},
 		{"plain slot", "accordion", "cn-accordion-trigger", "trigger", true},
 		{"multi-word slot", "accordion", "cn-accordion-content-inner", "content-inner", true},
 		// Radio's shape is one native <input type=radio> root slot; the item's

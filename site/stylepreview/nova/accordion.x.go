@@ -35,12 +35,14 @@ func _gsxrenderAccordion(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name string
 		_gsxgw.AttrValue(string(name))
 		_gsxgw.S("\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full flex-col"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion"})
 	_gsxgw.BoolAttr("data-gsxui-slot-accordion", true)
 	_gsxgw.S(">")
-//line accordion.gsx:12:63
+//line accordion.gsx:12:96
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
@@ -137,11 +139,11 @@ func _gsxrenderAccordionContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	_gsxgw.S(">")
 //line accordion.gsx:44:3
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pt-0 pb-2.5"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pt-0 pb-2.5 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-accordion-content-inner", true)
 	_gsxgw.S(">")
-//line accordion.gsx:44:87
+//line accordion.gsx:51:4
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div></div>")
 	return _gsxgw.Err()

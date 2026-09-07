@@ -35,18 +35,20 @@ func _gsxrenderAccordion(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name string
 		_gsxgw.AttrValue(string(name))
 		_gsxgw.S("\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("overflow-hidden rounded-md border flex w-full flex-col"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion"})
 	_gsxgw.BoolAttr("data-gsxui-slot-accordion", true)
 	_gsxgw.S(">")
-//line accordion.gsx:12:63
+//line accordion.gsx:18:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line accordion.gsx:15:1
+//line accordion.gsx:22:1
 func AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -58,7 +60,7 @@ func _gsxrenderAccordionItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name st
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line accordion.gsx:16:2
+//line accordion.gsx:23:2
 	_gsxgw.S("<details")
 	if !attrs.Has("name") {
 		_gsxgw.S(" name=\"")
@@ -75,13 +77,13 @@ func _gsxrenderAccordionItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name st
 	_gsxgw.Spread(ctx, "details", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-item"})
 	_gsxgw.BoolAttr("data-gsxui-slot-accordion-item", true)
 	_gsxgw.S(">")
-//line accordion.gsx:23:3
+//line accordion.gsx:30:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</details>")
 	return _gsxgw.Err()
 }
 
-//line accordion.gsx:27:1
+//line accordion.gsx:34:1
 func AccordionTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -93,7 +95,7 @@ func _gsxrenderAccordionTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line accordion.gsx:28:2
+//line accordion.gsx:35:2
 	_gsxgw.S("<summary class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-6 p-2 text-left text-xs/relaxed font-medium hover:underline flex items-start outline-none transition-all border border-transparent"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -101,20 +103,20 @@ func _gsxrenderAccordionTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	_gsxgw.Spread(ctx, "summary", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-trigger"})
 	_gsxgw.BoolAttr("data-gsxui-slot-accordion-trigger", true)
 	_gsxgw.S(">")
-//line accordion.gsx:35:3
+//line accordion.gsx:42:3
 	_gsxgw.Node(ctx, children)
-//line accordion.gsx:36:3
+//line accordion.gsx:43:3
 	_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("text-muted-foreground ml-auto size-4 shrink-0 transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&]:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-accordion-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
 	_gsxgw.S("</summary>")
 	return _gsxgw.Err()
 }
 
-//line accordion.gsx:45:1
+//line accordion.gsx:52:1
 // The outer token owns disclosure mechanics and non-class attributes. Caller
 // classes join the inner padding token so utilities override its defaults on
 // the same box.
 
-//line accordion.gsx:48:1
+//line accordion.gsx:55:1
 func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -126,7 +128,7 @@ func _gsxrenderAccordionContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line accordion.gsx:49:2
+//line accordion.gsx:56:2
 	_gsxv0 := attrs.Without("class")
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("px-2 text-xs/relaxed overflow-hidden"), _gsxrt.Class(_gsxv0.Class()))
@@ -135,13 +137,13 @@ func _gsxrenderAccordionContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	_gsxgw.Spread(ctx, "div", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-accordion-content", true)
 	_gsxgw.S(">")
-//line accordion.gsx:50:3
+//line accordion.gsx:57:3
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pt-0 pb-4"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pt-0 pb-4 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-accordion-content-inner", true)
 	_gsxgw.S(">")
-//line accordion.gsx:50:85
+//line accordion.gsx:64:4
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div></div>")
 	return _gsxgw.Err()
