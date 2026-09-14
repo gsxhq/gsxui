@@ -716,7 +716,7 @@ func rewriteMarkerVariant(component, token string) string {
 // runs — found by running the real port and reading its unmapped report,
 // each one verified against the real upstream section and (where one
 // exists) the corresponding nova/<component>.css before being added here.
-// Every entry is one of two reviewed reasons:
+// Every entry is one of three reviewed reasons:
 //
 //   - The referenced gsxui feature does not exist at all: Alert has no
 //     "action" slot (registry/canonical/shapes/alert.go declares only root/
@@ -737,11 +737,20 @@ func rewriteMarkerVariant(component, token string) string {
 //     exactly this reason — they still live in assets/css/styles/
 //     default.css's own @layer utilities escape hatch, outside the porter's
 //     reach entirely.
+//   - gsxui implements the same feature through a native mechanism the
+//     upstream token cannot express: Accordion's content is a <div> inside a
+//     native <details>, so upstream's data-open:animate-accordion-down/
+//     data-closed:animate-accordion-up pair (nothing stamps data-state, and
+//     on the content div even the native open:/not-open: form is wrong) is
+//     replaced by the `::details-content` grid-row transition
+//     docs/jsx-parity.md's "## accordion" CSS-only-animation MECHANISM entry
+//     describes.
 //
 // Matched by substring against the token BEFORE any rewriting, so the
 // surrounding variant stack (dark:, responsive prefixes, the sibling
 // bracket clause) never has to be enumerated separately.
 var slotAttributeDrops = map[string][]string{
+	"accordion":    {"data-open:animate-accordion-down", "data-closed:animate-accordion-up"},
 	"alert":        {"data-[slot=alert-action]"},
 	"alert-dialog": {"data-[slot=alert-dialog-media]"},
 	"combobox":     {"data-[slot=combobox-chip]"}, // prefix: also matches combobox-chip-remove
@@ -998,11 +1007,11 @@ func stripImportantModifier(token string) string {
 // zero hits for either. Left untranslated, `data-open:animate-in` compiles
 // to the CSS attribute selector `[data-open]`, which gsxui's real DOM can
 // never carry, so the enter/exit animation silently never fires: confirmed
-// by the actual regression (jstest's own dialog/sheet/drawer/accordion
-// specs — computed animationName "none" instead of containing "enter", the
-// accordion chevron's rotate landing at its resting 0deg/"none" instead of
-// 180deg when open) once nova's real content ran through the full suite for
-// the first time. This is the SAME "bare data-*: doesn't reliably resolve
+// by the actual regression (jstest's own dialog/sheet/drawer specs —
+// computed animationName "none" instead of containing "enter") once nova's
+// real content ran through the full suite for the first time. (Accordion
+// and collapsible are the exception — see nativeDetailsSlots below.) This
+// is the SAME "bare data-*: doesn't reliably resolve
 // against this repo's DOM the way the explicit [data-x=y]: form does"
 // finding markerRewrites already established for Sidebar's data-active/
 // data-show-on-hover — just universal instead of one component's markers,
@@ -1018,24 +1027,79 @@ var openClosedMarkerRewrites = map[string]string{
 	"data-closed": "data-[state=closed]",
 }
 
-// rewriteOpenClosedMarker applies openClosedMarkerRewrites to every stacked
+// nativeDetailsSlots names, per component, the one slot rendered as a native
+// <details> element: accordion's item and collapsible's root
+// (registry/canonical/accordion.gsx, collapsible.gsx). Neither component has
+// a behavior module, so nothing in gsxui ever stamps data-state on them and
+// openClosedMarkerRewrites' data-[state=…] form can never match; their open
+// state is the `open` attribute, and the translation on the <details> slot
+// is Tailwind's native `open:` variant (`&:is([open], :popover-open, :open)`,
+// negated for `not-open:`) — the same native-state substitution ui/dialog,
+// ui/sheet and ui/drawer make on their <dialog> elements (`open:grid`,
+// `open:flex`). On any OTHER slot of these components neither form can be
+// right (a `not-open:` on the content <div> would be always-true), so a
+// data-open:/data-closed: token there is either a declared slotAttributeDrops
+// entry or reported unmapped. A leaked data-[state=open]: token compiles
+// clean, passes byte-identity and every other gate, and silently never
+// matches in the browser — it shipped once, as `.gsxui-recipe-accordion-item`'s
+// open-item tint in luma, maia, mira and rhea (2026-09-14). This table is the
+// single source of truth: internal/stylegen's --check-authoring gate rejects
+// data-[state= in exactly these components' registry/styles sheets
+// (collapsible is style-invariant and never reaches Transform, so its entry
+// serves only that gate).
+var nativeDetailsSlots = map[string]map[string]bool{
+	"accordion":   {"item": true},
+	"collapsible": {"": true},
+}
+
+// NativeDetails reports whether component's open/closed state is a native
+// <details> open attribute (see nativeDetailsSlots).
+func NativeDetails(component string) bool {
+	_, ok := nativeDetailsSlots[component]
+	return ok
+}
+
+// nativeDetailsOpenClosedRewrites is openClosedMarkerRewrites' counterpart
+// for a nativeDetailsSlots slot.
+var nativeDetailsOpenClosedRewrites = map[string]string{
+	"data-open":   "open",
+	"data-closed": "not-open",
+}
+
+// rewriteOpenClosedMarker applies openClosedMarkerRewrites — or, on a
+// nativeDetailsSlots slot, nativeDetailsOpenClosedRewrites — to every stacked
 // segment of token (not just the leading one: group-data-open:-shaped
 // compounds never occur in practice today, but a mid-stack data-open would
 // need the same substitution if one ever appeared, and checking every
-// segment costs nothing when most tokens have only one or two).
-func rewriteOpenClosedMarker(token string) string {
+// segment costs nothing when most tokens have only one or two). ok is false
+// when token carries a data-open/data-closed segment on a non-<details> slot
+// of a NativeDetails component, where no translation is right; the caller
+// reports it unmapped.
+func rewriteOpenClosedMarker(component, slot, token string) (rewritten string, ok bool) {
+	rewrites := openClosedMarkerRewrites
+	if detailsSlots, native := nativeDetailsSlots[component]; native {
+		if !detailsSlots[slot] {
+			for _, segment := range splitVariants(token) {
+				if _, marker := openClosedMarkerRewrites[segment]; marker {
+					return token, false
+				}
+			}
+			return token, true
+		}
+		rewrites = nativeDetailsOpenClosedRewrites
+	}
 	segments := splitVariants(token)
 	changed := false
 	for i, segment := range segments {
-		if rewritten, ok := openClosedMarkerRewrites[segment]; ok {
-			segments[i] = rewritten
+		if r, marker := rewrites[segment]; marker {
+			segments[i] = r
 			changed = true
 		}
 	}
 	if !changed {
-		return token
+		return token, true
 	}
-	return strings.Join(segments, ":")
+	return strings.Join(segments, ":"), true
 }
 
 // nativeVisibilityGate lists (component, slot) pairs whose upstream style

@@ -22,7 +22,7 @@ var update = flag.Bool("update", false, "update golden files")
 const (
 	upstreamMaiaPath    = "/Users/jackieli/personal/shadcn-ui/apps/v4/registry/styles/style-maia.css"
 	upstreamMaiaRelPath = "apps/v4/registry/styles/style-maia.css"
-	upstreamPinnedSHA   = "41bbc12cfd39ed8d9cb8da04275479ee7ecc0612"
+	upstreamPinnedSHA   = "ac60ef5c4db4265d71454dd9ecd3f93e255d7211"
 )
 
 // TestRenderAccordionMaiaGolden transforms the real Accordion section out of
@@ -95,10 +95,9 @@ func TestRenderAccordionMaiaGolden(t *testing.T) {
 	if len(ported.Carried) != len(wantCarried) {
 		t.Fatalf("Carried = %v, want exactly %v", ported.Carried, wantCarried)
 	}
-	// cn-accordion (the upstream root rule) has no gsxui slot -- Accordion's
-	// shape declares no root slot at all (registry/canonical/shapes/accordion.go's
-	// doc comment) -- a declared, reviewed non-mapping (mapping.go's
-	// slotOverrides), not an open question, so it does not show up here.
+	// Every upstream rule maps: cn-accordion lands on the root slot via
+	// mapping.go's slotOverrides, and content's data-open/data-closed animate
+	// pair is a declared slotAttributeDrops entry, not an open question.
 	if len(unmapped) != 0 {
 		t.Fatalf("unmapped = %v, want none", unmapped)
 	}
