@@ -172,6 +172,25 @@ func TestSiteRoutesUseTheRealPagesWithHarnessAssets(t *testing.T) {
 	}
 }
 
+// TestSiteFaviconsResolve guards the favicon links the site layout emits:
+// the harness renders the real pages, so the icon set must be mounted here
+// too or every harness page logs three 404s.
+func TestSiteFaviconsResolve(t *testing.T) {
+	srv := httptest.NewServer(newMux(repoRoot(t)))
+	defer srv.Close()
+
+	for _, path := range []string{"/favicon.svg", "/favicon-32.png", "/apple-touch-icon.png"} {
+		res, err := http.Get(srv.URL + path)
+		if err != nil {
+			t.Fatalf("GET %s: %v", path, err)
+		}
+		res.Body.Close()
+		if res.StatusCode != http.StatusOK {
+			t.Errorf("GET %s: status = %d, want 200", path, res.StatusCode)
+		}
+	}
+}
+
 func TestThemeRouteLoadsProductionEquivalentBrowserEntry(t *testing.T) {
 	root := repoRoot(t)
 	srv := httptest.NewServer(newMux(root))

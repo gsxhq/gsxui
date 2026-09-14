@@ -1,4 +1,4 @@
-package main
+package icons
 
 import (
 	"net/http"
@@ -7,12 +7,12 @@ import (
 	"testing"
 )
 
-// TestIconRoutes verifies the embedded favicon set serves at stable root
-// paths with the right content types — these URLs are referenced from
-// Layout's <head> and must exist in dev and prod alike.
-func TestIconRoutes(t *testing.T) {
+// TestRegister verifies the embedded favicon set serves at stable root paths
+// with the right content types — these URLs are referenced from Layout's
+// <head> and must exist wherever the site pages render.
+func TestRegister(t *testing.T) {
 	mux := http.NewServeMux()
-	registerIcons(mux)
+	Register(mux)
 
 	cases := []struct {
 		path        string

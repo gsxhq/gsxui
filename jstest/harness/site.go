@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"testing/fstest"
 
+	"github.com/gsxhq/gsxui/site/icons"
 	"github.com/gsxhq/gsxui/site/pages"
 	"github.com/gsxhq/vite"
 	"github.com/jackielii/structpages"
@@ -59,6 +60,9 @@ func registerSiteRoutes(mux *http.ServeMux) {
 	}
 	siteHandler := withBrowserImportMap(v.Middleware(pagesMux))
 	mux.Handle("/site/", http.StripPrefix("/site", siteHandler))
+	// The site layout links the favicon set at root paths; without these every
+	// harness page logs three 404s.
+	icons.Register(mux)
 	mux.Handle("/", siteHandler)
 }
 
