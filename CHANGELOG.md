@@ -12,6 +12,9 @@ Notable changes to gsxui's component set, newest first.
 
 - **jstest harness** — serves the favicon set (`/favicon.svg`, `/favicon-32.png`, `/apple-touch-icon.png`) the site layout links, via the new shared `site/icons` package; harness pages no longer log three 404s each (#27).
 - **toaster** — docs note that under htmx 4 a response containing only `hx-swap-oob="beforeend:#gsxui-toaster"` content leaves the request's main target untouched (#27).
+- **accordion** — the open item's muted tint in luma, maia, mira and rhea never rendered: the sheets carried `data-[state=open]:bg-muted/50`, and nothing stamps `data-state` on a native `<details>`. Now the native `open:` variant. The porter emits `open:`/`not-open:` for the `<details>` slot itself and the authoring gate rejects `data-[state=` in accordion and collapsible sheets (#28).
+- **alert-dialog, dialog** — `AlertDialogFooter` in every non-nova style, and lyra's `DialogFooter`, rendered nova's full-bleed muted end-bar instead of upstream's plain right-aligned button row (#28).
+- **alert-dialog** — the header was centred at every width in all styles; upstream's default size is left-aligned from `sm` up. `AlertDialogContent` now stamps `data-size="default"`, which the ported `sm:` alignment selectors were keyed on all along (#28).
 
 ## 2026-08-24
 
