@@ -24,8 +24,9 @@ var dialogFooterBase = []string{"flex", "flex-col-reverse", "gap-2", "sm:flex-ro
 // style-nova.css — draws behind both footers: a full-bleed bar (negative
 // margins cancelling the content's own padding), its own padding, a top border,
 // a muted fill and the content's bottom radius. No other upstream style sheet
-// has a .cn-dialog-footer or .cn-alert-dialog-footer rule of any kind, so in
-// every other style these tokens can only have arrived by copying nova's.
+// has a .cn-alert-dialog-footer rule, and their .cn-dialog-footer rule (absent
+// in lyra) is `gap-2` alone, so in every other style these tokens can only
+// have arrived by copying nova's.
 //
 // They had: a 2026-09-14 parity audit found the whole set on
 // .gsxui-recipe-alert-dialog-footer in all seven non-nova styles and on

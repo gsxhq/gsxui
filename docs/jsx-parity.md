@@ -651,10 +651,18 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   (`## field-label focus ring`). `AccordionTriggerIcon`'s own
   `[[data-gsxui-slot-accordion-item][open]_&]:rotate-180` was already keying off
   the native attribute, which is what made the item rule's `data-[state=open]:`
-  visibly inconsistent. `--check-authoring` now rejects `data-[state=` in
-  `registry/styles/*/accordion.css` and `registry/styles/*/collapsible.css` (the
-  two native-`<details>` components), the same permanent-check rationale as the
-  dead `data-checked` gate; every other component's sheet keeps using
+  visibly inconsistent. The leak came from the porter itself: its universal
+  `data-open:` -> `data-[state=open]:` rewrite (`openClosedMarkerRewrites`) is
+  right for every component with a behavior module and wrong for these two, so
+  `internal/stylegen/port` now names the slot that IS the `<details>`
+  (`nativeDetailsSlots`: accordion `item`, collapsible root) and emits
+  `open:`/`not-open:` there; on any other slot a `data-open:`/`data-closed:`
+  token is a declared drop (content's animate pair, replaced by the
+  `::details-content` MECHANISM below) or reported unmapped
+  (`TestRewriteOpenClosedMarkerPerSlot`; the maia golden shows the result).
+  `--check-authoring` rejects `data-[state=` in exactly those
+  components' `registry/styles/*/` sheets, the same permanent-check rationale
+  as the dead `data-checked` gate; every other component's sheet keeps using
   `data-[state=…]`, which its behavior module really does stamp.
 - FIX (`Accordion` root, 2026-09-07 — a real drift, not a ledgered
   divergence): the root `<div>` rendered with no class at all in every style.

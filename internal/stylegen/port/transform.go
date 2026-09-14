@@ -139,7 +139,16 @@ func Transform(shape recipe.Shape, sec Section, fallback recipe.Style) (Ported, 
 		for variantIndex, variant := range overrideVariants(shape.Component, effectiveClass) {
 			for _, token := range rule.Utilities {
 				token = stripImportantModifier(token)
-				token = rewriteOpenClosedMarker(token)
+				if slotAttributeDropped(shape.Component, token) {
+					continue
+				}
+				token, translated := rewriteOpenClosedMarker(shape.Component, slot, token)
+				if !translated {
+					if variantIndex == 0 {
+						unmapped = append(unmapped, fmt.Sprintf("%s: %s", rule.Class, token))
+					}
+					continue
+				}
 				if token == noScrollbarUtility {
 					if variantIndex == 0 {
 						for _, u := range noScrollbarExpansion {
@@ -149,9 +158,6 @@ func Transform(shape recipe.Shape, sec Section, fallback recipe.Style) (Ported, 
 					continue
 				}
 				token = rewriteMarkerVariant(shape.Component, token)
-				if slotAttributeDropped(shape.Component, token) {
-					continue
-				}
 				rewritten, resolvedSlots := rewriteSlotAttributeReferences(allShapes, token)
 				if !resolvedSlots {
 					if variantIndex == 0 {
