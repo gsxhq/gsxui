@@ -139,6 +139,25 @@ checkout.
   there's nothing to port.
 
 ## alert-dialog
+- FIX (`AlertDialogFooter` chrome, 2026-09-14 — a real drift, not a ledgered
+  divergence): `.gsxui-recipe-alert-dialog-footer` carried
+  `-mx-4 -mb-4 rounded-b-xl border-t bg-muted/50 p-4` in ALL EIGHT styles. Those
+  six tokens are `style-nova.css`'s own `.cn-alert-dialog-footer` rule, and nova
+  is the only one of the eight upstream sheets that HAS such a rule — every
+  other style leaves the footer to the style-invariant base
+  (`flex flex-col-reverse gap-2 sm:flex-row sm:justify-end`, identical in
+  `apps/v4/registry/new-york-v4/ui/alert-dialog.tsx` and
+  `apps/v4/registry/bases/radix/ui/alert-dialog.tsx`, and already quoted
+  verbatim in the GAP entry below). So in luma, lyra, maia, mira, rhea, sera and
+  vega the footer rendered as nova's full-bleed muted end-bar — negative margins
+  cancelling the content's padding, its own `p-4`, a top border, a muted fill
+  and a bottom radius — where upstream draws a plain right-aligned row of
+  buttons sitting inside the dialog's own padding. Fixed at the source
+  (`registry/styles/<style>/alert-dialog.css`); nova keeps the chrome, which is
+  genuinely its own. Same failure mode as `## accordion`'s root FIX and
+  `## item`'s `ItemTitle` FIX: a rule checked against `registry/styles/nova/`
+  alone and generalised to all eight. `TestDialogFootersCarryNovaChromeOnlyInNova`
+  pins both footers against it.
 - NOTE (source revision, scoping only — corrected 2026-07-24): the `size` prop (`"default"|"sm"`) and `AlertDialogMedia` that `registry/new-york-v4/ui/alert-dialog.tsx` has grown at its current HEAD (`f31ed8198`) are out of scope for this task (its own wording, e.g. "shadcn wraps buttonVariants the same way" for Action/Cancel, matches the pre-refactor shape — the earlier commit `f1dd9c690` "update dark mode colors" calls `buttonVariants()` directly, current HEAD wraps `<Button asChild>` with `variant`/`size` passthrough instead), the same scoping call as avatar's `AvatarBadge`/`AvatarGroup`/`AvatarGroupCount` (`## avatar`). **This is scoping only, not a source-revision substitution**: every class STRING below is the current HEAD's, with only the genuinely `size`/Media-conditional selectors stripped — see the per-part breakdown in the GAP entry below for exactly which tokens that means, part by part (an earlier version of this port ported Header/Description from the older, pre-refactor revision's class strings wholesale instead of stripping conditionals off the current one; Header's pre-refactor `flex flex-col gap-2 text-center sm:text-left` is a materially different — and wrong, per this binding-to-disk rule — recipe from current HEAD's unconditional `grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center` base, caught in review and fixed; Footer/Title/Content's current-HEAD unconditional bases happened to already coincide with what was ported, so those needed no code change, only this note; Description's token order was also corrected to match, no visual difference).
 - WIN: `AlertDialog`/`AlertDialogTrigger`/`AlertDialogContent` compose `ui.Dialog`/`ui.DialogContent` directly instead of re-deriving a second `<dialog>` machinery — an alert dialog IS a dialog that (a) cannot be light-dismissed by an outside click and (b) never renders the injected close X; every other behavior (top-layer stacking, Esc-to-close, trigger/content proximity wiring, `data-state`, aria wiring) is identical, so `ui/dialog.js` is reused unmodified except for the one opt-out below. This is also what makes `alert-dialog`'s derived dependency chain `[button dialog]` (`registry.Deps("alert-dialog")`) pull `ui/dialog.js` transitively for the CLI, even though `alert-dialog` has no behavior module of its own (`HasJS("alert-dialog")` is false).
 - MECHANISM (the one `ui/dialog.js` change this task makes): a `<dialog>` carrying `data-gsxui-dialog-static` is skipped by the backdrop-click light-dismiss handler — one early `if (dialog.hasAttribute("data-gsxui-dialog-static")) return;` ahead of the existing rect check. Esc (the `cancel` listener), the close button/`data-gsxui-dialog-close` handler, and the `toggle`-driven state sync are all untouched — only the backdrop-click path is gated. `AlertDialogContent` stamps the attribute unconditionally; any `ui.DialogContent` can opt into the same behavior directly.
@@ -257,6 +276,17 @@ The Base UI (`@base-ui/react`) filtered listbox (`registry/new-york-v4/ui/combob
 - Registry: `combobox.gsx` imports `ui/icon` (`ComboboxItem`'s `Check`, `ComboboxTrigger`'s `ChevronDown`, `ComboboxClear`'s `X`) and composes `ui.InputGroup`/`InputGroupInput`/`InputGroupAddon`/`InputGroupButton` directly (flat-package intra-package edges, the same `declIndex`-resolved shape `## input-group`'s own button/input/textarea deps document) — `registry.Deps("combobox") == ["icon", "input-group"]`, transitively resolving to `[button, combobox, icon, input, input-group, textarea]`. `HasJS("combobox")` is true (`ui/combobox.js`); adding `combobox.gsx`'s new call sites into `InputGroup`/`InputGroupInput`/`InputGroupButton` also changed `ui/input-group.x.go`'s generated shape (the gsx compiler extracts a component's body into a standalone `_gsxrenderX` helper once it is called from more than one generated file, so those three parts' bodies moved out of their own closures) — a mechanical, behavior-preserving regeneration, not a hand edit.
 
 ## dialog
+- FIX (`DialogFooter` chrome in lyra, 2026-09-14 — a real drift, not a ledgered
+  divergence): the same nova leak `## alert-dialog`'s own FIX describes, one
+  style wide. `registry/styles/lyra/dialog.css`'s
+  `.gsxui-recipe-dialog-footer` carried nova's
+  `-mx-4 -mb-4 rounded-b-xl border-t bg-muted/50 p-4` end-bar; `style-lyra.css`
+  has no `.cn-dialog-footer` rule at all, so lyra's footer is the bare base
+  `flex flex-col-reverse gap-2 sm:flex-row sm:justify-end`. The other six
+  non-nova styles were already correct (their own upstream rule is `gap-2` and
+  nothing else), which is what isolated lyra as the drift rather than the port's
+  policy. Fixed at the source; pinned by
+  `TestDialogFootersCarryNovaChromeOnlyInNova`.
 - WIN: Radix Portal/Overlay replaced by native <dialog> top layer + ::backdrop; Esc handling is browser-native.
 - ADAPT: DialogContent uses `open:grid` instead of shadcn's `grid` — content stays in the DOM when closed (no Radix unmount), so an ungated display utility would override the UA's closed-dialog `display:none`.
 - ADAPT: `text-foreground` added to DialogContent's classes — native <dialog> gets UA `color: CanvasText` and does not inherit the themed body color (Radix's <div> content does); without it dark mode renders wrong text color.
