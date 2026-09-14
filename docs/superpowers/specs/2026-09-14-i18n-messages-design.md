@@ -266,3 +266,20 @@ this repo.
 - A translator for gsxui's own site.
 - Messages with arguments. No swept string has one.
 - Any label prop or context value on any component.
+
+## Addendum (2026-09-14, planning)
+
+- `CalendarLocale` gains `MonthsShort [12]string`. The dropdown caption's
+  month `<select>` renders three-letter names today (`calendarMonthNames`,
+  matching upstream's `formatMonthDropdown`), so a wide-only struct could
+  not reproduce the zero-value output byte for byte. `Months` stays the
+  wide set for the caption and day labels.
+- `registry.Components()` excludes helper files and a new
+  `registry.Helpers()` lists them. The site's component index, sidebar and
+  command palette all iterate `Components()` and link to
+  `/components/<name>`, which 404s for a name with no examples, so a
+  helper must not appear there. `Deps`, `Resolve`, `HasJS` and `gsxui add`
+  accept both sets; `gsxui list` prints helpers with a `(helper)` tag.
+- Patterns substitute all four placeholders on every call, with the
+  absent parts as empty strings: a caption pattern containing
+  `{weekday}` renders it as nothing on both the server and the client.
