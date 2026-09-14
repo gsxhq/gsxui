@@ -606,6 +606,26 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
 - MECHANISM: `ui/tabs/tabs.js` (click + roving ArrowLeft/ArrowRight, both ordinary bubbling events — no `{ capture: true }` needed) re-stamps `data-state`/`aria-selected`/`tabindex` on every trigger and `data-state`/`hidden` on every panel by scoping to `closest("[data-gsxui-tabs]")`, then emits `gsxui:change` on the root with `{ value }` — the same closest-root delegation idiom as dialog's `rootOf`, and the same `gsxui:*` CustomEvent-as-API idiom as dialog's `gsxui:open`/`gsxui:close`.
 
 ## accordion
+- FIX (`AccordionItem` open tint, 2026-09-14 — a real drift, not a ledgered
+  divergence): `.gsxui-recipe-accordion-item` carried
+  `data-[state=open]:bg-muted/50` in luma, maia, mira and rhea — the four styles
+  whose upstream `.cn-accordion-item` rule has `data-open:bg-muted/50`. Nothing
+  in gsxui stamps `data-state` on an accordion item: `AccordionItem` is a native
+  `<details>` and accordion has no behavior module at all (`HasJS("accordion")`
+  is false), so the selector could never match and the open item's muted tint
+  simply never rendered in those four styles. The correct translation is the
+  native `open:` variant — the same native-state substitution `DialogContent`,
+  `SheetContent` and `DrawerContent` already make (`open:grid`, `open:flex` on
+  their `<dialog>`s), and the same class of translation as the
+  `data-checked:` -> `checked:` pass the three native `<input>` controls get
+  (`## field-label focus ring`). `AccordionTriggerIcon`'s own
+  `[[data-gsxui-slot-accordion-item][open]_&]:rotate-180` was already keying off
+  the native attribute, which is what made the item rule's `data-[state=open]:`
+  visibly inconsistent. `--check-authoring` now rejects `data-[state=` in
+  `registry/styles/*/accordion.css` and `registry/styles/*/collapsible.css` (the
+  two native-`<details>` components), the same permanent-check rationale as the
+  dead `data-checked` gate; every other component's sheet keeps using
+  `data-[state=…]`, which its behavior module really does stamp.
 - FIX (`Accordion` root, 2026-09-07 — a real drift, not a ledgered
   divergence): the root `<div>` rendered with no class at all in every style.
   `registry/canonical/shapes/accordion.go` declared no root slot, and

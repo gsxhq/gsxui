@@ -23,7 +23,7 @@ component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Att
 	<details
 		name={name}
 		open={open}
-		class={ "data-[state=open]:bg-muted/50 not-last:border-b" }
+		class={ "open:bg-muted/50 not-last:border-b" }
 		{ attrs... }
 		data-gsxui-slot-accordion-item
 	>

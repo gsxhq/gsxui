@@ -8,7 +8,7 @@
   }
 
   .gsxui-recipe-accordion-item {
-    @apply data-[state=open]:bg-muted/50 not-last:border-b;
+    @apply open:bg-muted/50 not-last:border-b;
   }
 
   /* carried: no upstream counterpart */
