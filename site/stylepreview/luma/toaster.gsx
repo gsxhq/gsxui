@@ -17,7 +17,10 @@ import "github.com/gsxhq/gsx"
 // timer / dismiss lifecycle. It carries a stable id="gsxui-toaster" (caller-
 // overridable via attrs) so server OOB/partial appends have a fixed target,
 // and pointer events pass through the empty gutter (each toast re-enables
-// pointer events on itself through live lifecycle state).
+// pointer events on itself through live lifecycle state). Under htmx 4 an
+// OOB-only response leaves the request's main target untouched — a flash-only
+// response does not clear it (the swapEmpty modifier or the
+// allowEmptySwapAfterOOB config restore the htmx 2 behaviour).
 //
 // After the <ol> come six inert <template>s, one per type — the same idiom as
 // a server flash viewport's per-severity templates. ui/toaster.js clones the

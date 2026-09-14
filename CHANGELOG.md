@@ -2,6 +2,17 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-09-14
+
+### Changed
+
+- **site** — htmx pin `4.0.0-beta6` -> `4.0.0` (GA, released 2026-08-28) (#27).
+
+### Fixed
+
+- **jstest harness** — serves the favicon set (`/favicon.svg`, `/favicon-32.png`, `/apple-touch-icon.png`) the site layout links, via the new shared `site/icons` package; harness pages no longer log three 404s each (#27).
+- **toaster** — docs note that under htmx 4 a response containing only `hx-swap-oob="beforeend:#gsxui-toaster"` content leaves the request's main target untouched (#27).
+
 ## 2026-08-24
 
 ### Changed
