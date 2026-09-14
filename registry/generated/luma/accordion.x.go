@@ -56,7 +56,7 @@ func AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) _
 			_gsxgw.BoolAttr("open", bool(open))
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-[state=open]:bg-muted/50 not-last:border-b"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("open:bg-muted/50 not-last:border-b"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "details", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-item"})

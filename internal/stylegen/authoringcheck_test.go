@@ -204,3 +204,57 @@ func TestCheckAuthoringRejectsDeadCheckedVocabularyInStyles(t *testing.T) {
 		t.Fatalf("CheckAuthoring() error = %v, want it to name the data-checked leak in field.css", err)
 	}
 }
+
+// TestCheckAuthoringRejectsDeadStateVocabularyInDetailsStyles pins the
+// native-<details> half of the registry/styles gate: accordion's and
+// collapsible's sheets must never carry upstream's data-[state=…] variant
+// vocabulary. Both components are real <details>/<summary> elements with no
+// behavior module, so nothing stamps data-state on them and the port's
+// translation is the native `open:` variant — a leaked data-[state=open:] token
+// compiles clean and silently never matches.
+func TestCheckAuthoringRejectsDeadStateVocabularyInDetailsStyles(t *testing.T) {
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+
+	path := filepath.Join(root, "registry", "styles", "luma", "accordion.css")
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	leaked := strings.Replace(string(content), "open:bg-muted/50", "data-[state=open]:bg-muted/50", 1)
+	if leaked == string(content) {
+		t.Fatal("fixture luma/accordion.css does not contain open:bg-muted/50 to mutate")
+	}
+	if err := os.WriteFile(path, []byte(leaked), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	err = CheckAuthoring(root)
+	if err == nil {
+		t.Fatal("CheckAuthoring() = nil, want error for data-[state= vocabulary in accordion.css")
+	}
+	if !strings.Contains(err.Error(), "data-[state=") || !strings.Contains(err.Error(), "accordion.css") {
+		t.Fatalf("CheckAuthoring() error = %v, want it to name the data-[state= leak in accordion.css", err)
+	}
+}
+
+// TestCheckAuthoringAllowsDataStateOutsideDetailsStyles keeps the new gate
+// narrow: dialog, sheet, drawer and every other component with a behavior
+// module really do stamp data-state, so their sheets must stay free to use it.
+func TestCheckAuthoringAllowsDataStateOutsideDetailsStyles(t *testing.T) {
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+
+	path := filepath.Join(root, "registry", "styles", DefaultStyle, "dialog.css")
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(content), "data-[state=open]") {
+		t.Fatal("fixture dialog.css carries no data-[state=open] token to exercise the exemption")
+	}
+
+	if err := CheckAuthoring(root); err != nil {
+		t.Fatalf("CheckAuthoring() = %v, want nil — data-[state= is live vocabulary for dialog", err)
+	}
+}

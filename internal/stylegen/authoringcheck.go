@@ -66,6 +66,28 @@ var authoringPatternNarrow = regexp.MustCompile(`data-slot`)
 // FieldLabel).
 var authoringPatternDeadChecked = regexp.MustCompile(`data-checked|data-unchecked`)
 
+// authoringPatternDeadState matches upstream's data-[state=…] variant
+// vocabulary in the hand-ported sheet of a component whose disclosure is a
+// native <details>. Radix stamps data-state="open"|"closed" from JS; accordion
+// and collapsible are real <details>/<summary> elements with no behavior module
+// at all (see docs/jsx-parity.md's "## accordion" and "## collapsible"), so
+// nothing in gsxui ever stamps data-state on them and the open state is the
+// native `open` attribute. The port's translation is the `open:` variant, the
+// same native-state substitution ui/dialog, ui/sheet and ui/drawer already make
+// (`open:grid`, `open:flex` on their <dialog> elements). This is the same
+// failure class as the dead data-checked vocabulary above: a leaked
+// data-[state=open]: token compiles clean, passes byte-identity and every other
+// gate, and silently never matches in the browser — it shipped once, as
+// `.gsxui-recipe-accordion-item`'s open-item tint in luma, maia, mira and rhea.
+var authoringPatternDeadState = regexp.MustCompile(`data-\[state=`)
+
+// nativeDetailsSheets names the registry/styles sheets authoringPatternDeadState
+// applies to: the components whose open/closed state is a native <details> open
+// attribute rather than a JS-stamped data-state. Every other component's sheet
+// is free to use data-[state=…] — dialog, sheet, drawer, dropdown-menu, select
+// and the rest all have behavior modules that stamp it.
+var nativeDetailsSheets = map[string]bool{"accordion.css": true, "collapsible.css": true}
+
 // authoringClassIndent matches a line that is (after leading whitespace)
 // exactly a class= attribute continuation, e.g. a class="..." line inside a
 // multi-line tag.
@@ -113,7 +135,7 @@ func CheckAuthoring(root string) error {
 		violations = append(violations, devViolations...)
 	}
 
-	styleViolations, err := checkDeadCheckedVocabulary(root)
+	styleViolations, err := checkDeadStyleVocabulary(root)
 	if err != nil {
 		return err
 	}
@@ -181,12 +203,14 @@ func checkAuthoringDir(root, dir string, checkClass bool) ([]string, error) {
 	return violations, nil
 }
 
-// checkDeadCheckedVocabulary walks every .css file under registry/styles and
-// reports lines carrying the dead data-checked/data-unchecked vocabulary (see
-// authoringPatternDeadChecked). It runs on the ported source of truth rather
-// than any generated output because that is where a pin-bump hand-port would
-// introduce the leak.
-func checkDeadCheckedVocabulary(root string) ([]string, error) {
+// checkDeadStyleVocabulary walks every .css file under registry/styles and
+// reports lines carrying upstream vocabulary that nothing in gsxui ever stamps:
+// data-checked/data-unchecked anywhere (see authoringPatternDeadChecked), and
+// data-[state=…] in the sheets of the native-<details> components (see
+// authoringPatternDeadState and nativeDetailsSheets). It runs on the ported
+// source of truth rather than any generated output because that is where a
+// pin-bump hand-port would introduce the leak.
+func checkDeadStyleVocabulary(root string) ([]string, error) {
 	var violations []string
 	stylesDir := filepath.Join(root, "registry", "styles")
 	err := filepath.WalkDir(stylesDir, func(path string, d fs.DirEntry, err error) error {
@@ -205,6 +229,9 @@ func checkDeadCheckedVocabulary(root string) ([]string, error) {
 			return err
 		}
 		violations = append(violations, scanAuthoringLines(rel, content, authoringPatternDeadChecked)...)
+		if nativeDetailsSheets[d.Name()] {
+			violations = append(violations, scanAuthoringLines(rel, content, authoringPatternDeadState)...)
+		}
 		return nil
 	})
 	if err != nil {

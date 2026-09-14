@@ -1670,7 +1670,7 @@
           },
           "item": {
             "base": [
-              "data-[state=open]:bg-muted/50",
+              "open:bg-muted/50",
               "not-last:border-b"
             ],
             "dimensions": {}
@@ -1813,15 +1813,9 @@
           },
           "footer": {
             "base": [
-              "-mx-4",
-              "-mb-4",
               "flex",
               "flex-col-reverse",
               "gap-2",
-              "rounded-b-xl",
-              "border-t",
-              "bg-muted/50",
-              "p-4",
               "sm:flex-row",
               "sm:justify-end"
             ],
@@ -6599,15 +6593,9 @@
           },
           "footer": {
             "base": [
-              "-mx-4",
-              "-mb-4",
               "flex",
               "flex-col-reverse",
               "gap-2",
-              "rounded-b-xl",
-              "border-t",
-              "bg-muted/50",
-              "p-4",
               "sm:flex-row",
               "sm:justify-end"
             ],
@@ -7987,15 +7975,9 @@
           },
           "footer": {
             "base": [
-              "-mx-4",
-              "-mb-4",
               "flex",
               "flex-col-reverse",
               "gap-2",
-              "rounded-b-xl",
-              "border-t",
-              "bg-muted/50",
-              "p-4",
               "sm:flex-row",
               "sm:justify-end"
             ],
@@ -11211,7 +11193,7 @@
           },
           "item": {
             "base": [
-              "data-[state=open]:bg-muted/50",
+              "open:bg-muted/50",
               "not-last:border-b"
             ],
             "dimensions": {}
@@ -11352,15 +11334,9 @@
           },
           "footer": {
             "base": [
-              "-mx-4",
-              "-mb-4",
               "flex",
               "flex-col-reverse",
               "gap-2",
-              "rounded-b-xl",
-              "border-t",
-              "bg-muted/50",
-              "p-4",
               "sm:flex-row",
               "sm:justify-end"
             ],
@@ -15959,7 +15935,7 @@
           },
           "item": {
             "base": [
-              "data-[state=open]:bg-muted/50",
+              "open:bg-muted/50",
               "not-last:border-b"
             ],
             "dimensions": {}
@@ -16100,15 +16076,9 @@
           },
           "footer": {
             "base": [
-              "-mx-4",
-              "-mb-4",
               "flex",
               "flex-col-reverse",
               "gap-2",
-              "rounded-b-xl",
-              "border-t",
-              "bg-muted/50",
-              "p-4",
               "sm:flex-row",
               "sm:justify-end"
             ],
@@ -25536,7 +25506,7 @@
           },
           "item": {
             "base": [
-              "data-[state=open]:bg-muted/50",
+              "open:bg-muted/50",
               "not-last:border-b"
             ],
             "dimensions": {}
@@ -25679,15 +25649,9 @@
           },
           "footer": {
             "base": [
-              "-mx-4",
-              "-mb-4",
               "flex",
               "flex-col-reverse",
               "gap-2",
-              "rounded-b-xl",
-              "border-t",
-              "bg-muted/50",
-              "p-4",
               "sm:flex-row",
               "sm:justify-end"
             ],
@@ -30481,15 +30445,9 @@
           },
           "footer": {
             "base": [
-              "-mx-4",
-              "-mb-4",
               "flex",
               "flex-col-reverse",
               "gap-2",
-              "rounded-b-xl",
-              "border-t",
-              "bg-muted/50",
-              "p-4",
               "sm:flex-row",
               "sm:justify-end"
             ],
@@ -35283,15 +35241,9 @@
           },
           "footer": {
             "base": [
-              "-mx-4",
-              "-mb-4",
               "flex",
               "flex-col-reverse",
               "gap-2",
-              "rounded-b-xl",
-              "border-t",
-              "bg-muted/50",
-              "p-4",
               "sm:flex-row",
               "sm:justify-end"
             ],
