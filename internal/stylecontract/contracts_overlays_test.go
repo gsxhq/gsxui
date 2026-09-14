@@ -30,6 +30,7 @@ func TestOverlayContracts(t *testing.T) {
 				}},
 				{Name: "alert-dialog-content", Axes: []Axis{
 					{Attribute: "role", Values: []string{"alertdialog"}},
+					{Attribute: "data-size", Values: []string{"default"}},
 					{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
 					{Attribute: "open"},
 				}},

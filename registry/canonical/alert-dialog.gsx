@@ -10,6 +10,13 @@ import "github.com/gsxhq/gsx"
 // competing max-w-* utilities there, the same way upstream lets twMerge
 // settle them. Every class attribute below is resolved to concrete utilities
 // at generation time.
+//
+// AlertDialogContent stamps data-size="default": upstream's `size` prop is
+// not ported (docs/jsx-parity.md ## alert-dialog), but its default value is
+// what every style's header rule keys its sm:+ left alignment on
+// (`sm:group-data-[size=default]/alert-dialog-content:text-left`), so the
+// attribute must be present for the ported sheets to render upstream's
+// default layout rather than its size="sm" one.
 component AlertDialog(children gsx.Node, attrs gsx.Attrs) {
 	<Dialog { attrs... } data-gsxui-slot-alert-dialog>{ children }</Dialog>
 }
@@ -32,6 +39,7 @@ component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 		hideCloseButton={true}
 		role="alertdialog"
 		data-gsxui-dialog-static
+		data-size="default"
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-content
 	>

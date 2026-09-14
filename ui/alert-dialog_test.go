@@ -30,7 +30,7 @@ func TestAlertDialogPinnedParts(t *testing.T) {
 	}{
 		{"root", render(t, ui.AlertDialog(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-slot-alert-dialog data-gsxui-slot-dialog>x</div>`},
 		{"trigger", render(t, ui.AlertDialogTrigger(gsx.Raw("Delete"), nil)), `<button type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-alert-dialog-trigger>Delete</button>`},
-		{"content", render(t, ui.AlertDialogContent(gsx.Raw("x"), nil)), `<dialog class="` + alertDialogContentClass() + `" data-state="closed" role="alertdialog" data-gsxui-dialog-static data-gsxui-slot-alert-dialog-content data-gsxui-slot-dialog-content>x</dialog>`},
+		{"content", render(t, ui.AlertDialogContent(gsx.Raw("x"), nil)), `<dialog class="` + alertDialogContentClass() + `" data-state="closed" role="alertdialog" data-gsxui-dialog-static data-size="default" data-gsxui-slot-alert-dialog-content data-gsxui-slot-dialog-content>x</dialog>`},
 		{"header", render(t, ui.AlertDialogHeader(gsx.Raw("x"), nil)), `<div class="grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left" data-gsxui-slot-alert-dialog-header>x</div>`},
 		{"footer", render(t, ui.AlertDialogFooter(gsx.Raw("x"), nil)), `<div class="bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end" data-gsxui-slot-alert-dialog-footer>x</div>`},
 		{"title", render(t, ui.AlertDialogTitle(gsx.Raw("x"), nil)), `<h2 class="text-base font-medium" data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>x</h2>`},
@@ -44,6 +44,20 @@ func TestAlertDialogPinnedParts(t *testing.T) {
 				t.Errorf("pinned render mismatch\n got: %s\nwant: %s", tt.got, tt.want)
 			}
 		})
+	}
+}
+
+// TestAlertDialogContentStampsDefaultSize pins the attribute every style's
+// alert-dialog header rule keys its sm:+ left alignment on
+// (`sm:group-data-[size=default]/alert-dialog-content:place-items-start` /
+// `:text-left`). Without it those selectors compile and never match, and the
+// alert dialog renders upstream's size="sm" centred layout at every width —
+// which is how it shipped until 2026-09-14.
+func TestAlertDialogContentStampsDefaultSize(t *testing.T) {
+	got := render(t, ui.AlertDialogContent(gsx.Raw("x"), nil))
+	tag := openingTagContaining(t, got, "data-gsxui-slot-alert-dialog-content")
+	if !strings.Contains(tag, ` data-size="default"`) || !strings.Contains(tag, "group/alert-dialog-content") {
+		t.Errorf("alert dialog content must carry data-size=\"default\" on the group/alert-dialog-content element\nin: %s", tag)
 	}
 }
 
