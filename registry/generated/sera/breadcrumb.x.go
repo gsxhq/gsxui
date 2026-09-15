@@ -212,7 +212,10 @@ func BreadcrumbEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 //line breadcrumb.gsx:98:3
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-ellipsis-label", true)
-		_gsxgw.S(">More</span></span>")
+		_gsxgw.S(">")
+//line breadcrumb.gsx:98:51
+		_gsxgw.Text(string(T("More")))
+		_gsxgw.S("</span></span>")
 		return _gsxgw.Err()
 	})
 }

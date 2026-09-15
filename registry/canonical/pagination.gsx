@@ -83,7 +83,7 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 		data-gsxui-slot-pagination-previous
 	>
 		<icon.ChevronLeft class={ "rtl:rotate-180" }/>
-		<span class={ pagination.PreviousLabel() } data-gsxui-slot-pagination-previous-label>Previous</span>
+		<span class={ pagination.PreviousLabel() } data-gsxui-slot-pagination-previous-label>{ T("Previous") }</span>
 	</PaginationLink>
 }
 
@@ -95,7 +95,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 		{ attrs... }
 		data-gsxui-slot-pagination-next
 	>
-		<span class={ pagination.NextLabel() } data-gsxui-slot-pagination-next-label>Next</span>
+		<span class={ pagination.NextLabel() } data-gsxui-slot-pagination-next-label>{ T("Next") }</span>
 		<icon.ChevronRight class={ "rtl:rotate-180" }/>
 	</PaginationLink>
 }
@@ -108,6 +108,6 @@ component PaginationEllipsis(attrs gsx.Attrs) {
 		data-gsxui-slot-pagination-ellipsis
 	>
 		<icon.Ellipsis/>
-		<span data-gsxui-slot-pagination-ellipsis-label>More pages</span>
+		<span data-gsxui-slot-pagination-ellipsis-label>{ T("More pages") }</span>
 	</span>
 }

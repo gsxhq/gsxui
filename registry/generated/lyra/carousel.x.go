@@ -246,7 +246,10 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 //line carousel.gsx:161:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
-			_gsxgw.S(">Previous slide</span>")
+			_gsxgw.S(">")
+//line carousel.gsx:161:48
+			_gsxgw.Text(string(T("Previous slide")))
+			_gsxgw.S("</span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxa4, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-previous", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
@@ -281,7 +284,10 @@ func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 //line carousel.gsx:185:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
-			_gsxgw.S(">Next slide</span>")
+			_gsxgw.S(">")
+//line carousel.gsx:185:48
+			_gsxgw.Text(string(T("Next slide")))
+			_gsxgw.S("</span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxa8, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv6), _gsxrt.Class(_gsxv7))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()

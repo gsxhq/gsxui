@@ -164,13 +164,15 @@ func _gsxrenderSidebar(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, open bool, si
 //line sidebar.gsx:107:7
 					_gsxgw.NodeResult(_gsxrenderSheetTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("Sidebar")
+//line sidebar.gsx:107:56
+						_gsxgw.Text(string(T("Sidebar")))
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-mobile-title", Value: _gsxrt.Toggle(true)}}))
 //line sidebar.gsx:108:7
 					_gsxgw.NodeResult(_gsxrenderSheetDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("Displays the mobile sidebar.")
+//line sidebar.gsx:109:8
+						_gsxgw.Text(string(T("Displays the mobile sidebar.")))
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-mobile-description", Value: _gsxrt.Toggle(true)}}))
 					return _gsxgw.Err()
@@ -252,7 +254,10 @@ func _gsxrenderSidebarTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs 
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("sr-only"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-trigger-label", true)
-		_gsxgw.S(">Toggle Sidebar</span>")
+		_gsxgw.S(">")
+//line sidebar.gsx:159:67
+		_gsxgw.Text(string(T("Toggle Sidebar")))
+		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("size-7"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-trigger", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()

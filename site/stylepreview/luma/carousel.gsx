@@ -158,7 +158,7 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 		<icon.ArrowLeft
 			class={ switch orientation { case "vertical": "" default: "rtl:rotate-180" } }
 		/>
-		<span data-gsxui-slot-carousel-control-label>Previous slide</span>
+		<span data-gsxui-slot-carousel-control-label>{ T("Previous slide") }</span>
 	</Button>
 }
 
@@ -182,6 +182,6 @@ component CarouselNext(orientation string, attrs gsx.Attrs) {
 		<icon.ArrowRight
 			class={ switch orientation { case "vertical": "" default: "rtl:rotate-180" } }
 		/>
-		<span data-gsxui-slot-carousel-control-label>Next slide</span>
+		<span data-gsxui-slot-carousel-control-label>{ T("Next slide") }</span>
 	</Button>
 }
