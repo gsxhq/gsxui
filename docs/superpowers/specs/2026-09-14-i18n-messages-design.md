@@ -27,6 +27,8 @@ Closes #31 (hard-coded English labels callers can't override) and #30
 
 ### `ui.T`
 
+> Superseded on 2026-09-15: `T` lives in the leaf package `ui/i18n` and is written `i18n.T`. See the Task 8 addendum at the end of this file.
+
 One Go-only canonical file, `registry/canonical/i18n.gsx`, declaring:
 
 ```go

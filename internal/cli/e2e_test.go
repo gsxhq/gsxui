@@ -90,7 +90,7 @@ func TestE2E(t *testing.T) {
 	if err := Run([]string{"add", "dialog"}); err != nil {
 		t.Fatal(err)
 	}
-	// generate ran for real: generated files exist
+	// generate ran for real (the .x.go files) and the i18n helper package was vendored
 	for _, p := range []string{
 		"ui/dialog.x.go",
 		"ui/button.x.go",
