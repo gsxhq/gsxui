@@ -51,14 +51,14 @@ func slicesContains(ss []string, s string) bool {
 }
 
 func TestDeps(t *testing.T) {
-	// dialog.x.go references Button (DialogFooter's Close button) — an
-	// intra-package edge with no import to scan, resolved via declIndex.
+	// dialog.x.go references Button (DialogFooter's Close button) and T
+	// (the close labels) — both intra-package edges resolved via declIndex.
 	deps, err := registry.Deps("dialog")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"button"}) {
-		t.Fatalf("dialog deps = %v, want [button]", deps)
+	if !reflect.DeepEqual(deps, []string{"button", "i18n"}) {
+		t.Fatalf("dialog deps = %v, want [button i18n]", deps)
 	}
 
 	// accordion.gsx imports ui/icon (AccordionTrigger's chevron).
@@ -261,15 +261,16 @@ func TestDeps(t *testing.T) {
 	// dep) — SheetContent renders its own <dialog> rather than composing
 	// DialogContent, and SheetTrigger/SheetContent's injected close
 	// button/SheetClose all render their own <button> rather than composing
-	// Button, so dialog is the only edge — sheet -> dialog is also what
-	// makes the CLI vendor ui/dialog.js for a sheet install (HasJS("sheet")
-	// is false; it has no behavior module of its own, only dialog's).
+	// Button, so dialog and T (the close label) are the edges — sheet ->
+	// dialog is also what makes the CLI vendor ui/dialog.js for a sheet
+	// install (HasJS("sheet") is false; it has no behavior module of its
+	// own, only dialog's).
 	deps, err = registry.Deps("sheet")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"dialog"}) {
-		t.Fatalf("sheet deps = %v, want [dialog]", deps)
+	if !reflect.DeepEqual(deps, []string{"dialog", "i18n"}) {
+		t.Fatalf("sheet deps = %v, want [dialog i18n]", deps)
 	}
 
 	// drawer.gsx has no icon import; Drawer composes ui.Dialog directly (flat
@@ -422,24 +423,27 @@ func TestDeps(t *testing.T) {
 	// toast.gsx imports ui/icon: the server-rendered ui.Toast card (the
 	// single source of the toast <li> markup, shipped as inert per-type
 	// <template>s by Toaster and cloned by ui/toaster.js) renders its type
-	// glyph and the close X via icon.* Go calls — so Deps is [icon].
+	// glyph and the close X via icon.* Go calls, and its own close button's
+	// aria-label through T — so Deps is [icon] plus the intra-package T
+	// edge, [i18n icon] once sorted.
 	deps, err = registry.Deps("toast")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"icon"}) {
-		t.Fatalf("toast deps = %v, want [icon]", deps)
+	if !reflect.DeepEqual(deps, []string{"i18n", "icon"}) {
+		t.Fatalf("toast deps = %v, want [i18n icon]", deps)
 	}
 
 	// toaster.gsx imports nothing itself, but its generated .x.go renders
-	// the Toast component (the per-type <template>s), so declIndex resolves
-	// the intra-package edge to [toast].
+	// the Toast component (the per-type <template>s) and calls T for the
+	// aria landmark's label, so declIndex resolves both intra-package edges
+	// to [toast], [i18n toast] once sorted.
 	deps, err = registry.Deps("toaster")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"toast"}) {
-		t.Fatalf("toaster deps = %v, want [toast]", deps)
+	if !reflect.DeepEqual(deps, []string{"i18n", "toast"}) {
+		t.Fatalf("toaster deps = %v, want [i18n toast]", deps)
 	}
 
 	// combobox.gsx imports ui/icon (ComboboxItem's Check, ComboboxTrigger's
@@ -639,7 +643,7 @@ func TestResolveTransitive(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"button", "dialog"}
+	want := []string{"button", "dialog", "i18n"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -660,7 +664,7 @@ func TestResolveTransitive(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"alert-dialog", "button", "dialog"}
+	want = []string{"alert-dialog", "button", "dialog", "i18n"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -671,7 +675,7 @@ func TestResolveTransitive(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"button", "dialog", "sheet"}
+	want = []string{"button", "dialog", "i18n", "sheet"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -683,7 +687,7 @@ func TestResolveTransitive(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"button", "dialog", "drawer"}
+	want = []string{"button", "dialog", "drawer", "i18n"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -782,7 +786,7 @@ func TestResolveTransitive(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"icon", "toast", "toaster"}
+	want = []string{"i18n", "icon", "toast", "toaster"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -807,7 +811,7 @@ func TestResolveTransitive(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"button", "dialog", "icon", "input", "separator", "sheet", "sidebar", "skeleton", "tooltip"}
+	want = []string{"button", "dialog", "i18n", "icon", "input", "separator", "sheet", "sidebar", "skeleton", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

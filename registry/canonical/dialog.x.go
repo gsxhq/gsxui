@@ -115,7 +115,10 @@ func _gsxrenderDialogContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, hideClo
 //line dialog.gsx:56:5
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close-label", true)
-		_gsxgw.S(">Close</span></button>")
+		_gsxgw.S(">")
+//line dialog.gsx:56:46
+		_gsxgw.Text(string(T("Close")))
+		_gsxgw.S("</span></button>")
 	}
 	_gsxgw.S("</dialog>")
 	return _gsxgw.Err()
@@ -166,7 +169,8 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 //line dialog.gsx:70:4
 			_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("Close")
+//line dialog.gsx:75:5
+				_gsxgw.Text(string(T("Close")))
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-footer-close", Value: _gsxrt.Toggle(true)}})))
 		}

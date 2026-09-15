@@ -17,7 +17,7 @@ import (
 // other five sonner positions are a ledgered gap (docs/jsx-parity.md
 // ## sonner).
 //
-// The <section> is the aria landmark ("Notifications"). The <ol> is the
+// The <section> is the aria landmark, labelled Notifications through T. The <ol> is the
 // mount point ui/toaster.js observes: every toast <li> — whether inserted by
 // the imperative toast() API, cloned from a template by the declarative
 // trigger, or appended by the server (a full-page-load flash rendered inline,
@@ -44,7 +44,9 @@ func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line toaster.gsx:33:2
-		_gsxgw.S("<section aria-label=\"Notifications\" tabindex=\"-1\">")
+		_gsxgw.S("<section aria-label=\"")
+		_gsxgw.AttrValue(string(T("Notifications")))
+		_gsxgw.S("\" tabindex=\"-1\">")
 //line toaster.gsx:34:3
 		_gsxgw.S("<ol")
 		if !attrs.Has("id") {

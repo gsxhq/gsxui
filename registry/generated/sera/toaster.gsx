@@ -8,7 +8,7 @@ import "github.com/gsxhq/gsx"
 // other five sonner positions are a ledgered gap (docs/jsx-parity.md
 // ## sonner).
 //
-// The <section> is the aria landmark ("Notifications"). The <ol> is the
+// The <section> is the aria landmark, labelled Notifications through T. The <ol> is the
 // mount point ui/toaster.js observes: every toast <li> — whether inserted by
 // the imperative toast() API, cloned from a template by the declarative
 // trigger, or appended by the server (a full-page-load flash rendered inline,
@@ -30,7 +30,7 @@ import "github.com/gsxhq/gsx"
 // duplicated in JS. Their placeholder texts are always overwritten or removed
 // on clone.
 component Toaster(attrs gsx.Attrs) {
-	<section aria-label="Notifications" tabindex="-1">
+	<section aria-label={T("Notifications")} tabindex="-1">
 		<ol
 			id="gsxui-toaster"
 			class={ "[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6" }

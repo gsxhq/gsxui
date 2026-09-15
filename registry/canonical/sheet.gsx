@@ -65,7 +65,7 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 					<path d="M18 6 6 18"/>
 					<path d="m6 6 12 12"/>
 				</svg>
-				<span data-gsxui-slot-sheet-close-label>Close</span>
+				<span data-gsxui-slot-sheet-close-label>{ T("Close") }</span>
 			</button>
 		} }
 	</dialog>

@@ -94,6 +94,7 @@ func TestE2E(t *testing.T) {
 	for _, p := range []string{
 		"ui/dialog.x.go",
 		"ui/button.x.go",
+		"ui/i18n.x.go",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Fatalf("missing generated %s: %v", p, err)

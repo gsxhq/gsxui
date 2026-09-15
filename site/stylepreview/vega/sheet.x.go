@@ -141,7 +141,10 @@ func _gsxrenderSheetContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side str
 //line sheet.gsx:80:5
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-slot-sheet-close-label", true)
-		_gsxgw.S(">Close</span></button>")
+		_gsxgw.S(">")
+//line sheet.gsx:80:45
+		_gsxgw.Text(string(T("Close")))
+		_gsxgw.S("</span></button>")
 	}
 	_gsxgw.S("</dialog>")
 	return _gsxgw.Err()
