@@ -8,6 +8,7 @@ import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
+	_gsxty2 "github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 	_gsxty1 "time"
 )
@@ -52,7 +53,7 @@ func Loaded(month time.Time) _gsxrt.Node {
 		disabledDates := []time.Time{time.Date(2026, 1, 20, 0, 0, 0, 0, time.UTC)}
 		disabledWeekdays := []time.Weekday{time.Saturday}
 //line loaded.gsx:43:2
-		_gsxgw.Node(ctx, ui.Calendar("single", month, selected, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Monday, true, "label", 0, 0, time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC), time.Date(2026, 1, 28, 0, 0, 0, 0, time.UTC), disabledDates, disabledWeekdays, "", nil))
+		_gsxgw.Node(ctx, ui.Calendar("single", month, selected, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Monday, true, "label", 0, 0, time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC), time.Date(2026, 1, 28, 0, 0, 0, 0, time.UTC), disabledDates, disabledWeekdays, "", *new(_gsxty2.CalendarLocale), nil))
 		return _gsxgw.Err()
 	})
 }
@@ -78,7 +79,7 @@ func LoadedRange(month time.Time) _gsxrt.Node {
 			month = LoadedRangeDefaultMonth
 		}
 //line loaded.gsx:72:2
-		_gsxgw.Node(ctx, ui.Calendar("range", month, nil, time.Date(2026, 1, 9, 0, 0, 0, 0, time.UTC), time.Date(2026, 1, 14, 0, 0, 0, 0, time.UTC), time.Monday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
+		_gsxgw.Node(ctx, ui.Calendar("range", month, nil, time.Date(2026, 1, 9, 0, 0, 0, 0, time.UTC), time.Date(2026, 1, 14, 0, 0, 0, 0, time.UTC), time.Monday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
 		return _gsxgw.Err()
 	})
 }

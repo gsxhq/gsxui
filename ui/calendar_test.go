@@ -94,7 +94,7 @@ func TestCalendarGridIs42CellsStartingOnTheWeekStart(t *testing.T) {
 	// 2025-12-28 and runs 42 days to 2026-02-07.
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	dates := gridDates(t, got)
 	if len(dates) != 42 {
@@ -113,7 +113,7 @@ func TestCalendarWeekStartMondayShiftsTheGrid(t *testing.T) {
 	// days to 2026-01-26.
 	got := render(t, ui.Calendar("single", time.Date(2026, 2, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Monday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if first := gridDates(t, got)[0]; first != "2026-01-26" {
 		t.Errorf("first cell = %q, want 2026-01-26", first)
@@ -123,7 +123,7 @@ func TestCalendarWeekStartMondayShiftsTheGrid(t *testing.T) {
 func TestCalendarLeapFebruary(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2024, 2, 10, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	var found bool
 	for _, d := range gridDates(t, got) {
@@ -139,7 +139,7 @@ func TestCalendarLeapFebruary(t *testing.T) {
 func TestCalendarMarksOutsideDays(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	// 2025-12-28 precedes January, 2026-01-01 does not.
 	if !strings.Contains(got, `data-date="2025-12-28" data-outside`) {
@@ -153,7 +153,7 @@ func TestCalendarMarksOutsideDays(t *testing.T) {
 func TestCalendarRovingTabindexHasExactlyOneStop(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if n := strings.Count(got, `tabindex="0"`); n != 1 {
 		t.Errorf("got %d tabindex=\"0\" day buttons, want exactly 1", n)
@@ -166,7 +166,7 @@ func TestCalendarRovingTabindexHasExactlyOneStop(t *testing.T) {
 func TestCalendarGridAria(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	for want, count := range map[string]int{
 		`role="grid"`:                1,
@@ -198,7 +198,7 @@ func TestCalendarAriaMultiselectable(t *testing.T) {
 		{"range", true},
 	} {
 		got := render(t, ui.Calendar(tc.mode, month, nil, time.Time{}, time.Time{},
-			time.Sunday, true, "label", 0, 0, time.Time{}, time.Time{}, nil, nil, "", nil))
+			time.Sunday, true, "label", 0, 0, time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 		has := strings.Contains(got, `aria-multiselectable="true"`)
 		if has != tc.want {
 			t.Errorf("mode %q: aria-multiselectable present = %v, want %v", tc.mode, has, tc.want)
@@ -211,7 +211,7 @@ func TestCalendarAriaMultiselectable(t *testing.T) {
 func TestCalendarDayLabelCarriesTheWeekday(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	// 2026-01-15 is a Thursday.
 	if !strings.Contains(got, `aria-label="Thursday, January 15, 2026"`) {
@@ -222,7 +222,7 @@ func TestCalendarDayLabelCarriesTheWeekday(t *testing.T) {
 func TestCalendarRootAttributes(t *testing.T) {
 	got := render(t, ui.Calendar("range", time.Date(2026, 7, 4, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Monday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	for _, want := range []string{
 		`data-gsxui-slot-calendar`,
@@ -245,7 +245,7 @@ func TestCalendarRootAttributes(t *testing.T) {
 func TestCalendarStyleContract(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", gsx.Attrs{{Key: "class", Value: "rounded-none"}}))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, gsx.Attrs{{Key: "class", Value: "rounded-none"}}))
 
 	for token, count := range map[string]int{
 		`data-gsxui-slot-calendar`:        1,
@@ -293,7 +293,7 @@ func TestCalendarStyleContract(t *testing.T) {
 func TestCalendarPreviousComposesAllPresenceMarkersOnButton(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-slot-calendar-previous",
 		"data-gsxui-slot-calendar-nav-button",
 		"data-gsxui-slot-button",
@@ -320,7 +320,7 @@ func TestCalendarTodayIsMarkedExactlyOnce(t *testing.T) {
 	now := time.Now().UTC()
 	got := render(t, ui.Calendar("single", now,
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if n := strings.Count(got, "data-today aria-selected"); n != 1 {
 		t.Fatalf("got %d data-today cells in the current month's grid, want exactly 1", n)
@@ -338,7 +338,7 @@ func TestCalendarTodayAbsentFarFromToday(t *testing.T) {
 	farMonth := time.Now().UTC().AddDate(5, 0, 0)
 	got := render(t, ui.Calendar("single", farMonth,
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if strings.Contains(got, "data-today aria-selected") {
 		t.Errorf("grid for %s wrongly contains a data-today cell\nin: %s", farMonth.Format("2006-01"), got)
@@ -370,7 +370,7 @@ func TestCalendarSingleSelection(t *testing.T) {
 	sel := []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		sel, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `data-gsxui-calendar-selected="2026-01-15"`) {
 		t.Error("root does not carry the selection")
@@ -402,7 +402,7 @@ func TestCalendarMultipleSelection(t *testing.T) {
 	}
 	got := render(t, ui.Calendar("multiple", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		sel, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `data-gsxui-calendar-selected="2026-01-05,2026-01-09"`) {
 		t.Error("root does not carry both selections comma-separated")
@@ -422,7 +422,7 @@ func TestCalendarRangeMarksStartMiddleEnd(t *testing.T) {
 		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
 		time.Date(2026, 1, 8, 0, 0, 0, 0, time.UTC),
 		time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	for _, want := range []string{
 		`data-gsxui-calendar-from="2026-01-05"`,
@@ -496,7 +496,7 @@ func TestCalendarRangeWrappingARowMarksBothRowEdgesSelected(t *testing.T) {
 		time.Date(2026, 1, 9, 0, 0, 0, 0, time.UTC),
 		time.Date(2026, 1, 12, 0, 0, 0, 0, time.UTC),
 		time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	for _, date := range []string{"2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12"} {
 		cell := cellFor(t, got, date)
@@ -518,7 +518,7 @@ func TestCalendarDisabledBounds(t *testing.T) {
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
 		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC), // disabledBefore
 		time.Date(2026, 1, 20, 0, 0, 0, 0, time.UTC), // disabledAfter
-		nil, nil, "", nil))
+		nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `data-date="2026-01-09" data-disabled`) {
 		t.Error("2026-01-09 should be disabled (before the bound)")
@@ -541,7 +541,7 @@ func TestCalendarDisabledBounds(t *testing.T) {
 func TestCalendarDayButtonCarriesItsOwnDate(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	cell := cellFor(t, got, "2026-01-15")
 	btnStart := strings.Index(cell, "<button")
@@ -569,7 +569,7 @@ func TestCalendarRootCarriesDisabledRules(t *testing.T) {
 		time.Date(2026, 1, 20, 0, 0, 0, 0, time.UTC),
 		[]time.Time{time.Date(2026, 1, 14, 0, 0, 0, 0, time.UTC)},
 		[]time.Weekday{time.Saturday, time.Sunday},
-		"", nil))
+		"", ui.CalendarLocale{}, nil))
 
 	for _, want := range []string{
 		`data-gsxui-calendar-disabled-before="2026-01-10"`,
@@ -588,7 +588,7 @@ func TestCalendarRootCarriesDisabledRules(t *testing.T) {
 func TestCalendarRootOmitsDisabledRulesWhenUnset(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	for _, unwanted := range []string{
 		"data-gsxui-calendar-disabled-before",
@@ -612,7 +612,7 @@ func TestCalendarRootOmitsDisabledRulesWhenUnset(t *testing.T) {
 func TestCalendarRootCarriesResolvedNavBounds(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 2020, 2030,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	for _, want := range []string{
 		`data-gsxui-calendar-nav-from-year="2020"`,
@@ -633,7 +633,7 @@ func TestCalendarRootCarriesDefaultNavBoundsWhenUnset(t *testing.T) {
 	currentYear := time.Now().UTC().Year()
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	wantFrom := fmt.Sprintf(`data-gsxui-calendar-nav-from-year="%d"`, currentYear-100)
 	wantTo := fmt.Sprintf(`data-gsxui-calendar-nav-to-year="%d"`, currentYear+10)
@@ -651,7 +651,7 @@ func TestCalendarDisabledWeekdaysAndDates(t *testing.T) {
 		time.Time{}, time.Time{},
 		[]time.Time{time.Date(2026, 1, 14, 0, 0, 0, 0, time.UTC)},
 		[]time.Weekday{time.Saturday},
-		"", nil))
+		"", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `data-date="2026-01-14" data-disabled`) {
 		t.Error("the explicitly disabled date is not marked")
@@ -681,7 +681,7 @@ func TestCalendarDisabledDaysStayInTheGrid(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
 		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC), time.Time{},
-		nil, nil, "", nil))
+		nil, nil, "", ui.CalendarLocale{}, nil))
 
 	dates := gridDates(t, got)
 	if len(dates) != 42 {
@@ -752,7 +752,7 @@ func TestCalendarDisabledDaysStayInTheGrid(t *testing.T) {
 func TestCalendarShowOutsideDaysFalseHidesPaddingDaysKeepingTheirCells(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, false, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	dates := gridDates(t, got)
 	if len(dates) != 42 {
@@ -819,7 +819,7 @@ func TestCalendarShowOutsideDaysFalseHidesPaddingDaysKeepingTheirCells(t *testin
 func TestCalendarShowOutsideDaysTrueMarksNothingHidden(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	for _, d := range gridDates(t, got) {
 		if hasBareAttr(cellTag(t, got, d), "data-hidden") {
@@ -845,7 +845,7 @@ func TestCalendarRootCarriesShowOutsideDays(t *testing.T) {
 	} {
 		got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 			nil, time.Time{}, time.Time{}, time.Sunday, tc.show, "label", 0, 0,
-			time.Time{}, time.Time{}, nil, nil, "", nil))
+			time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 		if !strings.Contains(got, tc.want) {
 			t.Errorf("showOutsideDays=%v: root missing %q", tc.show, tc.want)
 		}
@@ -865,7 +865,7 @@ func TestCalendarZeroModeRendersAsSingleEverywhereNotJustOnTheRoot(t *testing.T)
 	sel := []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}
 	got := render(t, ui.Calendar("", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		sel, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "d", nil))
+		time.Time{}, time.Time{}, nil, nil, "d", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `data-gsxui-calendar-mode="single"`) {
 		t.Error("root does not carry the defaulted mode")
@@ -919,7 +919,7 @@ func TestCalendarSerializesTheSameUTCDayItCompares(t *testing.T) {
 	// Single mode first: the marked day and both serializations must agree.
 	single := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		[]time.Time{sel}, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		before, after, []time.Time{dd}, nil, "d", nil))
+		before, after, []time.Time{dd}, nil, "d", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(cellFor(t, single, "2026-01-14"), `data-selected="true"`) {
 		t.Error("2026-01-14 (the UTC day sameDay compares) is not the marked day")
@@ -953,7 +953,7 @@ func TestCalendarSerializesTheSameUTCDayItCompares(t *testing.T) {
 	// Range mode: from/to on the root and in both hidden inputs.
 	rng := render(t, ui.Calendar("range", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, from, to, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "stay", nil))
+		time.Time{}, time.Time{}, nil, nil, "stay", ui.CalendarLocale{}, nil))
 
 	for _, want := range []string{
 		`data-gsxui-calendar-from="2026-01-08"`,
@@ -982,7 +982,7 @@ func TestCalendarSerializesTheSameUTCDayItCompares(t *testing.T) {
 func TestCalendarGridIsNamedAfterTheDisplayedMonth(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 7, 4, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	i := strings.Index(got, "<table")
 	if i < 0 {
@@ -1001,7 +1001,7 @@ func TestCalendarGridIsNamedAfterTheDisplayedMonth(t *testing.T) {
 func TestCalendarLabelCaption(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, "January 2026") {
 		t.Error("label caption missing the month and year")
@@ -1098,7 +1098,7 @@ func TestCalendarNavBoundsUseAriaDisabledNotDisabled(t *testing.T) {
 	// January 2026 has no previous month.
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 2026, 2026,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	// The slot marker sits at the end of the tag — take the whole tag.
 	markerAt := strings.Index(got, "data-gsxui-slot-calendar-previous")
@@ -1118,7 +1118,7 @@ func TestCalendarNavBoundsUseAriaDisabledNotDisabled(t *testing.T) {
 func TestCalendarDropdownCaption(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "dropdown", 2020, 2030,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	for _, want := range []string{
 		`data-gsxui-calendar-month-select`,
@@ -1154,7 +1154,7 @@ func TestCalendarHiddenInputSingle(t *testing.T) {
 	sel := []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		sel, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "booking", nil))
+		time.Time{}, time.Time{}, nil, nil, "booking", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `<input type="hidden" name="booking" value="2026-01-15"`) {
 		t.Errorf("hidden input missing or wrong\nin: %s", got)
@@ -1167,7 +1167,7 @@ func TestCalendarHiddenInputsRange(t *testing.T) {
 		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
 		time.Date(2026, 1, 8, 0, 0, 0, 0, time.UTC),
 		time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "stay", nil))
+		time.Time{}, time.Time{}, nil, nil, "stay", ui.CalendarLocale{}, nil))
 
 	for _, want := range []string{
 		`name="stay" value="2026-01-05"`,
@@ -1190,7 +1190,7 @@ func TestCalendarHiddenInputsRange(t *testing.T) {
 func TestCalendarHiddenInputSingleRendersEmptyWhenUnselected(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "date", nil))
+		time.Time{}, time.Time{}, nil, nil, "date", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `<input type="hidden" name="date" value=""`) {
 		t.Errorf("expected an empty-valued hidden input to render unconditionally\nin: %s", got)
@@ -1208,7 +1208,7 @@ func TestCalendarHiddenInputsRangeRenderBothEvenWithOnlyFromSet(t *testing.T) {
 		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
 		time.Time{},
 		time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "stay", nil))
+		time.Time{}, time.Time{}, nil, nil, "stay", ui.CalendarLocale{}, nil))
 
 	for _, want := range []string{
 		`name="stay" value="2026-01-05"`,
@@ -1231,7 +1231,7 @@ func TestCalendarHiddenToInputCarriesItsOwnMarker(t *testing.T) {
 		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
 		time.Date(2026, 1, 8, 0, 0, 0, 0, time.UTC),
 		time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "valid-to", nil))
+		time.Time{}, time.Time{}, nil, nil, "valid-to", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `<input type="hidden" name="valid-to" value="2026-01-05">`) {
 		t.Errorf("the FROM input (name=%q, an unlucky collision with the -to naming convention) "+
@@ -1245,7 +1245,7 @@ func TestCalendarHiddenToInputCarriesItsOwnMarker(t *testing.T) {
 func TestCalendarNoNameRendersNoHiddenInput(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if strings.Contains(got, `type="hidden"`) {
 		t.Error("no name given, so no hidden input should render")
@@ -1258,7 +1258,7 @@ func TestCalendarZeroMonthDefaultsFromSelection(t *testing.T) {
 
 	got := render(t, ui.Calendar("single", time.Time{},
 		selected, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `data-gsxui-calendar-month="2031-03"`) {
 		t.Errorf("zero month did not default to the selected UTC month\nin: %s", got)
@@ -1273,7 +1273,7 @@ func TestCalendarZeroMonthDefaultsFromRangeStart(t *testing.T) {
 
 	got := render(t, ui.Calendar("range", time.Time{},
 		nil, from, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `data-gsxui-calendar-month="2042-08"`) {
 		t.Errorf("zero month did not default to the range start\nin: %s", got)
@@ -1284,7 +1284,7 @@ func TestCalendarZeroMonthDefaultsToToday(t *testing.T) {
 	before := time.Now().UTC()
 	got := render(t, ui.Calendar("single", time.Time{},
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 	after := time.Now().UTC()
 
 	beforeMonth := before.Format("2006-01")
@@ -1299,7 +1299,7 @@ func TestCalendarZeroMonthDefaultsToToday(t *testing.T) {
 func TestCalendarDisabledInitialTabStopUsesAriaDisabled(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC), time.Time{}, nil, nil, "", nil))
+		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC), time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	tabStop := buttonTag(t, got, "2026-01-01")
 	if !strings.Contains(tabStop, `tabindex="0"`) {
@@ -1325,7 +1325,7 @@ func TestCalendarMultipleHiddenInputsCarryEveryValue(t *testing.T) {
 	}
 	got := render(t, ui.Calendar("multiple", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		selected, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "dates", nil))
+		time.Time{}, time.Time{}, nil, nil, "dates", ui.CalendarLocale{}, nil))
 
 	if n := strings.Count(got, `<input type="hidden" name="dates"`); n != 2 {
 		t.Fatalf("got %d multiple-mode hidden inputs, want one per selected date\nin: %s", n, got)
@@ -1340,7 +1340,7 @@ func TestCalendarMultipleHiddenInputsCarryEveryValue(t *testing.T) {
 func TestCalendarMultipleHiddenInputKeepsEmptyPlaceholder(t *testing.T) {
 	got := render(t, ui.Calendar("multiple", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "dates", nil))
+		time.Time{}, time.Time{}, nil, nil, "dates", ui.CalendarLocale{}, nil))
 
 	if !strings.Contains(got, `<input type="hidden" name="dates" value="" data-gsxui-calendar-hidden-multiple`) {
 		t.Errorf("unselected multiple calendar must preserve an empty form field\nin: %s", got)
@@ -1368,7 +1368,7 @@ func TestCalendarMultipleHiddenInputKeepsEmptyPlaceholder(t *testing.T) {
 func TestCalendarNavHasARelativePositioningAncestor(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
-		time.Time{}, time.Time{}, nil, nil, "", nil))
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
 
 	wrapperIdx := strings.Index(got, `data-gsxui-slot-calendar-months`)
 	if wrapperIdx < 0 {

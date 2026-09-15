@@ -8,6 +8,7 @@ import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
+	_gsxty2 "github.com/gsxhq/gsxui/ui"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 	_gsxty1 "time"
@@ -69,7 +70,7 @@ func DatePicker() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.PopoverContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line datepicker.gsx:52:5
-				_gsxgw.Node(ctx, ui.Calendar("single", DatePickerDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", _gsxrt.Attrs{{Key: "id", Value: "datepicker-calendar"}}))
+				_gsxgw.Node(ctx, ui.Calendar("single", DatePickerDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), _gsxrt.Attrs{{Key: "id", Value: "datepicker-calendar"}}))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "w-auto p-0"}}))
 			return _gsxgw.Err()

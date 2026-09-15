@@ -8,6 +8,7 @@ import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
+	_gsxty2 "github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 	_gsxty1 "time"
 )
@@ -29,7 +30,7 @@ func Bounded() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line bounded.gsx:20:2
-		_gsxgw.Node(ctx, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC), nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "dropdown", 2026, 2026, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
+		_gsxgw.Node(ctx, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC), nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "dropdown", 2026, 2026, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
 		return _gsxgw.Err()
 	})
 }

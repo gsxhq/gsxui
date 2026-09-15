@@ -27,6 +27,10 @@ var sweptMessages = []struct {
 	{"pagination", "Previous"},
 	{"pagination", "Next"},
 	{"pagination", "More pages"},
+	{"calendar", "Previous month"},
+	{"calendar", "Next month"},
+	{"calendar", "Month"},
+	{"calendar", "Year"},
 }
 
 // overridableLiterals are English literals that precede `{ attrs... }` in

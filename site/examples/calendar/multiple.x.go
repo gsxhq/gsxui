@@ -8,6 +8,7 @@ import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
+	_gsxty2 "github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 	_gsxty1 "time"
 )
@@ -33,7 +34,7 @@ func Multiple(month time.Time) _gsxrt.Node {
 //line multiple.gsx:22:2
 		_gsxgw.S("<form>")
 //line multiple.gsx:23:3
-		_gsxgw.Node(ctx, ui.Calendar("multiple", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "dates", nil))
+		_gsxgw.Node(ctx, ui.Calendar("multiple", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "dates", *new(_gsxty2.CalendarLocale), nil))
 		_gsxgw.S("</form>")
 		return _gsxgw.Err()
 	})
