@@ -63,8 +63,8 @@ component (p I18n) Page() {
 					<li>With one, gsx calls your function everywhere a message renders, in text and in attributes.</li>
 					<li>Children, props and <code>attrs</code> never pass through <code>T</code>.</li>
 					<li>
-						<code>gsxui add --overwrite</code> rewrites only the files it vendored, so <code>translate.go</code>
-						survives.
+						<code>gsxui add --overwrite</code> rewrites only the files it vendored,
+						so <code>translate.go</code> survives.
 					</li>
 				</ul>
 			</section>

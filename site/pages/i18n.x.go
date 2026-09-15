@@ -114,8 +114,8 @@ func (p I18n) Page() _gsxrt.Node {
 			_gsxgw.S("<li>")
 //line i18n.gsx:66:7
 			_gsxgw.S("<code>gsxui add --overwrite</code> rewrites only the files it vendored, so ")
-//line i18n.gsx:66:82
-			_gsxgw.S("<code>translate.go</code>survives.</li></ul></section>")
+//line i18n.gsx:67:10
+			_gsxgw.S("<code>translate.go</code> survives.</li></ul></section>")
 //line i18n.gsx:71:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line i18n.gsx:72:5
