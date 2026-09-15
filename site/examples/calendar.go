@@ -165,4 +165,23 @@ func init() {
 		// No Query hook: this example is a fixed dir="rtl" demo, not part
 		// of the ?month= agreement-diff coverage the other examples carry.
 	})
+	Register("calendar", Example{
+		Name:       "localized",
+		Title:      "Localized",
+		Node:       examplecalendar.Localized(examplecalendar.LocalizedDefaultMonth),
+		SourcePath: "calendar/localized.gsx",
+		// Query answers ?month= like basic's hook: the agreement diff in
+		// jstest/specs/calendar.spec.ts compares a client-side navigation
+		// against the server's own render of the same month, with the
+		// locale's names, patterns and digits in play on both sides.
+		Query: func(q url.Values) gsx.Node {
+			month := examplecalendar.LocalizedDefaultMonth
+			if v := q.Get("month"); v != "" {
+				if t, err := time.Parse("2006-01", v); err == nil {
+					month = t
+				}
+			}
+			return examplecalendar.Localized(month)
+		},
+	})
 }
