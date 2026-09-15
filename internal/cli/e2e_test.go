@@ -397,6 +397,7 @@ func renderAll(t *testing.T) string {
 		ui.CarouselPrevious("horizontal", nil),
 		ui.CarouselNext("horizontal", nil),
 		ui.Sidebar(true, "left", "sidebar", "offcanvas", gsx.Text(""), nil),
+		// SidebarRail is omitted on purpose: its Toggle Sidebar aria-label/title are overridable defaults, not swept, and would trip the bare-string check.
 		ui.SidebarTrigger(nil),
 		ui.BreadcrumbEllipsis(nil),
 		ui.PaginationPrevious("#", nil),

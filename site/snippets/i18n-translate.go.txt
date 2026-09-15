@@ -3,9 +3,9 @@ package i18n
 import "context"
 
 // Translate renders every T. The English text is the message id; an
-// unknown one renders as English.
+// unknown one renders as English. Replace lookup with your catalog.
 func Translate(ctx context.Context, m T) string {
-	if s, ok := catalog.For(ctx).Lookup(string(m)); ok {
+	if s, ok := lookup(ctx, string(m)); ok {
 		return s
 	}
 	return string(m)

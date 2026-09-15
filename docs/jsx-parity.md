@@ -582,11 +582,12 @@ The Base UI (`@base-ui/react`) filtered listbox (`registry/new-york-v4/ui/combob
   `ui.Dialog` (flat-package intra-package edge, same shape as
   `## alert-dialog`'s own `dialog` dep) — `SheetTrigger`/`SheetContent`'s
   injected close button/`SheetClose` all render their own `<button>`
-  rather than composing `ui.Button`, so `dialog` is the ONLY dep —
-  `registry.Deps("sheet") == ["dialog"]`, pinned in
-  `internal/registry/registry_test.go`. `HasJS("sheet")` is `false` — like
-  `alert-dialog`, it has no behavior module of its own, only `ui/dialog.js`,
-  pulled in transitively.
+  rather than composing `ui.Button`, and the injected close button's
+  screen-reader label imports `ui/i18n` (`i18n.T("Close")`) — `dialog` and
+  `i18n` are the deps — `registry.Deps("sheet") == ["dialog", "i18n"]`,
+  pinned in `internal/registry/registry_test.go`. `HasJS("sheet")` is
+  `false` — like `alert-dialog`, it has no behavior module of its own,
+  only `ui/dialog.js`, pulled in transitively.
 
 ## skeleton
 - Straight port; no divergences.
@@ -772,7 +773,7 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
 - GAP (RTL arrow-key swap not ported): the map's traced behavior contract includes Radix's `getDirectionAwareKey`, which swaps `ArrowLeft`/`ArrowRight` when `dir === "rtl"`. `toggle-group.js` has no `dir`/RTL awareness at all — ArrowLeft is always "prev" and ArrowRight is always "next", regardless of the page's writing direction. No gsxui component has `dir`/RTL support today (no other ported component's own ledger entry mentions one either), so this isn't a toggle-group-specific gap so much as a codebase-wide one surfacing here first because toggle-group is the first component whose traced Radix source happens to branch on `dir`; revisit if RTL ever becomes a target.
 - MECHANISM (single-type replace-on-activate): `ToggleGroupImplSingle`'s `onItemActivate` is `setValue` — clicking a new item simply replaces which one is checked, no "uncheck the others" loop is needed because there's a single value context to update. This port has no shared value state to update (no context), so `toggle-group.js` restates the same *effect* explicitly: on a `groupType="single"` item's activation, it flips that item's own `data-state`/`aria-checked`, then walks every other item under the same root and force-clears theirs — same visible outcome (exactly one `data-state="on"` at a time), different mechanism (an explicit sibling walk standing in for context's implicit fan-out). Clicking the already-pressed item toggles it off, porting Radix's own allow-empty-single-value default.
 - MECHANISM (`ui/toggle-group.js`): reuses `## dropdown-menu`'s `closest("[data-gsxui-toggle-group]")` proximity-wiring idiom (not its code) — real DOM focus moves between real `<button>` elements via `.focus()`, no `aria-activedescendant`, the same shape dropdown's roving arrow-key walk uses, except toggle-group's items are ALWAYS real tab stops (roving tabindex, not "only reachable once a popover is open"), so the walk also writes real `tabindex` 0/-1 toggling rather than dropdown's fixed `-1`/`.focus()`-only pattern. Key map: `ArrowLeft`/`ArrowUp` → prev, `ArrowRight`/`ArrowDown` → next, `Home`/`PageUp` → first, `End`/`PageDown` → last, looping at both ends — ported verbatim from the traced `getFocusIntent`. A held modifier key (`metaKey`/`ctrlKey`/`altKey`/`shiftKey`) suppresses the whole handler, porting Radix's own early-return guard. Click activation emits `gsxui:change` on the root with `{ value }` — a string (the newly-pressed item's `value`, or `""` if the click toggled it off) for `groupType="single"`, an array of every currently-pressed item's `value` for `groupType="multiple"` — the same `gsxui:change` event-name convention `## tabs`/`## toggle` both use for value-flip components, with a payload shape chosen to fit a group value rather than a single boolean/string.
-- Registry: `toggle-group.gsx` has no `ui/icon` import (the site examples' `icon.Bold`/`Italic`/`Underline` imports live in `site/examples/togglegroup/*.gsx`, which `internal/registry` never scans — same shape as `## toggle`'s own deps entry) but `ToggleGroupItem` calls `toggle.gsx`'s package-private `toggleBase`/`toggleVariantClass`/`toggleSizeClass` directly (extracted from `Toggle`'s own inline `class={}` switch expressions into named helpers for this reuse, the same `## pagination` → `## button` `base`/`variantClass`/`sizeClass` shape) — `registry.Deps("toggle-group")` is `["toggle"]`, resolved via `declIndex` with no import to scan. `HasJS("toggle-group")` is `true` (this task's own `ui/toggle-group.js`, not a reuse of `toggle.js` despite the class dependency — the two components' interaction models, roving-tabindex-across-siblings vs. single-button click-flip, don't overlap enough to share one behavior module).
+- Registry: `toggle-group.gsx` has no `ui/icon` import and no intra-package reference to `toggle.gsx` — `ToggleGroupItem` inlines its own `class={}` switch rather than calling `toggle.gsx`'s helpers; the CSS pack owns the shared "toggle toggle-group-item" token's declarations and `toggle-group.js` owns group interaction, so there is no source or behavior dependency on `toggle.gsx` — `registry.Deps("toggle-group")` is empty, same shape as `## toggle`'s own deps entry, pinned in `internal/registry/registry_test.go`. `HasJS("toggle-group")` is `true` (this task's own `ui/toggle-group.js`, not a reuse of `toggle.js` — the two components' interaction models, roving-tabindex-across-siblings vs. single-button click-flip, don't overlap enough to share one behavior module).
 
 ## tooltip
 - ADAPT (2026-07-24): `TooltipPrimitive.Arrow` ports as a static child `<span data-slot="tooltip-arrow">` carrying shadcn's Arrow classes (size-2.5 rotate-45 rounded-[2px] bg-foreground) positioned `top-full left-1/2` with `-translate-x-1/2 -translate-y-[calc(50%+2px)]` — our tooltip is ALWAYS JS-anchored above the trigger, so the diamond always straddles the bubble's bottom-center; Radix's side-tracking arrow slot collapses to static CSS. (Originally dropped with a dangling "see ledger" pointer and no entry — the visual gap was user-reported against shadcn's docs side-by-side.)
@@ -1210,8 +1211,10 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   via an HTMX swap after this module has already run is not picked up; the
   same accepted limitation those two modules' own init loops carry.
 - Registry: `carousel.gsx` imports `ui/icon` (`CarouselPrevious`/
-  `CarouselNext`'s `icon.ArrowLeft`/`icon.ArrowRight`) and composes `Button`
-  — `registry.Deps("carousel") == ["button", "icon"]`, pinned in
+  `CarouselNext`'s `icon.ArrowLeft`/`icon.ArrowRight`) and composes `Button`,
+  and `CarouselPrevious`/`CarouselNext`'s own screen-reader labels import
+  `ui/i18n` (`i18n.T("Previous slide")`/`i18n.T("Next slide")`) —
+  `registry.Deps("carousel") == ["button", "i18n", "icon"]`, pinned in
   `internal/registry/registry_test.go`. `HasJS("carousel")` is `true` — real
   new interactive JS (`ui/carousel.js`), unlike `sheet`/`alert-dialog`/
   `drawer`'s own JS-free reuse of `ui/dialog.js`.
@@ -1464,11 +1467,13 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   threshold). gsxui v1 ships no gesture layer — dismissal is the close
   button, the action button, the auto-dismiss timer, or `toast.dismiss(id?)`.
 - Registry: `toast.gsx` imports `ui/icon` (the `ui.Toast` card renders
-  its type glyph and close `x` via `icon.*` calls), so
-  `registry.Deps("sonner")` is `["icon"]` and `Resolve(["sonner"])` is
-  `["icon", "sonner"]` — pinned in `internal/registry/registry_test.go`
-  (previously empty, when the icons were JS path-strings). `HasJS("sonner")`
-  is `true` (`ui/toaster.js`, exact-basename match on the toaster component).
+  its type glyph and close `x` via `icon.*` calls) and `ui/i18n` (the close
+  button's own aria-label) — `registry.Deps("toast")` is `["i18n", "icon"]`.
+  `toaster.gsx` imports `ui/i18n` (the aria landmark's label) and composes
+  `ui.Toast` — `registry.Deps("toaster")` is `["i18n", "toast"]`, and
+  `Resolve(["toaster"])` is `["i18n", "icon", "toast", "toaster"]` — pinned
+  in `internal/registry/registry_test.go`. `HasJS("toaster")` is `true`
+  (`ui/toaster.js`); `HasJS("toast")` is `false`.
 
 ## resizable
 - ADAPT (handle `aria-orientation` inverted from the group's own
@@ -1915,15 +1920,17 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   `SidebarMenuSkeleton` instances on the same page, matching upstream's own
   per-instance `useMemo` behavior.
 - Registry: `sidebar.gsx` imports `ui/icon` (`SidebarTrigger`'s
-  `PanelLeft`) and composes `ui.Button` (`SidebarTrigger`), `ui.Input`
-  (`SidebarInput`), `ui.Separator` (`SidebarSeparator`), `ui.Sheet`/
-  `SheetContent`/`SheetHeader`/`SheetTitle`/`SheetDescription` (`Sidebar`'s
-  own mobile tree), `ui.Skeleton` (`SidebarMenuSkeleton`), and `ui.Tooltip`/
-  `TooltipContent` (`SidebarMenuButton`'s tooltip branch) directly — flat
-  package intra-package edges, same declIndex-resolved shape as
-  `## combobox`'s own deps. `registry.Deps("sidebar")` is `[button icon
-  input separator sheet skeleton tooltip]`, pinned in `internal/registry/
-  registry_test.go`; transitively through `sheet`'s own `dialog` dep,
+  `PanelLeft`) and `ui/i18n` (`Sidebar`'s own mobile title/description,
+  `SidebarTrigger`'s label), and composes `ui.Button` (`SidebarTrigger`),
+  `ui.Input` (`SidebarInput`), `ui.Separator` (`SidebarSeparator`),
+  `ui.Sheet`/`SheetContent`/`SheetHeader`/`SheetTitle`/`SheetDescription`
+  (`Sidebar`'s own mobile tree), `ui.Skeleton` (`SidebarMenuSkeleton`), and
+  `ui.Tooltip`/`TooltipContent` (`SidebarMenuButton`'s tooltip branch)
+  directly — flat package intra-package edges, same declIndex-resolved
+  shape as `## combobox`'s own deps. `registry.Deps("sidebar")` is
+  `[button i18n icon input separator sheet skeleton tooltip]`, pinned in
+  `internal/registry/registry_test.go`; transitively through `sheet`'s own
+  `dialog` dep,
   `registry.Resolve(["sidebar"])` also pulls in `dialog` (which is what
   vendors `ui/dialog.js` for the mobile Sheet tree, alongside `ui/
   sidebar.js` itself — `HasJS("sidebar")` is `true`).

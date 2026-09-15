@@ -106,15 +106,25 @@ component (p I18n) Page() {
 				<docHeading item={i18nTOCItems[3]}/>
 				<p>
 					Register a translator that wraps every message in markers, render each page, and search the output for English
-					outside the markers. Anything found is text a caller passed in, or a gsxui bug worth an issue.
+					outside the markers. Anything found is text a caller passed in, one of the overridable defaults below, or a
+					gsxui bug worth an issue.
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={i18nTOCItems[4]}/>
-				<p>
-					When no <code>ui.Toaster</code> is mounted, <code>toaster.js</code> creates its own region with an
-					English <code>aria-label</code>. Mount <code>ui.Toaster</code> and the landmark is a message like the rest.
-				</p>
+				<ul class="list-disc space-y-2 pl-6">
+					<li>
+						Defaults a caller can already override by passing the same attribute stay
+						English: <code>aria-label</code>{ " " }on Spinner, Breadcrumb, Pagination and its Previous/Next links,
+						SidebarRail's <code>aria-label</code> and{ " " }
+						<code>title</code>, and Carousel's <code>aria-roledescription</code>. Pass a translated value in your
+						markup.
+					</li>
+					<li>
+						When no <code>ui.Toaster</code> is mounted, <code>toaster.js</code> creates its own region with an
+						English <code>aria-label</code>. Mount <code>ui.Toaster</code> and the landmark is a message like the rest.
+					</li>
+				</ul>
 			</section>
 		</div>
 	</siteLayout>
