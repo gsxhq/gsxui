@@ -61,6 +61,7 @@ func canonicalSource(t *testing.T, name string) []string {
 	return strings.Split(string(src), "\n")
 }
 
+// A deleted message nets to zero here too; the end-to-end gate in internal/cli/e2e_test.go asserts each swept string is actually rendered.
 func TestSweptMessagesOnlyAppearInsideT(t *testing.T) {
 	for _, m := range sweptMessages {
 		lines := canonicalSource(t, m.file)

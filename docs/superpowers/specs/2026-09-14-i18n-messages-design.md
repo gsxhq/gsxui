@@ -1,5 +1,7 @@
 # Internal messages and calendar locale — design
 
+> Read with the addenda at the end. The 2026-09-15 Task 8 addendum supersedes the helper-file mechanism, the vendoring paragraph and the two testing bullets that mention it: `T` ships in the leaf package `ui/i18n`.
+
 Closes #31 (hard-coded English labels callers can't override) and #30
 (Calendar's English month/weekday names, caption and day labels). Issue #32
 (physical direction classes) is separate and out of scope here.
@@ -301,3 +303,6 @@ this repo.
 - The stylegen helper-file pass-through added for the old
   `registry/canonical/i18n.gsx` is gone; `ui/i18n/i18n.go` is plain Go,
   hand-written and outside the style pipeline.
+- Correction: `calendar.js` reads the attribute on each repaint, not "once
+  per root" as stated above — `localeOf` parses fresh every call, no
+  caching.

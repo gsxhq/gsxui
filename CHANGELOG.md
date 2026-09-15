@@ -7,7 +7,7 @@ Notable changes to gsxui's component set, newest first.
 ### Added
 
 - **i18n** — `i18n.T`, a string type every component uses for the strings it writes itself (`Close`, `Notifications`, `Previous slide`, `Toggle Sidebar`, `More pages`, the calendar nav labels, …). It renders as English until the consuming module registers a renderer for it in `gsx.toml`; see `/docs/i18n`. Vendored automatically as `ui/i18n/` with any component that uses it (#31).
-- **calendar** — `locale CalendarLocale`: month and weekday names, caption and day-label patterns, and a native digit set. The zero value is English. `calendar.js` composes navigation text from the same values the server wrote to the root (#30).
+- **calendar** — `locale CalendarLocale`: month and weekday names, caption and day-label patterns, and a native digit set. The zero value is English. `calendar.js` composes navigation text from the same values the server wrote to the root (#30). `locale` is positional, before `attrs`; direct Go callers of `ui.Calendar(...)` must pass `ui.CalendarLocale{}`. Markup callers using named attributes are unaffected.
 
 ### Changed
 

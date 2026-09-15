@@ -154,3 +154,59 @@ func TestCalendarDigitsNeverReachFormValues(t *testing.T) {
 		}
 	}
 }
+
+// TestCalendarPartialLocaleRendersEmptyFieldsAndDistinguishesShortMonths
+// pins the "partially filled value is a caller error and renders its empty
+// fields empty" rule CalendarLocale's own doc comment states. Only Months
+// (wide) and MonthsShort are set; Weekdays/WeekdaysShort/Caption/DayLabel/
+// Digits are all zero. Caption and DayLabel are patterns with no literal
+// text of their own, so an empty pattern substitutes nothing and composes
+// to "" — the caption span, the grid's aria-label, and every day's
+// aria-label all render empty, not the (unrelated) wide month names.
+func TestCalendarPartialLocaleRendersEmptyFieldsAndDistinguishesShortMonths(t *testing.T) {
+	loc := ui.CalendarLocale{
+		Months:      [12]string{"1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"},
+		MonthsShort: [12]string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"},
+	}
+	got := renderCalendar(t, jan2026, "dropdown", loc)
+
+	// The month dropdown reads MonthsShort, not Months: the selected
+	// January option's text is the short "1", not the wide "1月".
+	if !strings.Contains(got, `<option value="0" selected data-gsxui-calendar-month-option>1</option>`) {
+		t.Errorf("month dropdown should use the short set\nin: %s", got)
+	}
+
+	// Caption is an empty pattern (no literal text, no {month}
+	// placeholder), so it composes to "" — the wide Months value never
+	// reaches it. Both the caption span and the grid's aria-label are
+	// empty.
+	if !strings.Contains(got, `data-gsxui-slot-calendar-caption></span>`) {
+		t.Errorf("caption span should render empty for an empty Caption pattern\nin: %s", got)
+	}
+	if !strings.Contains(got, `role="grid" aria-label=""`) {
+		t.Errorf("grid aria-label should render empty for an empty Caption pattern\nin: %s", got)
+	}
+
+	// The header row's weekday <th> cells read WeekdaysShort, which is
+	// zero here: every cell is empty, not omitted.
+	const emptyWeekdayTH = `<th scope="col" class="flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none" data-gsxui-slot-calendar-weekday></th>`
+	if !strings.Contains(got, emptyWeekdayTH) {
+		t.Errorf("weekday header cells should render empty\nin: %s", got)
+	}
+
+	// DayLabel is likewise an empty pattern: 2026-01-15's own aria-label
+	// composes to "", the pattern-less composition, not a string built
+	// from the wide Months/Weekdays values.
+	if !strings.Contains(got, `data-date="2026-01-15" tabindex="-1" aria-label=""`) {
+		t.Errorf("2026-01-15's aria-label should render empty for an empty DayLabel pattern\nin: %s", got)
+	}
+
+	// The wide Months value still reaches the client: data-gsxui-calendar-
+	// locale carries it verbatim, distinct from the short set the dropdown
+	// rendered above, for calendar.js to use after navigation.
+	loc2 := rootLocale(t, got)
+	months := loc2["months"].([]any)
+	if len(months) != 12 || months[0] != "1月" || months[11] != "12月" {
+		t.Errorf("root locale months should carry the wide set = %v", months)
+	}
+}
