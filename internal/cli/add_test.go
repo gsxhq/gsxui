@@ -32,10 +32,11 @@ func TestAddVendorsWithDeps(t *testing.T) {
 	if err := Run([]string{"add", "dialog"}); err != nil {
 		t.Fatal(err)
 	}
-	// dialog pulls button transitively
+	// dialog pulls button and i18n transitively
 	for _, p := range []string{
 		"ui/dialog.gsx",
 		"ui/button.gsx",
+		"ui/i18n.gsx",
 		"web/gsxui/dialog.js",
 		"ui/NOTICE.md",
 	} {
@@ -89,6 +90,17 @@ func TestAddVendorsWithDeps(t *testing.T) {
 	}
 	if !bytes.Equal(button, wantButton) {
 		t.Fatalf("dependency Button is not exact Nova registry source")
+	}
+	helper, err := os.ReadFile(filepath.Join(dir, "ui/i18n.gsx"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantHelper, err := fs.ReadFile(gsxui.Files, "registry/generated/nova/i18n.gsx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(helper, wantHelper) {
+		t.Fatalf("dependency i18n helper is not exact registry source")
 	}
 }
 
