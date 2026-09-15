@@ -22,31 +22,99 @@ import (
 	"slices"
 	"sort"
 	"strings"
+	"sync"
 
 	gsxui "github.com/gsxhq/gsxui"
+
+	gsxast "github.com/gsxhq/gsx/ast"
+	gsxparser "github.com/gsxhq/gsx/parser"
 )
 
 var iconImportRe = regexp.MustCompile(`"github\.com/gsxhq/gsxui/ui/icon"`)
 
-func Components() ([]string, error) {
+// classified splits every vendorable .gsx under ui/ into components (files
+// that declare at least one component) and helpers (Go-only files such as
+// ui/i18n.gsx, the T message type). ui/icon stays a component: it is the
+// one directory entry. The embedded tree is immutable, so this runs once.
+var classified = sync.OnceValues(func() (classification, error) {
 	entries, err := fs.ReadDir(gsxui.Files, "ui")
 	if err != nil {
-		return nil, err
+		return classification{}, err
 	}
-	var names []string
+	var c classification
 	for _, e := range entries {
 		if e.IsDir() {
 			if e.Name() == "icon" {
-				names = append(names, e.Name())
+				c.components = append(c.components, e.Name())
 			}
 			continue
 		}
-		if name, ok := strings.CutSuffix(e.Name(), ".gsx"); ok {
-			names = append(names, name)
+		name, ok := strings.CutSuffix(e.Name(), ".gsx")
+		if !ok {
+			continue
+		}
+		src, err := fs.ReadFile(gsxui.Files, "ui/"+e.Name())
+		if err != nil {
+			return classification{}, err
+		}
+		file, err := gsxparser.ParseFile(token.NewFileSet(), e.Name(), src, 0)
+		if err != nil {
+			return classification{}, fmt.Errorf("parse ui/%s: %w", e.Name(), err)
+		}
+		if declaresComponent(file.Decls) {
+			c.components = append(c.components, name)
+		} else {
+			c.helpers = append(c.helpers, name)
 		}
 	}
-	sort.Strings(names)
-	return names, nil
+	sort.Strings(c.components)
+	sort.Strings(c.helpers)
+	return c, nil
+})
+
+type classification struct {
+	components []string
+	helpers    []string
+}
+
+func declaresComponent(decls []gsxast.Decl) bool {
+	for _, d := range decls {
+		if _, ok := d.(*gsxast.Component); ok {
+			return true
+		}
+	}
+	return false
+}
+
+// Components lists what `gsxui add <name>` is documented to accept and what
+// the site renders a page for. Helpers are excluded: they vendor only as
+// dependencies (see Helpers).
+func Components() ([]string, error) {
+	c, err := classified()
+	if err != nil {
+		return nil, err
+	}
+	return slices.Clone(c.components), nil
+}
+
+// Helpers lists the Go-only .gsx files under ui/. They have no component,
+// no examples and no style recipe; they exist to be depended on.
+func Helpers() ([]string, error) {
+	c, err := classified()
+	if err != nil {
+		return nil, err
+	}
+	return slices.Clone(c.helpers), nil
+}
+
+// isVendorable reports whether name is a component or a helper — excluding
+// non-.gsx files like index.js/gsxui.js by construction.
+func isVendorable(name string) bool {
+	c, err := classified()
+	if err != nil {
+		return false
+	}
+	return slices.Contains(c.components, name) || slices.Contains(c.helpers, name)
 }
 
 // parseX parses component name's committed generated source.
@@ -67,10 +135,15 @@ func parseX(name string) (*ast.File, error) {
 // components cannot legally declare the same top-level unexported name, so
 // the index stays injective.
 func declIndex() (map[string]string, error) {
-	comps, err := Components()
+	components, err := Components()
 	if err != nil {
 		return nil, err
 	}
+	helpers, err := Helpers()
+	if err != nil {
+		return nil, err
+	}
+	comps := append(slices.Clone(components), helpers...)
 	idx := map[string]string{}
 	for _, c := range comps {
 		if c == "icon" {
@@ -104,7 +177,7 @@ func declIndex() (map[string]string, error) {
 }
 
 func Deps(name string) ([]string, error) {
-	if !isComponent(name) {
+	if !isVendorable(name) {
 		return nil, fmt.Errorf("unknown component %q (run 'gsxui list')", name)
 	}
 	if name == "icon" {
@@ -159,10 +232,10 @@ func Deps(name string) ([]string, error) {
 }
 
 // HasJS reports whether name is a component with companion behavior JS.
-// The isComponent guard matters: ui/gsxui.js and ui/index.js are real files
-// under ui/ but aren't any component's behavior JS.
+// The isVendorable guard matters: ui/gsxui.js and ui/index.js are real
+// files under ui/ but aren't any component's behavior JS.
 func HasJS(name string) bool {
-	if !isComponent(name) {
+	if !isVendorable(name) {
 		return false
 	}
 	_, err := fs.Stat(gsxui.Files, "ui/"+name+".js")
@@ -199,14 +272,4 @@ func Resolve(names []string) ([]string, error) {
 	}
 	sort.Strings(out)
 	return out, nil
-}
-
-// isComponent reports whether name is a member of Components() — excluding
-// non-component files like index.js/gsxui.js (not .gsx) by construction.
-func isComponent(name string) bool {
-	names, err := Components()
-	if err != nil {
-		return false
-	}
-	return slices.Contains(names, name)
 }

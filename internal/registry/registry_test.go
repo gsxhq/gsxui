@@ -847,3 +847,38 @@ func TestDepsRejectsNonComponentFile(t *testing.T) {
 		t.Fatal("want error for core, which is not a component")
 	}
 }
+
+func TestHelpersAreNotComponents(t *testing.T) {
+	helpers, err := registry.Helpers()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(helpers, []string{"i18n"}) {
+		t.Fatalf("Helpers() = %v, want [i18n]", helpers)
+	}
+	components, err := registry.Components()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if slices.Contains(components, "i18n") {
+		t.Fatalf("Components() lists the i18n helper; the site links every component to /components/<name>")
+	}
+	// A helper is still vendorable: Deps and Resolve accept it.
+	deps, err := registry.Deps("i18n")
+	if err != nil {
+		t.Fatalf("Deps(i18n) error = %v", err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("Deps(i18n) = %v, want none", deps)
+	}
+	resolved, err := registry.Resolve([]string{"i18n"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(resolved, []string{"i18n"}) {
+		t.Fatalf("Resolve([i18n]) = %v", resolved)
+	}
+	if registry.HasJS("i18n") {
+		t.Fatal("HasJS(i18n) = true, want false")
+	}
+}

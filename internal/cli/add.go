@@ -334,5 +334,12 @@ func runList(args []string) error {
 		}
 		fmt.Println(line)
 	}
+	helpers, err := registry.Helpers()
+	if err != nil {
+		return err
+	}
+	for _, n := range helpers {
+		fmt.Println(n + " (helper — vendored as a dependency)")
+	}
 	return nil
 }
