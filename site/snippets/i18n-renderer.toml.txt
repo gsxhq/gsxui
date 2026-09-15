@@ -1,2 +1,2 @@
 [renderers]
-"example.com/app/ui.T" = "example.com/app/i18n.Translate"
+"example.com/app/ui/i18n.T" = "example.com/app/ui/i18n.Translate"

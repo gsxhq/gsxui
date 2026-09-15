@@ -116,9 +116,10 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 	var artifacts []artifact
 	for _, name := range resolved {
 		if fi, err := fs.Stat(gsxui.Files, "ui/"+name); err == nil && fi.IsDir() {
-			// Directory component (icon): vendors as its own package under
-			// <cfg.UI>/<name>/ — it must stay a package (icon.New) and its
-			// generated data tables stay out of the user's ui namespace.
+			// Directory package (icon, i18n): vendors as its own package
+			// under <cfg.UI>/<name>/ — it must stay a package (icon.New,
+			// i18n.T) and its generated data tables stay out of the user's
+			// ui namespace.
 			entries, err := fs.ReadDir(gsxui.Files, "ui/"+name)
 			if err != nil {
 				return nil, err

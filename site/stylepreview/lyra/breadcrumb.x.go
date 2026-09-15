@@ -7,11 +7,12 @@ import (
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line breadcrumb.gsx:8:1
+//line breadcrumb.gsx:9:1
 // Breadcrumb and its parts are the shadcn/ui Breadcrumb
 // (registry/new-york-v4/ui/breadcrumb.tsx) — no Radix primitive underneath
 // the original either; every part is already a plain styled element, Radix's
@@ -24,7 +25,7 @@ import (
 // breadcrumb -> icon dependency internal/registry derives and
 // internal/registry/registry_test.go pins.
 
-//line breadcrumb.gsx:19:1
+//line breadcrumb.gsx:20:1
 func Breadcrumb(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -36,7 +37,7 @@ func _gsxrenderBreadcrumb(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line breadcrumb.gsx:20:2
+//line breadcrumb.gsx:21:2
 	_gsxgw.S("<nav")
 	if !attrs.Has("aria-label") {
 		_gsxgw.S(" aria-label=\"breadcrumb\"")
@@ -46,13 +47,13 @@ func _gsxrenderBreadcrumb(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 	_gsxgw.Spread(ctx, "nav", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb"})
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:20:71
+//line breadcrumb.gsx:21:71
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</nav>")
 	return _gsxgw.Err()
 }
 
-//line breadcrumb.gsx:23:1
+//line breadcrumb.gsx:24:1
 func BreadcrumbList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -64,7 +65,7 @@ func _gsxrenderBreadcrumbList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line breadcrumb.gsx:24:2
+//line breadcrumb.gsx:25:2
 	_gsxgw.S("<ol class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground gap-1.5 text-xs flex flex-wrap items-center wrap-break-word"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -72,13 +73,13 @@ func _gsxrenderBreadcrumbList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	_gsxgw.Spread(ctx, "ol", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-list"})
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-list", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:29:3
+//line breadcrumb.gsx:30:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</ol>")
 	return _gsxgw.Err()
 }
 
-//line breadcrumb.gsx:33:1
+//line breadcrumb.gsx:34:1
 func BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -90,7 +91,7 @@ func _gsxrenderBreadcrumbItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line breadcrumb.gsx:34:2
+//line breadcrumb.gsx:35:2
 	_gsxgw.S("<li class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1 inline-flex items-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -98,13 +99,13 @@ func _gsxrenderBreadcrumbItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-item"})
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-item", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:35:3
+//line breadcrumb.gsx:36:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</li>")
 	return _gsxgw.Err()
 }
 
-//line breadcrumb.gsx:39:1
+//line breadcrumb.gsx:40:1
 // BreadcrumbLink renders a real <a> unconditionally — shadcn's own default
 // (`const Comp = asChild ? Slot.Root : "a"`) already resolves to "a" for the
 // dominant/only realistic use; the asChild tag-swap itself is GAP (narrow,
@@ -113,7 +114,7 @@ func _gsxrenderBreadcrumbItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 // docs/jsx-parity.md). Behavior-attachment uses of asChild are covered by
 // the data-attribute mechanism (see dialog).
 
-//line breadcrumb.gsx:46:1
+//line breadcrumb.gsx:47:1
 func BreadcrumbLink(href string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -125,7 +126,7 @@ func _gsxrenderBreadcrumbLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line breadcrumb.gsx:47:2
+//line breadcrumb.gsx:48:2
 	_gsxgw.S("<a")
 	if !attrs.Has("href") {
 		_gsxgw.S(" href=\"")
@@ -139,13 +140,13 @@ func _gsxrenderBreadcrumbLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-link"})
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-link", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:48:3
+//line breadcrumb.gsx:49:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</a>")
 	return _gsxgw.Err()
 }
 
-//line breadcrumb.gsx:52:1
+//line breadcrumb.gsx:53:1
 func BreadcrumbPage(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -157,7 +158,7 @@ func _gsxrenderBreadcrumbPage(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line breadcrumb.gsx:53:2
+//line breadcrumb.gsx:54:2
 	_gsxgw.S("<span")
 	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"link\"")
@@ -175,18 +176,18 @@ func _gsxrenderBreadcrumbPage(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-page"})
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-page", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:61:3
+//line breadcrumb.gsx:62:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</span>")
 	return _gsxgw.Err()
 }
 
-//line breadcrumb.gsx:65:1
+//line breadcrumb.gsx:66:1
 // BreadcrumbSeparator defaults to a ChevronRight icon when the caller passes
 // no children, exactly like shadcn's `{children ?? <ChevronRight />}` — pass
 // children to override with any other glyph or text.
 
-//line breadcrumb.gsx:68:1
+//line breadcrumb.gsx:69:1
 func BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -198,7 +199,7 @@ func _gsxrenderBreadcrumbSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, c
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line breadcrumb.gsx:69:2
+//line breadcrumb.gsx:70:2
 	_gsxgw.S("<li")
 	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"presentation\"")
@@ -213,24 +214,24 @@ func _gsxrenderBreadcrumbSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, c
 	_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-separator"})
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-separator", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:76:3
+//line breadcrumb.gsx:77:3
 	if children != nil {
-//line breadcrumb.gsx:77:4
+//line breadcrumb.gsx:78:4
 		_gsxgw.Node(ctx, children)
 	} else {
-//line breadcrumb.gsx:79:4
+//line breadcrumb.gsx:80:4
 		_gsxgw.Node(ctx, icon.ChevronRight())
 	}
 	_gsxgw.S("</li>")
 	return _gsxgw.Err()
 }
 
-//line breadcrumb.gsx:84:1
+//line breadcrumb.gsx:85:1
 // BreadcrumbEllipsis takes no children — like shadcn's own version, its
 // content is the fixed MoreHorizontal icon plus a screen-reader-only label,
 // not a caller-supplied slot.
 
-//line breadcrumb.gsx:87:1
+//line breadcrumb.gsx:88:1
 func BreadcrumbEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -242,7 +243,7 @@ func _gsxrenderBreadcrumbEllipsis(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, at
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line breadcrumb.gsx:88:2
+//line breadcrumb.gsx:89:2
 	_gsxgw.S("<span")
 	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"presentation\"")
@@ -257,14 +258,14 @@ func _gsxrenderBreadcrumbEllipsis(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, at
 	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-ellipsis"})
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-ellipsis", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:95:3
-	_gsxgw.Node(ctx, icon.Ellipsis())
 //line breadcrumb.gsx:96:3
+	_gsxgw.Node(ctx, icon.Ellipsis())
+//line breadcrumb.gsx:97:3
 	_gsxgw.S("<span")
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-ellipsis-label", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:96:51
-	_gsxgw.Text(string(T("More")))
+//line breadcrumb.gsx:97:51
+	_gsxgw.Text(string(i18n.T("More")))
 	_gsxgw.S("</span></span>")
 	return _gsxgw.Err()
 }

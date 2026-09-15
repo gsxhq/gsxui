@@ -2,6 +2,7 @@ package rhea
 
 import (
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -93,6 +94,6 @@ component BreadcrumbEllipsis(attrs gsx.Attrs) {
 		data-gsxui-slot-breadcrumb-ellipsis
 	>
 		<icon.Ellipsis/>
-		<span data-gsxui-slot-breadcrumb-ellipsis-label>{ T("More") }</span>
+		<span data-gsxui-slot-breadcrumb-ellipsis-label>{ i18n.T("More") }</span>
 	</span>
 }

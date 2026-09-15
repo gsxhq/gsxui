@@ -9,7 +9,7 @@ import (
 
 // sweptMessages is every English string a component writes itself and a
 // caller cannot reach through children, props or attrs. Each must appear in
-// the canonical source only as the argument of T(...). Issue #31.
+// the canonical source only as the argument of i18n.T(...). Issue #31.
 var sweptMessages = []struct {
 	file string
 	text string
@@ -66,7 +66,7 @@ func TestSweptMessagesOnlyAppearInsideT(t *testing.T) {
 		lines := canonicalSource(t, m.file)
 		quoted := `"` + m.text + `"`
 		asText := ">" + m.text + "<"
-		wrapped := `T("` + m.text + `")`
+		wrapped := `i18n.T("` + m.text + `")`
 		bare := 0
 		for i, line := range lines {
 			if strings.HasPrefix(strings.TrimSpace(line), "//") {
@@ -81,7 +81,7 @@ func TestSweptMessagesOnlyAppearInsideT(t *testing.T) {
 			bare += strings.Count(line, quoted) - strings.Count(line, wrapped)
 		}
 		if bare != 0 {
-			t.Errorf("%s.gsx: %q appears %d time(s) outside T(...)", m.file, m.text, bare)
+			t.Errorf("%s.gsx: %q appears %d time(s) outside i18n.T(...)", m.file, m.text, bare)
 		}
 	}
 }

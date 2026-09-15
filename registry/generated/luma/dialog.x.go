@@ -7,14 +7,15 @@ import (
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	_gsxio "io"
 )
 
-//line dialog.gsx:5:1
+//line dialog.gsx:8:1
 // Dialog uses the native <dialog> top layer. Trigger/content wiring is scoped
 // by the dedicated root hook and implemented by ui/dialog.js.
 
-//line dialog.gsx:7:1
+//line dialog.gsx:10:1
 func Dialog(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -26,7 +27,7 @@ func _gsxrenderDialog(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.N
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line dialog.gsx:8:2
+//line dialog.gsx:11:2
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -34,17 +35,17 @@ func _gsxrenderDialog(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.N
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog"})
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog", true)
 	_gsxgw.S(">")
-//line dialog.gsx:8:64
+//line dialog.gsx:11:64
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line dialog.gsx:11:1
+//line dialog.gsx:14:1
 func DialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:12:2
+//line dialog.gsx:15:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -60,14 +61,14 @@ func DialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-trigger", true)
 		_gsxgw.S(">")
-//line dialog.gsx:19:3
+//line dialog.gsx:22:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dialog.gsx:23:1
+//line dialog.gsx:26:1
 func DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -79,7 +80,7 @@ func _gsxrenderDialogContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, hideClo
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line dialog.gsx:24:2
+//line dialog.gsx:27:2
 	_gsxgw.S("<dialog class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("transition-none backdrop:transition-none data-[state=open]:backdrop:animate-in data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 data-[state=open]:backdrop:fade-in-0 backdrop:bg-black/30 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-sm bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 ring-foreground/5 dark:ring-foreground/10 open:grid max-w-[calc(100%-2rem)] gap-6 rounded-4xl p-6 text-sm shadow-xl ring-1 duration-100 sm:max-w-md fixed z-50 top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 outline-none"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -90,11 +91,11 @@ func _gsxrenderDialogContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, hideClo
 	_gsxgw.Spread(ctx, "dialog", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog-content", true)
 	_gsxgw.S(">")
-//line dialog.gsx:32:3
+//line dialog.gsx:35:3
 	_gsxgw.Node(ctx, children)
-//line dialog.gsx:33:3
+//line dialog.gsx:36:3
 	if !hideCloseButton {
-//line dialog.gsx:34:4
+//line dialog.gsx:37:4
 		_gsxgw.S("<button type=\"button\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("absolute top-4 end-4 bg-secondary"))
 		_gsxgw.S("\"")
@@ -102,29 +103,29 @@ func _gsxrenderDialogContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, hideClo
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close-button", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close", true)
 		_gsxgw.S(">")
-//line dialog.gsx:41:5
+//line dialog.gsx:44:5
 		_gsxgw.S("<svg aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-4 shrink-0 pointer-events-none"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close-icon", true)
 		_gsxgw.S(">")
-//line dialog.gsx:55:6
+//line dialog.gsx:58:6
 		_gsxgw.S("<path d=\"M18 6 6 18\"></path>")
-//line dialog.gsx:56:6
+//line dialog.gsx:59:6
 		_gsxgw.S("<path d=\"m6 6 12 12\"></path></svg>")
-//line dialog.gsx:58:5
+//line dialog.gsx:61:5
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close-label", true)
 		_gsxgw.S(">")
-//line dialog.gsx:58:46
-		_gsxgw.Text(string(T("Close")))
+//line dialog.gsx:61:46
+		_gsxgw.Text(string(i18n.T("Close")))
 		_gsxgw.S("</span></button>")
 	}
 	_gsxgw.S("</dialog>")
 	return _gsxgw.Err()
 }
 
-//line dialog.gsx:64:1
+//line dialog.gsx:67:1
 func DialogHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -136,7 +137,7 @@ func _gsxrenderDialogHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line dialog.gsx:65:2
+//line dialog.gsx:68:2
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1.5 flex flex-col"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -144,17 +145,17 @@ func _gsxrenderDialogHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-header"})
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog-header", true)
 	_gsxgw.S(">")
-//line dialog.gsx:65:84
+//line dialog.gsx:68:84
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line dialog.gsx:68:1
+//line dialog.gsx:71:1
 func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:69:2
+//line dialog.gsx:72:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex flex-col-reverse sm:flex-row sm:justify-end"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -162,15 +163,15 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-footer", true)
 		_gsxgw.S(">")
-//line dialog.gsx:70:3
+//line dialog.gsx:73:3
 		_gsxgw.Node(ctx, children)
-//line dialog.gsx:71:3
+//line dialog.gsx:74:3
 		if showCloseButton {
-//line dialog.gsx:72:4
+//line dialog.gsx:75:4
 			_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:77:5
-				_gsxgw.Text(string(T("Close")))
+//line dialog.gsx:80:5
+				_gsxgw.Text(string(i18n.T("Close")))
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-footer-close", Value: _gsxrt.Toggle(true)}})))
 		}
@@ -179,7 +180,7 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 	})
 }
 
-//line dialog.gsx:83:1
+//line dialog.gsx:86:1
 func DialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -191,7 +192,7 @@ func _gsxrenderDialogTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line dialog.gsx:84:2
+//line dialog.gsx:87:2
 	_gsxgw.S("<h2 class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-base leading-none font-medium"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -199,13 +200,13 @@ func _gsxrenderDialogTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	_gsxgw.Spread(ctx, "h2", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-title"})
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog-title", true)
 	_gsxgw.S(">")
-//line dialog.gsx:84:95
+//line dialog.gsx:87:95
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</h2>")
 	return _gsxgw.Err()
 }
 
-//line dialog.gsx:87:1
+//line dialog.gsx:90:1
 func DialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -217,7 +218,7 @@ func _gsxrenderDialogDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line dialog.gsx:88:2
+//line dialog.gsx:91:2
 	_gsxgw.S("<p class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground *:[a]:hover:text-foreground text-sm *:[a]:underline *:[a]:underline-offset-3"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -225,17 +226,17 @@ func _gsxrenderDialogDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-description"})
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog-description", true)
 	_gsxgw.S(">")
-//line dialog.gsx:93:3
+//line dialog.gsx:96:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</p>")
 	return _gsxgw.Err()
 }
 
-//line dialog.gsx:97:1
+//line dialog.gsx:100:1
 func DialogClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:98:2
+//line dialog.gsx:101:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-gsxui-dialog-close") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
@@ -248,7 +249,7 @@ func DialogClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-close"})
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close", true)
 		_gsxgw.S(">")
-//line dialog.gsx:98:90
+//line dialog.gsx:101:90
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

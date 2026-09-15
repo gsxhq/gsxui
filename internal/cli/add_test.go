@@ -36,7 +36,7 @@ func TestAddVendorsWithDeps(t *testing.T) {
 	for _, p := range []string{
 		"ui/dialog.gsx",
 		"ui/button.gsx",
-		"ui/i18n.gsx",
+		"ui/i18n/i18n.go",
 		"web/gsxui/dialog.js",
 		"ui/NOTICE.md",
 	} {
@@ -49,10 +49,9 @@ func TestAddVendorsWithDeps(t *testing.T) {
 		t.Error("dialog.x.go must not be vendored")
 	}
 	// package clause kept as-is; no unrewritten gsxui-internal refs remain
-	// (dialog.gsx has no cross-package import to rewrite — it's flat, so
-	// dialog's use of Button is an intra-package identifier reference; the
-	// icon-import rewrite path is covered by TestRewriteGsxIcon and the e2e
-	// test's ui/icon vendoring)
+	// (dialog's use of Button is an intra-package identifier reference —
+	// ui/ is flat — while its ui/i18n import is rewritten onto the
+	// consumer's module path, the same path TestRewriteGsxIcon covers)
 	gsx, _ := os.ReadFile(filepath.Join(dir, "ui/dialog.gsx"))
 	if strings.Contains(string(gsx), "gsxhq/gsxui") {
 		t.Errorf("unrewritten import remains:\n%s", gsx)
@@ -91,11 +90,13 @@ func TestAddVendorsWithDeps(t *testing.T) {
 	if !bytes.Equal(button, wantButton) {
 		t.Fatalf("dependency Button is not exact Nova registry source")
 	}
-	helper, err := os.ReadFile(filepath.Join(dir, "ui/i18n.gsx"))
+	// ui/i18n/i18n.go imports nothing, so the rewrite is the identity and
+	// the vendored file is the embedded source byte for byte.
+	helper, err := os.ReadFile(filepath.Join(dir, "ui/i18n/i18n.go"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	wantHelper, err := fs.ReadFile(gsxui.Files, "registry/generated/nova/i18n.gsx")
+	wantHelper, err := fs.ReadFile(gsxui.Files, "ui/i18n/i18n.go")
 	if err != nil {
 		t.Fatal(err)
 	}
