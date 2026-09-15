@@ -698,7 +698,7 @@ func _gsxrendergalleryCalendarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:298:4
-			_gsxgw.NodeResult(_gsxrenderCalendar(ctx, _gsxgw, "single", galleryMonth, []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
+			_gsxgw.NodeResult(_gsxrenderCalendar(ctx, _gsxgw, "single", galleryMonth, []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(CalendarLocale), nil))
 //line gallery.gsx:306:4
 			_gsxgw.NodeResult(_gsxrenderPopover(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -714,7 +714,7 @@ func _gsxrendergalleryCalendarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				_gsxgw.NodeResult(_gsxrenderPopoverContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:317:6
-					_gsxgw.NodeResult(_gsxrenderCalendar(ctx, _gsxgw, "single", galleryMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", _gsxrt.Attrs{{Key: "id", Value: idp + "-datepicker-calendar"}}))
+					_gsxgw.NodeResult(_gsxrenderCalendar(ctx, _gsxgw, "single", galleryMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(CalendarLocale), _gsxrt.Attrs{{Key: "id", Value: idp + "-datepicker-calendar"}}))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "w-auto p-0"}}))
 				return _gsxgw.Err()

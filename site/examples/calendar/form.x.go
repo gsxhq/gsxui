@@ -8,6 +8,7 @@ import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
+	_gsxty2 "github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 	_gsxty1 "time"
 )
@@ -32,7 +33,7 @@ func Form() _gsxrt.Node {
 //line form.gsx:20:2
 		_gsxgw.S("<form class=\"flex max-w-xs flex-col gap-4\">")
 //line form.gsx:21:3
-		_gsxgw.Node(ctx, ui.Calendar("single", FormDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "date", nil))
+		_gsxgw.Node(ctx, ui.Calendar("single", FormDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "date", *new(_gsxty2.CalendarLocale), nil))
 //line form.gsx:29:3
 		_gsxgw.S("<div class=\"flex flex-col gap-2\">")
 //line form.gsx:30:4

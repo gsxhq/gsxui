@@ -485,14 +485,15 @@ func TestDeps(t *testing.T) {
 	}
 
 	// Calendar's controls compose Button's public styling token in markup
-	// and CSS, not Button's Go implementation. Its only code dependencies
-	// are ui/icon (nav chevrons) and NativeSelect/NativeSelectOption.
+	// and CSS, not Button's Go implementation. Its code dependencies are
+	// ui/icon (nav chevrons) and NativeSelect/NativeSelectOption, plus i18n
+	// since the nav buttons' and dropdowns' own labels go through T.
 	deps, err = registry.Deps("calendar")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"icon", "native-select"}) {
-		t.Fatalf("calendar deps = %v, want [icon native-select]", deps)
+	if !reflect.DeepEqual(deps, []string{"i18n", "icon", "native-select"}) {
+		t.Fatalf("calendar deps = %v, want [i18n icon native-select]", deps)
 	}
 
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
@@ -824,13 +825,13 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatalf("got %v want %v", got, want)
 	}
 
-	// Calendar resolves to itself plus icon/native-select. NativeSelect also
-	// depends on Icon, but the flattened result has no duplicate.
+	// Calendar resolves to itself plus i18n/icon/native-select. NativeSelect
+	// also depends on Icon, but the flattened result has no duplicate.
 	got, err = registry.Resolve([]string{"calendar"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"calendar", "icon", "native-select"}
+	want = []string{"calendar", "i18n", "icon", "native-select"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

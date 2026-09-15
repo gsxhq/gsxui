@@ -8,6 +8,7 @@ import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
+	_gsxty2 "github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 	_gsxty1 "time"
 )
@@ -29,7 +30,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:17:2
 		_gsxgw.S("<div dir=\"rtl\">")
 //line rtl.gsx:18:3
-		_gsxgw.Node(ctx, ui.Calendar("single", RtlDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
+		_gsxgw.Node(ctx, ui.Calendar("single", RtlDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
