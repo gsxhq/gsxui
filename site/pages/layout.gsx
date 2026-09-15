@@ -47,6 +47,15 @@ component docsNavigation(active string) {
 				RTL
 			</a>
 			<a
+				href={I18n{} |> url}
+				class={
+					"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+					"bg-accent text-accent-foreground": active == "i18n"
+				}
+			>
+				Internationalization
+			</a>
+			<a
 				href={NpmFree{} |> url}
 				class={
 					"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
@@ -174,6 +183,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 									<ui.CommandItem data-href={GettingStarted{} |> url}>Getting Started</ui.CommandItem>
 									<ui.CommandItem data-href={Theming{} |> url}>Theming</ui.CommandItem>
 									<ui.CommandItem data-href={Rtl{} |> url}>RTL</ui.CommandItem>
+									<ui.CommandItem data-href={I18n{} |> url}>Internationalization</ui.CommandItem>
 									<ui.CommandItem data-href={NpmFree{} |> url}>npm-free</ui.CommandItem>
 									<ui.CommandItem data-href={Theme{} |> url}>Theme Editor</ui.CommandItem>
 								</ui.CommandGroup>

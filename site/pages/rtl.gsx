@@ -36,6 +36,10 @@ component (rt Rtl) Page() {
 				<pre><code>{ `<html lang="ar" dir="rtl">
   ...
 </html>` }</code></pre>
+				<p>
+					Translating the strings components write themselves is covered
+					on <a href={I18n{} |> url}>Internationalization</a>.
+				</p>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={rtlTOCItems[1]}/>

@@ -1,0 +1,2 @@
+[renderers]
+"example.com/app/ui.T" = "example.com/app/i18n.Translate"
