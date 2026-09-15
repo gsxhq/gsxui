@@ -13,7 +13,6 @@ import (
 	"sort"
 	"strings"
 
-	gsxast "github.com/gsxhq/gsx/ast"
 	gsxparser "github.com/gsxhq/gsx/parser"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
@@ -84,30 +83,6 @@ func resolveAll(root string) ([]generatedSource, error) {
 		src, err := os.ReadFile(canonicalPath)
 		if err != nil {
 			return nil, fmt.Errorf("read canonical %s: %w", component, err)
-		}
-		helper, err := isHelperSource(canonicalPath, src)
-		if err != nil {
-			return nil, err
-		}
-		if helper {
-			for _, style := range styles {
-				generated, err := rewriteGSXPackage(canonicalPath, src, consumerPackage)
-				if err != nil {
-					return nil, fmt.Errorf("derive %s %s consumer source: %w", style, component, err)
-				}
-				preview, err := rewriteGSXPackage(canonicalPath, src, style)
-				if err != nil {
-					return nil, fmt.Errorf("derive %s %s preview: %w", style, component, err)
-				}
-				outputs = append(outputs,
-					generatedSource{relativePath: filepath.Join("registry", "generated", style, component+".gsx"), content: generated},
-					generatedSource{relativePath: filepath.Join("site", "stylepreview", style, component+".gsx"), content: preview},
-				)
-				if style == DefaultStyle {
-					outputs = append(outputs, generatedSource{relativePath: filepath.Join("ui", component+".gsx"), content: generated})
-				}
-			}
-			continue
 		}
 		shape, ok := declared[component]
 		if !ok {
@@ -248,23 +223,6 @@ func resolveAll(root string) ([]generatedSource, error) {
 	})
 
 	return outputs, nil
-}
-
-// isHelperSource reports whether a canonical .gsx declares no component. A
-// helper (registry/canonical/i18n.gsx, the ui.T message type) is Go only:
-// it has no shape, no recipe and no CSS, and is copied through to every
-// destination with the package rewrite alone.
-func isHelperSource(filename string, src []byte) (bool, error) {
-	file, err := gsxparser.ParseFile(token.NewFileSet(), filename, src, 0)
-	if err != nil {
-		return false, fmt.Errorf("parse %s: %w", filepath.Base(filename), err)
-	}
-	for _, decl := range file.Decls {
-		if _, ok := decl.(*gsxast.Component); ok {
-			return false, nil
-		}
-	}
-	return true, nil
 }
 
 // checkHelperCalls cross-checks a canonical's accessor calls against its

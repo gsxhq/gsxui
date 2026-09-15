@@ -1,6 +1,9 @@
 package luma
 
-import "github.com/gsxhq/gsx"
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
+)
 
 // Sheet composes Dialog's root and behavior with side-anchored presentation.
 //
@@ -77,7 +80,7 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 					<path d="M18 6 6 18"/>
 					<path d="m6 6 12 12"/>
 				</svg>
-				<span data-gsxui-slot-sheet-close-label>{ T("Close") }</span>
+				<span data-gsxui-slot-sheet-close-label>{ i18n.T("Close") }</span>
 			</button>
 		} }
 	</dialog>

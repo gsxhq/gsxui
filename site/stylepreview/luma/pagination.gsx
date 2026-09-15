@@ -2,6 +2,7 @@ package luma
 
 import (
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -83,7 +84,7 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 		data-gsxui-slot-pagination-previous
 	>
 		<icon.ChevronLeft class={ "rtl:rotate-180" }/>
-		<span class={ "hidden sm:block" } data-gsxui-slot-pagination-previous-label>{ T("Previous") }</span>
+		<span class={ "hidden sm:block" } data-gsxui-slot-pagination-previous-label>{ i18n.T("Previous") }</span>
 	</PaginationLink>
 }
 
@@ -95,7 +96,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 		{ attrs... }
 		data-gsxui-slot-pagination-next
 	>
-		<span class={ "hidden sm:block" } data-gsxui-slot-pagination-next-label>{ T("Next") }</span>
+		<span class={ "hidden sm:block" } data-gsxui-slot-pagination-next-label>{ i18n.T("Next") }</span>
 		<icon.ChevronRight class={ "rtl:rotate-180" }/>
 	</PaginationLink>
 }
@@ -108,6 +109,6 @@ component PaginationEllipsis(attrs gsx.Attrs) {
 		data-gsxui-slot-pagination-ellipsis
 	>
 		<icon.Ellipsis/>
-		<span data-gsxui-slot-pagination-ellipsis-label>{ T("More pages") }</span>
+		<span data-gsxui-slot-pagination-ellipsis-label>{ i18n.T("More pages") }</span>
 	</span>
 }

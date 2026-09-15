@@ -2,6 +2,7 @@ package ui
 
 import (
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -158,7 +159,7 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 		<icon.ArrowLeft
 			class={ switch orientation { case "vertical": "" default: "rtl:rotate-180" } }
 		/>
-		<span data-gsxui-slot-carousel-control-label>{ T("Previous slide") }</span>
+		<span data-gsxui-slot-carousel-control-label>{ i18n.T("Previous slide") }</span>
 	</Button>
 }
 
@@ -182,6 +183,6 @@ component CarouselNext(orientation string, attrs gsx.Attrs) {
 		<icon.ArrowRight
 			class={ switch orientation { case "vertical": "" default: "rtl:rotate-180" } }
 		/>
-		<span data-gsxui-slot-carousel-control-label>{ T("Next slide") }</span>
+		<span data-gsxui-slot-carousel-control-label>{ i18n.T("Next slide") }</span>
 	</Button>
 }

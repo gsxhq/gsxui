@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -845,7 +846,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					type="button"
 					data-variant="ghost"
 					data-size="icon"
-					aria-label={T("Previous month")}
+					aria-label={i18n.T("Previous month")}
 					{ if prevDisabled {
 						aria-disabled="true"
 						tabindex="-1"
@@ -861,7 +862,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					type="button"
 					data-variant="ghost"
 					data-size="icon"
-					aria-label={T("Next month")}
+					aria-label={i18n.T("Next month")}
 					{ if nextDisabled {
 						aria-disabled="true"
 						tabindex="-1"
@@ -883,7 +884,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 						class={ "h-(--cell-size) flex w-full items-center justify-center gap-1.5 text-sm font-medium" }
 						data-gsxui-slot-calendar-dropdowns
 					>
-						<NativeSelect data-gsxui-calendar-month-select aria-label={T("Month")}>
+						<NativeSelect data-gsxui-calendar-month-select aria-label={i18n.T("Month")}>
 							{ for i := 0; i < 12; i++ {
 								<NativeSelectOption
 									value={strconv.Itoa(i)}
@@ -894,7 +895,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 								</NativeSelectOption>
 							} }
 						</NativeSelect>
-						<NativeSelect data-gsxui-calendar-year-select aria-label={T("Year")}>
+						<NativeSelect data-gsxui-calendar-year-select aria-label={i18n.T("Year")}>
 							{ for y := navFromYear; y <= navToYear; y++ {
 								<NativeSelectOption value={strconv.Itoa(y)} selected={y == year} data-gsxui-calendar-year-option>
 									{ loc.digits(strconv.Itoa(y)) }

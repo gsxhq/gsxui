@@ -34,12 +34,16 @@ component (p I18n) Page() {
 				<h1 class="text-3xl font-semibold tracking-tight">Internationalization</h1>
 				<p class="text-muted-foreground">
 					Text you pass to a component is yours. The few strings a component writes itself are
-					<code>ui.T</code> messages, and one line in <code>gsx.toml</code> routes all of them through your translator.
+					<code>i18n.T</code> messages, and one line in <code>gsx.toml</code> routes all of them through your
+					translator.
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
 				<docHeading item={i18nTOCItems[0]}/>
-				<p>Register a renderer for <code>ui.T</code>, using your module path:</p>
+				<p>
+					Add <code>ui/i18n/translate.go</code> beside the vendored <code>ui/i18n/i18n.go</code> and register it, using
+					your module path:
+				</p>
 				<pre><code>{ hl.Node("snippets/i18n-renderer.toml") }</code></pre>
 				<p>Write the translator. It receives the render context, so the request's locale is in reach:</p>
 				<pre><code>{ hl.Node("snippets/i18n-translate.go") }</code></pre>
@@ -48,16 +52,20 @@ component (p I18n) Page() {
 				<docHeading item={i18nTOCItems[1]}/>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
-						<code>ui.T</code> is a string type declared in <code>ui/i18n.gsx</code>, vendored with any component that
-						uses it.
+						<code>i18n.T</code> is a string type in <code>ui/i18n/i18n.go</code>, its own package, vendored with any
+						component that uses it.
 					</li>
 					<li>
-						The English text is the message id: <code>T("Close")</code>, <code>T("Next slide")</code>
-						, <code>T("Toggle Sidebar")</code>.
+						The English text is the message id: <code>i18n.T("Close")</code>, <code>i18n.T("Next slide")</code>
+						, <code>i18n.T("Toggle Sidebar")</code>.
 					</li>
 					<li>Without a renderer, a message renders as its English text.</li>
 					<li>With one, gsx calls your function everywhere a message renders, in text and in attributes.</li>
 					<li>Children, props and <code>attrs</code> never pass through <code>T</code>.</li>
+					<li>
+						<code>gsxui add --overwrite</code> rewrites only the files it vendored, so <code>translate.go</code>
+						survives.
+					</li>
 				</ul>
 			</section>
 			<section class="flex flex-col gap-3">

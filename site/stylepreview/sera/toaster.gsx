@@ -1,6 +1,9 @@
 package sera
 
-import "github.com/gsxhq/gsx"
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
+)
 
 // Toaster is the always-present, positioned toast region. Mount it ONCE per
 // page (typically the root layout, same convention as shadcn's <Toaster/> in
@@ -30,7 +33,7 @@ import "github.com/gsxhq/gsx"
 // duplicated in JS. Their placeholder texts are always overwritten or removed
 // on clone.
 component Toaster(attrs gsx.Attrs) {
-	<section aria-label={T("Notifications")} tabindex="-1">
+	<section aria-label={i18n.T("Notifications")} tabindex="-1">
 		<ol
 			id="gsxui-toaster"
 			class={ "[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6" }

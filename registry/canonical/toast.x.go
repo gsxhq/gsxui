@@ -7,11 +7,12 @@ import (
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line toast.gsx:8:1
+//line toast.gsx:9:1
 // Toast is the server-rendered toast card — the single source of truth for
 // the toast <li> markup, and a standalone component: it is usable on its own
 // (a server-rendered flash row, a static markup showcase) without Toaster.
@@ -39,7 +40,7 @@ import (
 // through attrs (ui/toaster.js reads it on adoption; loading defaults to no
 // auto-dismiss).
 
-//line toast.gsx:34:1
+//line toast.gsx:35:1
 func Toast(toastType string, title string, description string, action string, cancel string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -51,7 +52,7 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line toast.gsx:35:2
+//line toast.gsx:36:2
 	t := toastType
 	if t == "" {
 		t = "default"
@@ -60,7 +61,7 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 	if t == "error" {
 		ariaLive = "assertive"
 	}
-//line toast.gsx:45:2
+//line toast.gsx:46:2
 	_gsxgw.S("<li")
 	if !attrs.Has("data-type") {
 		_gsxgw.S(" data-type=\"")
@@ -85,88 +86,88 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 	_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toast"})
 	_gsxgw.BoolAttr("data-gsxui-slot-toast", true)
 	_gsxgw.S(">")
-//line toast.gsx:54:3
+//line toast.gsx:55:3
 	if t != "default" {
-//line toast.gsx:55:4
+//line toast.gsx:56:4
 		switch t {
 		case "success":
-//line toast.gsx:57:5
+//line toast.gsx:58:5
 			_gsxgw.Node(ctx, icon.CircleCheck(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(toast.Icon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		case "info":
-//line toast.gsx:59:5
+//line toast.gsx:60:5
 			_gsxgw.Node(ctx, icon.Info(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(toast.Icon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		case "warning":
-//line toast.gsx:61:5
+//line toast.gsx:62:5
 			_gsxgw.Node(ctx, icon.TriangleAlert(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(toast.Icon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		case "error":
-//line toast.gsx:63:5
+//line toast.gsx:64:5
 			_gsxgw.Node(ctx, icon.OctagonX(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(toast.Icon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		case "loading":
-//line toast.gsx:65:5
+//line toast.gsx:66:5
 			_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(toast.Icon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		}
 	}
-//line toast.gsx:68:3
+//line toast.gsx:69:3
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toast.Content()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-toast-content", true)
 	_gsxgw.S(">")
-//line toast.gsx:69:4
+//line toast.gsx:70:4
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toast.Title()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-toast-title", true)
 	_gsxgw.S(">")
-//line toast.gsx:69:61
+//line toast.gsx:70:61
 	_gsxgw.Text(string(title))
 	_gsxgw.S("</div>")
-//line toast.gsx:70:4
+//line toast.gsx:71:4
 	if description != "" {
-//line toast.gsx:71:5
+//line toast.gsx:72:5
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toast.Description()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-toast-description", true)
 		_gsxgw.S(">")
-//line toast.gsx:71:74
+//line toast.gsx:72:74
 		_gsxgw.Text(string(description))
 		_gsxgw.S("</div>")
 	}
 	_gsxgw.S("</div>")
-//line toast.gsx:74:3
+//line toast.gsx:75:3
 	if action != "" {
-//line toast.gsx:75:4
+//line toast.gsx:76:4
 		_gsxgw.S("<button type=\"button\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toast.Action()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-toast-action", true)
 		_gsxgw.S(">")
-//line toast.gsx:80:5
+//line toast.gsx:81:5
 		_gsxgw.Text(string(action))
 		_gsxgw.S("</button>")
 	}
-//line toast.gsx:83:3
+//line toast.gsx:84:3
 	if cancel != "" {
-//line toast.gsx:84:4
+//line toast.gsx:85:4
 		_gsxgw.S("<button type=\"button\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toast.Cancel()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-toast-cancel", true)
 		_gsxgw.S(">")
-//line toast.gsx:89:5
+//line toast.gsx:90:5
 		_gsxgw.Text(string(cancel))
 		_gsxgw.S("</button>")
 	}
-//line toast.gsx:92:3
+//line toast.gsx:93:3
 	_gsxgw.S("<button type=\"button\" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toast.Close()))
 	_gsxgw.S("\" aria-label=\"")
-	_gsxgw.AttrValue(string(T("Close")))
+	_gsxgw.AttrValue(string(i18n.T("Close")))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-toast-close", true)
 	_gsxgw.S(">")
-//line toast.gsx:98:4
+//line toast.gsx:99:4
 	_gsxgw.Node(ctx, icon.X(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(toast.CloseIcon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-close-icon", Value: _gsxrt.Toggle(true)}})...))
 	_gsxgw.S("</button></li>")
 	return _gsxgw.Err()

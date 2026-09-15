@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -104,9 +105,9 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 					data-gsxui-slot-sidebar
 				>
 					<SheetHeader class={ "sr-only p-0" } data-gsxui-slot-sidebar-mobile-header>
-						<SheetTitle data-gsxui-slot-sidebar-mobile-title>{ T("Sidebar") }</SheetTitle>
+						<SheetTitle data-gsxui-slot-sidebar-mobile-title>{ i18n.T("Sidebar") }</SheetTitle>
 						<SheetDescription data-gsxui-slot-sidebar-mobile-description>
-							{ T("Displays the mobile sidebar.") }
+							{ i18n.T("Displays the mobile sidebar.") }
 						</SheetDescription>
 					</SheetHeader>
 					<div data-gsxui-slot-sidebar-mobile-inner>{ children }</div>
@@ -156,7 +157,7 @@ component SidebarTrigger(attrs gsx.Attrs) {
 		data-gsxui-slot-sidebar-trigger
 	>
 		<icon.PanelLeft class={ "rtl:rotate-180" }/>
-		<span class={ "sr-only" } data-gsxui-slot-sidebar-trigger-label>{ T("Toggle Sidebar") }</span>
+		<span class={ "sr-only" } data-gsxui-slot-sidebar-trigger-label>{ i18n.T("Toggle Sidebar") }</span>
 	</Button>
 }
 

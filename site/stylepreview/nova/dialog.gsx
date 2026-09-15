@@ -1,6 +1,9 @@
 package nova
 
-import "github.com/gsxhq/gsx"
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
+)
 
 // Dialog uses the native <dialog> top layer. Trigger/content wiring is scoped
 // by the dedicated root hook and implemented by ui/dialog.js.
@@ -55,7 +58,7 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 					<path d="M18 6 6 18"/>
 					<path d="m6 6 12 12"/>
 				</svg>
-				<span data-gsxui-slot-dialog-close-label>{ T("Close") }</span>
+				<span data-gsxui-slot-dialog-close-label>{ i18n.T("Close") }</span>
 			</button>
 		} }
 	</dialog>
@@ -78,7 +81,7 @@ component DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs)
 				data-gsxui-dialog-close
 				data-gsxui-slot-dialog-footer-close
 			>
-				{ T("Close") }
+				{ i18n.T("Close") }
 			</Button>
 		} }
 	</div>

@@ -2,6 +2,7 @@ package canonical
 
 import (
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -92,7 +93,7 @@ component Toast(toastType string, title string, description string, action strin
 		<button
 			type="button"
 			class={ toast.Close() }
-			aria-label={T("Close")}
+			aria-label={i18n.T("Close")}
 			data-gsxui-slot-toast-close
 		>
 			<icon.X class={ toast.CloseIcon() } data-gsxui-slot-toast-close-icon/>

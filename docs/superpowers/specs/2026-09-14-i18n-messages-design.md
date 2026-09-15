@@ -283,3 +283,19 @@ this repo.
 - Patterns substitute all four placeholders on every call, with the
   absent parts as empty strings: a caption pattern containing
   `{weekday}` renders it as nothing on both the server and the client.
+
+## Addendum (2026-09-15, Task 8)
+
+- `T` lives in `ui/i18n`, a leaf directory package vendored like `ui/icon`,
+  not in package `ui`. Components write `i18n.T("Close")`.
+- The relocation is forced: gsx compiles a registered renderer in as a
+  qualified call, so every generated `ui/<c>.x.go` imports the translator's
+  package, and the translator must name `T`. A `T` in package `ui` puts the
+  translator's package in an import cycle, which the end-to-end
+  pseudo-localization gate caught.
+- The recommended translator location is `ui/i18n/translate.go`, beside the
+  vendored type. `gsxui add --overwrite` rewrites only the files it
+  vendored, so that file survives re-vendoring.
+- The stylegen helper-file pass-through added for the old
+  `registry/canonical/i18n.gsx` is gone; `ui/i18n/i18n.go` is plain Go,
+  hand-written and outside the style pipeline.

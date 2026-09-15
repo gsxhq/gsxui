@@ -4,12 +4,13 @@
 // code it describes.
 //
 // ui/ is one flat package, so a component is a .gsx file basename:
-// ui/button.gsx is component "button". ui/icon is the one directory
-// component — it stays a package so icon.New reads as a name. Dependencies
-// come from two sources: the icon import in .gsx source, and — because
-// intra-package references have no import to scan — identifiers in a
-// component's generated .x.go that another component's .x.go declares,
-// resolved with go/parser against a declaration index.
+// ui/button.gsx is component "button". A directory under ui/ is its own
+// vendored package: ui/icon (a component, so icon.New reads as a name) and
+// ui/i18n (a helper, the T message type). Dependencies come from two
+// sources: a ui/<sub> import in .gsx source, and — because intra-package
+// references have no import to scan — identifiers in a component's
+// generated .x.go that another component's .x.go declares, resolved with
+// go/parser against a declaration index.
 package registry
 
 import (
@@ -30,38 +31,44 @@ import (
 	gsxparser "github.com/gsxhq/gsx/parser"
 )
 
-var iconImportRe = regexp.MustCompile(`"github\.com/gsxhq/gsxui/ui/icon"`)
+// uiSubpackageImportRe captures the name of a ui/ sub-package a component's
+// .gsx imports — ui/icon, ui/i18n. It is the only dependency edge a
+// directory package can produce, because its identifiers are reached
+// through the import rather than bare.
+var uiSubpackageImportRe = regexp.MustCompile(`"github\.com/gsxhq/gsxui/ui/([^"/]+)"`)
 
-// classified splits every vendorable .gsx under ui/ into components (files
-// that declare at least one component) and helpers (Go-only files such as
-// ui/i18n.gsx, the T message type). ui/icon stays a component: it is the
-// one directory entry. The embedded tree is immutable, so this runs once.
+// classified splits every vendorable entry under ui/ into components (they
+// declare at least one component) and helpers (Go-only, such as the ui/i18n
+// package holding the T message type). A directory is a component when a
+// .gsx directly inside it declares one (ui/icon); a file is a component
+// when it declares one. The embedded tree is immutable, so this runs once.
 var classified = sync.OnceValues(func() (classification, error) {
 	entries, err := fs.ReadDir(gsxui.Files, "ui")
 	if err != nil {
 		return classification{}, err
 	}
-	var c classification
+	c := classification{directories: map[string]bool{}}
 	for _, e := range entries {
+		name := e.Name()
+		var declares bool
 		if e.IsDir() {
-			if e.Name() == "icon" {
-				c.components = append(c.components, e.Name())
+			declares, err = directoryDeclaresComponent(name)
+			if err != nil {
+				return classification{}, err
 			}
-			continue
+			c.directories[name] = true
+		} else {
+			var ok bool
+			name, ok = strings.CutSuffix(name, ".gsx")
+			if !ok {
+				continue
+			}
+			declares, err = fileDeclaresComponent(e.Name())
+			if err != nil {
+				return classification{}, err
+			}
 		}
-		name, ok := strings.CutSuffix(e.Name(), ".gsx")
-		if !ok {
-			continue
-		}
-		src, err := fs.ReadFile(gsxui.Files, "ui/"+e.Name())
-		if err != nil {
-			return classification{}, err
-		}
-		file, err := gsxparser.ParseFile(token.NewFileSet(), e.Name(), src, 0)
-		if err != nil {
-			return classification{}, fmt.Errorf("parse ui/%s: %w", e.Name(), err)
-		}
-		if declaresComponent(file.Decls) {
+		if declares {
 			c.components = append(c.components, name)
 		} else {
 			c.helpers = append(c.helpers, name)
@@ -73,8 +80,51 @@ var classified = sync.OnceValues(func() (classification, error) {
 })
 
 type classification struct {
-	components []string
-	helpers    []string
+	components  []string
+	helpers     []string
+	directories map[string]bool
+}
+
+// isDirectoryPackage reports whether name vendors as its own package under
+// ui/<name>/ rather than as a file in the flat ui package.
+func isDirectoryPackage(name string) bool {
+	c, err := classified()
+	if err != nil {
+		return false
+	}
+	return c.directories[name]
+}
+
+func fileDeclaresComponent(fileName string) (bool, error) {
+	src, err := fs.ReadFile(gsxui.Files, "ui/"+fileName)
+	if err != nil {
+		return false, err
+	}
+	file, err := gsxparser.ParseFile(token.NewFileSet(), fileName, src, 0)
+	if err != nil {
+		return false, fmt.Errorf("parse ui/%s: %w", fileName, err)
+	}
+	return declaresComponent(file.Decls), nil
+}
+
+func directoryDeclaresComponent(dir string) (bool, error) {
+	entries, err := fs.ReadDir(gsxui.Files, "ui/"+dir)
+	if err != nil {
+		return false, err
+	}
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".gsx") {
+			continue
+		}
+		declares, err := fileDeclaresComponent(dir + "/" + e.Name())
+		if err != nil {
+			return false, err
+		}
+		if declares {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 func declaresComponent(decls []gsxast.Decl) bool {
@@ -97,7 +147,7 @@ func Components() ([]string, error) {
 	return slices.Clone(c.components), nil
 }
 
-// Helpers lists the Go-only .gsx files under ui/. They have no component,
+// Helpers lists the Go-only entries under ui/. They have no component,
 // no examples and no style recipe; they exist to be depended on.
 func Helpers() ([]string, error) {
 	c, err := classified()
@@ -146,7 +196,7 @@ func declIndex() (map[string]string, error) {
 	comps := append(slices.Clone(components), helpers...)
 	idx := map[string]string{}
 	for _, c := range comps {
-		if c == "icon" {
+		if isDirectoryPackage(c) {
 			continue
 		}
 		f, err := parseX(c)
@@ -180,7 +230,7 @@ func Deps(name string) ([]string, error) {
 	if !isVendorable(name) {
 		return nil, fmt.Errorf("unknown component %q (run 'gsxui list')", name)
 	}
-	if name == "icon" {
+	if isDirectoryPackage(name) {
 		return nil, nil
 	}
 	seen := map[string]bool{}
@@ -195,8 +245,10 @@ func Deps(name string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	if iconImportRe.Match(src) {
-		add("icon")
+	for _, m := range uiSubpackageImportRe.FindAllSubmatch(src, -1) {
+		if sub := string(m[1]); isDirectoryPackage(sub) {
+			add(sub)
+		}
 	}
 	idx, err := declIndex()
 	if err != nil {

@@ -51,8 +51,9 @@ func slicesContains(ss []string, s string) bool {
 }
 
 func TestDeps(t *testing.T) {
-	// dialog.x.go references Button (DialogFooter's Close button) and T
-	// (the close labels) — both intra-package edges resolved via declIndex.
+	// dialog.x.go references Button (DialogFooter's Close button) — an
+	// intra-package edge resolved via declIndex — and dialog.gsx imports
+	// ui/i18n for the close labels, the same import edge as ui/icon.
 	deps, err := registry.Deps("dialog")
 	if err != nil {
 		t.Fatal(err)
@@ -89,9 +90,9 @@ func TestDeps(t *testing.T) {
 	}
 
 	// breadcrumb.gsx imports ui/icon (BreadcrumbSeparator's default
-	// ChevronRight, BreadcrumbEllipsis's Ellipsis/MoreHorizontal) and now
-	// calls T (BreadcrumbEllipsis's "More" label), pulling in i18n too.
-	// Deps sorts its result, so i18n < icon alphabetically.
+	// ChevronRight, BreadcrumbEllipsis's Ellipsis/MoreHorizontal) and
+	// ui/i18n (BreadcrumbEllipsis's "More" label). Deps sorts its result,
+	// so i18n < icon alphabetically.
 	deps, err = registry.Deps("breadcrumb")
 	if err != nil {
 		t.Fatal(err)
@@ -105,9 +106,9 @@ func TestDeps(t *testing.T) {
 	// dialog's own Deps entry above — AND imports ui/icon
 	// (CarouselPrevious/CarouselNext's ArrowLeft/ArrowRight), the ordinary
 	// house default (accordion/breadcrumb/pagination/spinner all do the
-	// same) — AND now calls T (the "Previous slide"/"Next slide" control
-	// labels), pulling in i18n too. Deps sorts its result, so button <
-	// i18n < icon alphabetically.
+	// same) — AND imports ui/i18n (the "Previous slide"/"Next slide"
+	// control labels). Deps sorts its result, so button < i18n < icon
+	// alphabetically.
 	deps, err = registry.Deps("carousel")
 	if err != nil {
 		t.Fatal(err)
@@ -165,8 +166,8 @@ func TestDeps(t *testing.T) {
 	// pagination.gsx imports ui/icon (ChevronLeft/ChevronRight/Ellipsis).
 	// Its Button relationship is now token composition in the shared style
 	// contract, not a Go code dependency for the vendored source graph. It
-	// now also calls T (the "Previous"/"Next"/"More pages" labels), pulling
-	// in i18n too. Deps sorts its result, so i18n < icon alphabetically.
+	// also imports ui/i18n (the "Previous"/"Next"/"More pages" labels).
+	// Deps sorts its result, so i18n < icon alphabetically.
 	deps, err = registry.Deps("pagination")
 	if err != nil {
 		t.Fatal(err)
@@ -186,12 +187,21 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("button-group deps = %v, want [separator]", deps)
 	}
 
+	// A directory package has no deps of its own: icon and i18n are both
+	// leaves.
 	deps, err = registry.Deps("icon")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(deps) != 0 {
-		t.Fatalf("icon deps = %v, want none", deps)
+	if deps != nil {
+		t.Fatalf("icon deps = %v, want nil", deps)
+	}
+	deps, err = registry.Deps("i18n")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if deps != nil {
+		t.Fatalf("i18n deps = %v, want nil", deps)
 	}
 
 	// empty.gsx has no icon import and no intra-package reference to
@@ -429,9 +439,8 @@ func TestDeps(t *testing.T) {
 	// toast.gsx imports ui/icon: the server-rendered ui.Toast card (the
 	// single source of the toast <li> markup, shipped as inert per-type
 	// <template>s by Toaster and cloned by ui/toaster.js) renders its type
-	// glyph and the close X via icon.* Go calls, and its own close button's
-	// aria-label through T — so Deps is [icon] plus the intra-package T
-	// edge, [i18n icon] once sorted.
+	// glyph and the close X via icon.* Go calls, and imports ui/i18n for
+	// its own close button's aria-label — [i18n icon] once sorted.
 	deps, err = registry.Deps("toast")
 	if err != nil {
 		t.Fatal(err)
@@ -440,10 +449,10 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("toast deps = %v, want [i18n icon]", deps)
 	}
 
-	// toaster.gsx imports nothing itself, but its generated .x.go renders
-	// the Toast component (the per-type <template>s) and calls T for the
-	// aria landmark's label, so declIndex resolves both intra-package edges
-	// to [toast], [i18n toast] once sorted.
+	// toaster.gsx imports ui/i18n for the aria landmark's label, and its
+	// generated .x.go renders the Toast component (the per-type
+	// <template>s), an intra-package edge declIndex resolves to toast —
+	// [i18n toast] once sorted.
 	deps, err = registry.Deps("toaster")
 	if err != nil {
 		t.Fatal(err)
@@ -473,9 +482,9 @@ func TestDeps(t *testing.T) {
 	// (SidebarMenuSkeleton), and ui.Tooltip/TooltipContent
 	// (SidebarMenuButton's tooltip branch) directly — flat package
 	// intra-package edges, same declIndex-resolved shape as combobox's own
-	// input-group/icon deps above. It now also calls T directly (Sidebar's
-	// mobile title/description, SidebarTrigger's label), pulling in i18n
-	// too. Deps sorts its result, so i18n < icon alphabetically.
+	// input-group/icon deps above. It also imports ui/i18n (Sidebar's
+	// mobile title/description, SidebarTrigger's label). Deps sorts its
+	// result, so i18n < icon alphabetically.
 	deps, err = registry.Deps("sidebar")
 	if err != nil {
 		t.Fatal(err)
@@ -486,8 +495,8 @@ func TestDeps(t *testing.T) {
 
 	// Calendar's controls compose Button's public styling token in markup
 	// and CSS, not Button's Go implementation. Its code dependencies are
-	// ui/icon (nav chevrons) and NativeSelect/NativeSelectOption, plus i18n
-	// since the nav buttons' and dropdowns' own labels go through T.
+	// ui/icon (nav chevrons) and NativeSelect/NativeSelectOption, plus the
+	// ui/i18n import carrying the nav buttons' and dropdowns' own labels.
 	deps, err = registry.Deps("calendar")
 	if err != nil {
 		t.Fatal(err)
@@ -876,7 +885,8 @@ func TestHelpersAreNotComponents(t *testing.T) {
 	if slices.Contains(components, "i18n") {
 		t.Fatalf("Components() lists the i18n helper; the site links every component to /components/<name>")
 	}
-	// A helper is still vendorable: Deps and Resolve accept it.
+	// A helper is still vendorable: Deps and Resolve accept it. i18n is a
+	// directory package, so it has no deps of its own.
 	deps, err := registry.Deps("i18n")
 	if err != nil {
 		t.Fatalf("Deps(i18n) error = %v", err)

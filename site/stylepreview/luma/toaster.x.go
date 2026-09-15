@@ -7,10 +7,11 @@ import (
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	_gsxio "io"
 )
 
-//line toaster.gsx:5:1
+//line toaster.gsx:8:1
 // Toaster is the always-present, positioned toast region. Mount it ONCE per
 // page (typically the root layout, same convention as shadcn's <Toaster/> in
 // app/layout.tsx). v1 ships only the default bottom-right position — the
@@ -39,15 +40,15 @@ import (
 // duplicated in JS. Their placeholder texts are always overwritten or removed
 // on clone.
 
-//line toaster.gsx:32:1
+//line toaster.gsx:35:1
 func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toaster.gsx:33:2
+//line toaster.gsx:36:2
 		_gsxgw.S("<section aria-label=\"")
-		_gsxgw.AttrValue(string(T("Notifications")))
+		_gsxgw.AttrValue(string(i18n.T("Notifications")))
 		_gsxgw.S("\" tabindex=\"-1\">")
-//line toaster.gsx:34:3
+//line toaster.gsx:37:3
 		_gsxgw.S("<ol")
 		if !attrs.Has("id") {
 			_gsxgw.S(" id=\"gsxui-toaster\"")
@@ -59,34 +60,34 @@ func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "ol", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toaster"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toaster", true)
 		_gsxgw.S("></ol>")
-//line toaster.gsx:40:3
+//line toaster.gsx:43:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"default\">")
-//line toaster.gsx:41:4
+//line toaster.gsx:44:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "default", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line toaster.gsx:43:3
+//line toaster.gsx:46:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"success\">")
-//line toaster.gsx:44:4
+//line toaster.gsx:47:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "success", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line toaster.gsx:46:3
+//line toaster.gsx:49:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"info\">")
-//line toaster.gsx:47:4
+//line toaster.gsx:50:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "info", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line toaster.gsx:49:3
+//line toaster.gsx:52:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"warning\">")
-//line toaster.gsx:50:4
+//line toaster.gsx:53:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "warning", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line toaster.gsx:52:3
+//line toaster.gsx:55:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"error\">")
-//line toaster.gsx:53:4
+//line toaster.gsx:56:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "error", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line toaster.gsx:55:3
+//line toaster.gsx:58:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"loading\">")
-//line toaster.gsx:56:4
+//line toaster.gsx:59:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "loading", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template></section>")
 		return _gsxgw.Err()

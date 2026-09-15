@@ -51,146 +51,154 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:35:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">Text you pass to a component is yours. The few strings a component writes itself are")
 //line i18n.gsx:37:6
-			_gsxgw.S("<code>ui.T</code> messages, and one line in ")
-//line i18n.gsx:37:50
+			_gsxgw.S("<code>i18n.T</code> messages, and one line in ")
+//line i18n.gsx:37:52
 			_gsxgw.S("<code>gsx.toml</code> routes all of them through your translator.</p></div>")
-//line i18n.gsx:40:4
+//line i18n.gsx:41:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:41:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[0], nil))
 //line i18n.gsx:42:5
-			_gsxgw.S("<p>Register a renderer for ")
-//line i18n.gsx:42:32
-			_gsxgw.S("<code>ui.T</code>, using your module path:</p>")
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[0], nil))
 //line i18n.gsx:43:5
+			_gsxgw.S("<p>Add ")
+//line i18n.gsx:44:10
+			_gsxgw.S("<code>ui/i18n/translate.go</code> beside the vendored ")
+//line i18n.gsx:44:64
+			_gsxgw.S("<code>ui/i18n/i18n.go</code> and register it, using your module path:</p>")
+//line i18n.gsx:47:5
 			_gsxgw.S("<pre>")
-//line i18n.gsx:43:10
+//line i18n.gsx:47:10
 			_gsxgw.S("<code>")
-//line i18n.gsx:43:16
+//line i18n.gsx:47:16
 			_gsxgw.Node(ctx, hl.Node("snippets/i18n-renderer.toml"))
 			_gsxgw.S("</code></pre>")
-//line i18n.gsx:44:5
+//line i18n.gsx:48:5
 			_gsxgw.S("<p>Write the translator. It receives the render context, so the request's locale is in reach:</p>")
-//line i18n.gsx:45:5
+//line i18n.gsx:49:5
 			_gsxgw.S("<pre>")
-//line i18n.gsx:45:10
+//line i18n.gsx:49:10
 			_gsxgw.S("<code>")
-//line i18n.gsx:45:16
+//line i18n.gsx:49:16
 			_gsxgw.Node(ctx, hl.Node("snippets/i18n-translate.go"))
 			_gsxgw.S("</code></pre></section>")
-//line i18n.gsx:47:4
+//line i18n.gsx:51:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:48:5
+//line i18n.gsx:52:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[1], nil))
-//line i18n.gsx:49:5
+//line i18n.gsx:53:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
-//line i18n.gsx:50:6
-			_gsxgw.S("<li>")
-//line i18n.gsx:51:7
-			_gsxgw.S("<code>ui.T</code> is a string type declared in ")
-//line i18n.gsx:51:54
-			_gsxgw.S("<code>ui/i18n.gsx</code>, vendored with any component that uses it.</li>")
 //line i18n.gsx:54:6
-			_gsxgw.S("<li>The English text is the message id: ")
-//line i18n.gsx:55:43
-			_gsxgw.S("<code>T(\"Close\")</code>, ")
-//line i18n.gsx:55:68
-			_gsxgw.S("<code>T(\"Next slide\")</code>, ")
-//line i18n.gsx:56:9
-			_gsxgw.S("<code>T(\"Toggle Sidebar\")</code>.</li>")
-//line i18n.gsx:58:6
-			_gsxgw.S("<li>Without a renderer, a message renders as its English text.</li>")
-//line i18n.gsx:59:6
-			_gsxgw.S("<li>With one, gsx calls your function everywhere a message renders, in text and in attributes.</li>")
-//line i18n.gsx:60:6
-			_gsxgw.S("<li>Children, props and ")
-//line i18n.gsx:60:30
-			_gsxgw.S("<code>attrs</code> never pass through ")
-//line i18n.gsx:60:68
-			_gsxgw.S("<code>T</code>.</li></ul></section>")
-//line i18n.gsx:63:4
-			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:64:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[2], nil))
-//line i18n.gsx:65:5
-			_gsxgw.S("<p>Calendar composes month and weekday names, the caption and each day's label. Pass a")
-//line i18n.gsx:67:6
-			_gsxgw.S("<code>locale</code>; the zero value is English.</p>")
-//line i18n.gsx:69:5
-			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
-//line i18n.gsx:70:6
 			_gsxgw.S("<li>")
-//line i18n.gsx:71:7
+//line i18n.gsx:55:7
+			_gsxgw.S("<code>i18n.T</code> is a string type in ")
+//line i18n.gsx:55:47
+			_gsxgw.S("<code>ui/i18n/i18n.go</code>, its own package, vendored with any component that uses it.</li>")
+//line i18n.gsx:58:6
+			_gsxgw.S("<li>The English text is the message id: ")
+//line i18n.gsx:59:43
+			_gsxgw.S("<code>i18n.T(\"Close\")</code>, ")
+//line i18n.gsx:59:73
+			_gsxgw.S("<code>i18n.T(\"Next slide\")</code>, ")
+//line i18n.gsx:60:9
+			_gsxgw.S("<code>i18n.T(\"Toggle Sidebar\")</code>.</li>")
+//line i18n.gsx:62:6
+			_gsxgw.S("<li>Without a renderer, a message renders as its English text.</li>")
+//line i18n.gsx:63:6
+			_gsxgw.S("<li>With one, gsx calls your function everywhere a message renders, in text and in attributes.</li>")
+//line i18n.gsx:64:6
+			_gsxgw.S("<li>Children, props and ")
+//line i18n.gsx:64:30
+			_gsxgw.S("<code>attrs</code> never pass through ")
+//line i18n.gsx:64:68
+			_gsxgw.S("<code>T</code>.</li>")
+//line i18n.gsx:65:6
+			_gsxgw.S("<li>")
+//line i18n.gsx:66:7
+			_gsxgw.S("<code>gsxui add --overwrite</code> rewrites only the files it vendored, so ")
+//line i18n.gsx:66:82
+			_gsxgw.S("<code>translate.go</code>survives.</li></ul></section>")
+//line i18n.gsx:71:4
+			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
+//line i18n.gsx:72:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[2], nil))
+//line i18n.gsx:73:5
+			_gsxgw.S("<p>Calendar composes month and weekday names, the caption and each day's label. Pass a")
+//line i18n.gsx:75:6
+			_gsxgw.S("<code>locale</code>; the zero value is English.</p>")
+//line i18n.gsx:77:5
+			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
+//line i18n.gsx:78:6
+			_gsxgw.S("<li>")
+//line i18n.gsx:79:7
 			_gsxgw.S("<code>Caption</code> and ")
-//line i18n.gsx:71:32
+//line i18n.gsx:79:32
 			_gsxgw.S("<code>DayLabel</code> substitute ")
-//line i18n.gsx:71:65
+//line i18n.gsx:79:65
 			_gsxgw.S("<code>")
-//line i18n.gsx:71:71
+//line i18n.gsx:79:71
 			_gsxgw.Text(string("{month}"))
 			_gsxgw.S("</code>, ")
-//line i18n.gsx:72:9
+//line i18n.gsx:80:9
 			_gsxgw.S("<code>")
-//line i18n.gsx:72:15
+//line i18n.gsx:80:15
 			_gsxgw.Text(string("{year}"))
 			_gsxgw.S("</code>, ")
-//line i18n.gsx:72:36
+//line i18n.gsx:80:36
 			_gsxgw.S("<code>")
-//line i18n.gsx:72:42
+//line i18n.gsx:80:42
 			_gsxgw.Text(string("{weekday}"))
 			_gsxgw.S("</code> and ")
-//line i18n.gsx:72:69
+//line i18n.gsx:80:69
 			_gsxgw.S("<code>")
-//line i18n.gsx:72:75
+//line i18n.gsx:80:75
 			_gsxgw.Text(string("{day}"))
 			_gsxgw.S("</code>. Other text is literal.</li>")
-//line i18n.gsx:75:6
+//line i18n.gsx:83:6
 			_gsxgw.S("<li>")
-//line i18n.gsx:76:7
+//line i18n.gsx:84:7
 			_gsxgw.S("<code>Digits</code> is ten runes replacing 0-9 in visible text. Form values and data attributes stay ASCII.</li>")
-//line i18n.gsx:78:6
+//line i18n.gsx:86:6
 			_gsxgw.S("<li>Fill every field. An empty field renders empty; only the all-zero value means English.</li>")
-//line i18n.gsx:79:6
+//line i18n.gsx:87:6
 			_gsxgw.S("<li>The client reads the same values from the root, so navigation writes the same text the server did.</li></ul>")
-//line i18n.gsx:81:5
+//line i18n.gsx:89:5
 			_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
-//line i18n.gsx:82:6
+//line i18n.gsx:90:6
 			_gsxgw.Node(ctx, localized.Node)
 			_gsxgw.S("</div>")
-//line i18n.gsx:84:5
+//line i18n.gsx:92:5
 			_gsxgw.S("<div class=\"relative\"")
 			_gsxgw.BoolAttr("data-site-example", true)
 			_gsxgw.S(">")
-//line i18n.gsx:85:6
+//line i18n.gsx:93:6
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm\">")
-//line i18n.gsx:87:7
+//line i18n.gsx:95:7
 			_gsxgw.S("<code>")
-//line i18n.gsx:87:13
+//line i18n.gsx:95:13
 			_gsxgw.Node(ctx, hl.Node(localized.SourcePath))
 			_gsxgw.S("</code></pre>")
-//line i18n.gsx:88:6
+//line i18n.gsx:96:6
 			_gsxgw.S("<button type=\"button\"")
 			_gsxgw.BoolAttr("data-site-copy", true)
 			_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div></section>")
-//line i18n.gsx:97:4
+//line i18n.gsx:105:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:98:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[3], nil))
-//line i18n.gsx:99:5
-			_gsxgw.S("<p>Register a translator that wraps every message in markers, render each page, and search the output for English outside the markers. Anything found is text a caller passed in, or a gsxui bug worth an issue.</p></section>")
-//line i18n.gsx:104:4
-			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:105:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[4], nil))
 //line i18n.gsx:106:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[3], nil))
+//line i18n.gsx:107:5
+			_gsxgw.S("<p>Register a translator that wraps every message in markers, render each page, and search the output for English outside the markers. Anything found is text a caller passed in, or a gsxui bug worth an issue.</p></section>")
+//line i18n.gsx:112:4
+			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
+//line i18n.gsx:113:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[4], nil))
+//line i18n.gsx:114:5
 			_gsxgw.S("<p>When no ")
-//line i18n.gsx:107:14
+//line i18n.gsx:115:14
 			_gsxgw.S("<code>ui.Toaster</code> is mounted, ")
-//line i18n.gsx:107:50
+//line i18n.gsx:115:50
 			_gsxgw.S("<code>toaster.js</code> creates its own region with an English ")
-//line i18n.gsx:108:14
+//line i18n.gsx:116:14
 			_gsxgw.S("<code>aria-label</code>. Mount ")
-//line i18n.gsx:108:45
+//line i18n.gsx:116:45
 			_gsxgw.S("<code>ui.Toaster</code> and the landmark is a message like the rest.</p></section></div>")
 			return _gsxgw.Err()
 		})))
