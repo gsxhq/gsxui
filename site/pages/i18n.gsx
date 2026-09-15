@@ -61,6 +61,10 @@ component (p I18n) Page() {
 					</li>
 					<li>Without a renderer, a message renders as its English text.</li>
 					<li>With one, gsx calls your function everywhere a message renders, in text and in attributes.</li>
+					<li>
+						Renderers bind when <code>gsx generate</code> runs in your module, so only vendored components translate.
+						Importing <code>github.com/gsxhq/gsxui/ui</code> directly renders English.
+					</li>
 					<li>Children, props and <code>attrs</code> never pass through <code>T</code>.</li>
 					<li>
 						<code>gsxui add --overwrite</code> rewrites only the files it vendored,

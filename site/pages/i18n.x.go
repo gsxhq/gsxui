@@ -105,117 +105,123 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:63:6
 			_gsxgw.S("<li>With one, gsx calls your function everywhere a message renders, in text and in attributes.</li>")
 //line i18n.gsx:64:6
+			_gsxgw.S("<li>Renderers bind when ")
+//line i18n.gsx:65:27
+			_gsxgw.S("<code>gsx generate</code> runs in your module, so only vendored components translate. Importing ")
+//line i18n.gsx:66:17
+			_gsxgw.S("<code>github.com/gsxhq/gsxui/ui</code> directly renders English.</li>")
+//line i18n.gsx:68:6
 			_gsxgw.S("<li>Children, props and ")
-//line i18n.gsx:64:30
+//line i18n.gsx:68:30
 			_gsxgw.S("<code>attrs</code> never pass through ")
-//line i18n.gsx:64:68
+//line i18n.gsx:68:68
 			_gsxgw.S("<code>T</code>.</li>")
-//line i18n.gsx:65:6
+//line i18n.gsx:69:6
 			_gsxgw.S("<li>")
-//line i18n.gsx:66:7
+//line i18n.gsx:70:7
 			_gsxgw.S("<code>gsxui add --overwrite</code> rewrites only the files it vendored, so ")
-//line i18n.gsx:67:10
+//line i18n.gsx:71:10
 			_gsxgw.S("<code>translate.go</code> survives.</li></ul></section>")
-//line i18n.gsx:71:4
+//line i18n.gsx:75:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:72:5
+//line i18n.gsx:76:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[2], nil))
-//line i18n.gsx:73:5
-			_gsxgw.S("<p>Calendar composes month and weekday names, the caption and each day's label. Pass a")
-//line i18n.gsx:75:6
-			_gsxgw.S("<code>locale</code>; the zero value is English.</p>")
 //line i18n.gsx:77:5
+			_gsxgw.S("<p>Calendar composes month and weekday names, the caption and each day's label. Pass a")
+//line i18n.gsx:79:6
+			_gsxgw.S("<code>locale</code>; the zero value is English.</p>")
+//line i18n.gsx:81:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
-//line i18n.gsx:78:6
+//line i18n.gsx:82:6
 			_gsxgw.S("<li>")
-//line i18n.gsx:79:7
+//line i18n.gsx:83:7
 			_gsxgw.S("<code>Caption</code> and ")
-//line i18n.gsx:79:32
+//line i18n.gsx:83:32
 			_gsxgw.S("<code>DayLabel</code> substitute ")
-//line i18n.gsx:79:65
+//line i18n.gsx:83:65
 			_gsxgw.S("<code>")
-//line i18n.gsx:79:71
+//line i18n.gsx:83:71
 			_gsxgw.Text(string("{month}"))
 			_gsxgw.S("</code>, ")
-//line i18n.gsx:80:9
+//line i18n.gsx:84:9
 			_gsxgw.S("<code>")
-//line i18n.gsx:80:15
+//line i18n.gsx:84:15
 			_gsxgw.Text(string("{year}"))
 			_gsxgw.S("</code>, ")
-//line i18n.gsx:80:36
+//line i18n.gsx:84:36
 			_gsxgw.S("<code>")
-//line i18n.gsx:80:42
+//line i18n.gsx:84:42
 			_gsxgw.Text(string("{weekday}"))
 			_gsxgw.S("</code> and ")
-//line i18n.gsx:80:69
+//line i18n.gsx:84:69
 			_gsxgw.S("<code>")
-//line i18n.gsx:80:75
+//line i18n.gsx:84:75
 			_gsxgw.Text(string("{day}"))
 			_gsxgw.S("</code>. Other text is literal.</li>")
-//line i18n.gsx:83:6
-			_gsxgw.S("<li>")
-//line i18n.gsx:84:7
-			_gsxgw.S("<code>Digits</code> is ten runes replacing 0-9 in visible text. Form values and data attributes stay ASCII.</li>")
-//line i18n.gsx:86:6
-			_gsxgw.S("<li>Fill every field. An empty field renders empty; only the all-zero value means English.</li>")
 //line i18n.gsx:87:6
-			_gsxgw.S("<li>The client reads the same values from the root, so navigation writes the same text the server did.</li></ul>")
-//line i18n.gsx:89:5
-			_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
+			_gsxgw.S("<li>")
+//line i18n.gsx:88:7
+			_gsxgw.S("<code>Digits</code> is ten runes replacing 0-9 in visible text. Form values and data attributes stay ASCII.</li>")
 //line i18n.gsx:90:6
+			_gsxgw.S("<li>Fill every field. An empty field renders empty; only the all-zero value means English.</li>")
+//line i18n.gsx:91:6
+			_gsxgw.S("<li>The client reads the same values from the root, so navigation writes the same text the server did.</li></ul>")
+//line i18n.gsx:93:5
+			_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
+//line i18n.gsx:94:6
 			_gsxgw.Node(ctx, localized.Node)
 			_gsxgw.S("</div>")
-//line i18n.gsx:92:5
+//line i18n.gsx:96:5
 			_gsxgw.S("<div class=\"relative\"")
 			_gsxgw.BoolAttr("data-site-example", true)
 			_gsxgw.S(">")
-//line i18n.gsx:93:6
+//line i18n.gsx:97:6
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm\">")
-//line i18n.gsx:95:7
+//line i18n.gsx:99:7
 			_gsxgw.S("<code>")
-//line i18n.gsx:95:13
+//line i18n.gsx:99:13
 			_gsxgw.Node(ctx, hl.Node(localized.SourcePath))
 			_gsxgw.S("</code></pre>")
-//line i18n.gsx:96:6
+//line i18n.gsx:100:6
 			_gsxgw.S("<button type=\"button\"")
 			_gsxgw.BoolAttr("data-site-copy", true)
 			_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div></section>")
-//line i18n.gsx:105:4
+//line i18n.gsx:109:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:106:5
+//line i18n.gsx:110:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[3], nil))
-//line i18n.gsx:107:5
+//line i18n.gsx:111:5
 			_gsxgw.S("<p>Register a translator that wraps every message in markers, render each page, and search the output for English outside the markers. Anything found is text a caller passed in, one of the overridable defaults below, or a gsxui bug worth an issue.</p></section>")
-//line i18n.gsx:113:4
+//line i18n.gsx:117:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:114:5
+//line i18n.gsx:118:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[4], nil))
-//line i18n.gsx:115:5
+//line i18n.gsx:119:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
-//line i18n.gsx:116:6
+//line i18n.gsx:120:6
 			_gsxgw.S("<li>Defaults a caller can already override by passing the same attribute stay English: ")
-//line i18n.gsx:118:16
+//line i18n.gsx:122:16
 			_gsxgw.S("<code>aria-label</code>")
-//line i18n.gsx:118:39
+//line i18n.gsx:122:39
 			_gsxgw.Text(string(" "))
 			_gsxgw.S("on Spinner, Breadcrumb, Pagination and its Previous/Next links, SidebarRail's ")
-//line i18n.gsx:119:21
+//line i18n.gsx:123:21
 			_gsxgw.S("<code>aria-label</code> and")
-//line i18n.gsx:119:48
+//line i18n.gsx:123:48
 			_gsxgw.Text(string(" "))
-//line i18n.gsx:120:7
+//line i18n.gsx:124:7
 			_gsxgw.S("<code>title</code>, and Carousel's ")
-//line i18n.gsx:120:42
+//line i18n.gsx:124:42
 			_gsxgw.S("<code>aria-roledescription</code>. Pass a translated value in your markup.</li>")
-//line i18n.gsx:123:6
+//line i18n.gsx:127:6
 			_gsxgw.S("<li>When no ")
-//line i18n.gsx:124:15
+//line i18n.gsx:128:15
 			_gsxgw.S("<code>ui.Toaster</code> is mounted, ")
-//line i18n.gsx:124:51
+//line i18n.gsx:128:51
 			_gsxgw.S("<code>toaster.js</code> creates its own region with an English ")
-//line i18n.gsx:125:15
+//line i18n.gsx:129:15
 			_gsxgw.S("<code>aria-label</code>. Mount ")
-//line i18n.gsx:125:46
+//line i18n.gsx:129:46
 			_gsxgw.S("<code>ui.Toaster</code> and the landmark is a message like the rest.</li></ul></section></div>")
 			return _gsxgw.Err()
 		})))
