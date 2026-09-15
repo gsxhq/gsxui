@@ -19,6 +19,10 @@ package i18n
 //
 //	func Translate(ctx context.Context, m T) string
 //
+// Renderers bind when gsx generate runs in your module, so only vendored
+// components translate; importing github.com/gsxhq/gsxui/ui directly
+// renders English.
+//
 // Text the caller supplies (children, props, attrs) never passes through T;
 // only text the caller cannot reach does.
 type T string
