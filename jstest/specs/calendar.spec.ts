@@ -10,6 +10,7 @@ const FORM = "/x/calendar/form";
 // The only example passing showOutsideDays={false} — see
 // site/examples/calendar/outside.gsx.
 const HIDDEN_OUTSIDE = "/x/calendar/hiddenoutside";
+const LOCALIZED = "/x/calendar/localized";
 
 // The grid's 42 data-date values, in DOM order.
 async function gridDates(page: import("@playwright/test").Page) {
@@ -1063,4 +1064,36 @@ test("dropdown caption does not crowd the nav buttons", async ({ page }) => {
   expect(gaps.beforeFirst).toBeGreaterThanOrEqual(gaps.between);
   expect(gaps.afterLast).toBeGreaterThanOrEqual(gaps.between);
   expect(gaps.beforeFirst).toBe(gaps.afterLast);
+});
+
+// The locale travels on the root as data-gsxui-calendar-locale and
+// calendar.js writes captions and day labels from it, so a client-side
+// navigation must match what the server renders for that month with the
+// same locale: names, placeholder order and native digits included.
+async function captionState(page: import("@playwright/test").Page) {
+  return {
+    captions: await page.$$eval("[data-gsxui-slot-calendar-caption]", (els) => els.map((e) => e.textContent)),
+    gridLabel: await page.getAttribute("[data-gsxui-slot-calendar-grid]", "aria-label"),
+  };
+}
+
+test("Go and JS agree on a localized 2026-02 (Arabic names, digits, day-first labels)", async ({ page }) => {
+  await page.goto(LOCALIZED);
+  await page.click("[data-gsxui-slot-calendar-next]");
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute("data-gsxui-calendar-month", "2026-02");
+
+  const clientCells = await gridCells(page);
+  const clientCaption = await captionState(page);
+  // Not vacuous: the client-written text really is localized.
+  expect(clientCaption.gridLabel).toMatch(/[٠-٩]/);
+  expect(clientCaption.gridLabel).toContain("فبراير");
+  expect(clientCells.some((c) => c.ariaLabel?.startsWith("الأحد، ") || c.ariaLabel?.startsWith("السبت، "))).toBe(true);
+  expect(clientCells.every((c) => c.text === "" || /^[٠-٩]+$/.test(c.text ?? ""))).toBe(true);
+
+  await page.goto(`${LOCALIZED}?month=2026-02`);
+  const serverCells = await gridCells(page);
+  const serverCaption = await captionState(page);
+
+  expect(clientCells).toEqual(serverCells);
+  expect(clientCaption).toEqual(serverCaption);
 });

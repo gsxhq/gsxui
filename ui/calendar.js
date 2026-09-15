@@ -73,43 +73,47 @@ function formatMonth(year, month) {
   return `${String(year).padStart(4, "0")}-${String(month + 1).padStart(2, "0")}`;
 }
 
-const WEEKDAY_NAMES = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-// ariaLabel matches calendar.gsx's own d.Format("Monday, January 2, 2006") —
-// weekday-first, so hiding the abbreviated weekday header row (Task 3, still
-// aria-hidden after navigation) stays safe: every day's accessible name
-// leads with the weekday regardless of which month is currently painted.
-function ariaLabel(date) {
-  const weekday = WEEKDAY_NAMES[date.getUTCDay()];
-  const month = MONTH_NAMES[date.getUTCMonth()];
-  const year = String(date.getUTCFullYear()).padStart(4, "0");
-  return `${weekday}, ${month} ${date.getUTCDate()}, ${year}`;
+// localeOf reads the locale calendar.gsx serialised on the root
+// (CalendarLocale.clientJSON): wide month and weekday names, the caption
+// and day-label patterns, and the digit set. Always present, so there is
+// no English fallback here — the server is the single authority.
+function localeOf(root) {
+  return JSON.parse(root.dataset.gsxuiCalendarLocale);
 }
 
-function captionText(year, month) {
-  return `${MONTH_NAMES[month]} ${String(year).padStart(4, "0")}`;
+// localizeDigits is the twin of CalendarLocale.digits: map ASCII 0-9 when
+// the digit set holds exactly ten code points, otherwise leave the text.
+function localizeDigits(loc, text) {
+  const digits = Array.from(loc.digits || "");
+  if (digits.length !== 10) return text;
+  return text.replace(/[0-9]/g, (c) => digits[c.charCodeAt(0) - 48]);
+}
+
+// fillPattern is the twin of CalendarLocale.fill: substitute exactly the
+// four placeholders, always all four, an absent part as "".
+function fillPattern(loc, pattern, parts) {
+  return localizeDigits(
+    loc,
+    pattern.replace(/\{(month|year|weekday|day)\}/g, (_, key) => parts[key] ?? ""),
+  );
+}
+
+// ariaLabel is the twin of CalendarLocale.dayLabel.
+function ariaLabel(loc, date) {
+  return fillPattern(loc, loc.dayLabel, {
+    weekday: loc.weekdays[date.getUTCDay()],
+    month: loc.months[date.getUTCMonth()],
+    day: String(date.getUTCDate()),
+    year: String(date.getUTCFullYear()).padStart(4, "0"),
+  });
+}
+
+// captionText is the twin of CalendarLocale.caption.
+function captionText(loc, year, month) {
+  return fillPattern(loc, loc.caption, {
+    month: loc.months[month],
+    year: String(year).padStart(4, "0"),
+  });
 }
 
 // commaList reads a comma-separated data attribute into an array of
@@ -269,6 +273,7 @@ function repaint(root, year, month) {
   // faithful twin — no `|| default` fallback, because there is no
   // omit-when-unset case to fall back FROM.
   const showOutsideDays = root.dataset.gsxuiCalendarShowOutsideDays === "true";
+  const loc = localeOf(root);
   const grid = monthGrid(year, month, weekStartsOn);
   const rules = disabledRules(root);
   const { selected, from, to, hover } = selection(root);
@@ -375,8 +380,8 @@ function repaint(root, year, month) {
     // nothing to read, nothing to click, and — unlike DISABLED days, which
     // deliberately stay in the roving sequence — nothing to tab onto either.
     // An invisible focusable button is a screen-reader trap.
-    button.textContent = hidden ? "" : String(date.getUTCDate());
-    button.setAttribute("aria-label", ariaLabel(date));
+    button.textContent = hidden ? "" : localizeDigits(loc, String(date.getUTCDate()));
+    button.setAttribute("aria-label", ariaLabel(loc, date));
     if (hidden) button.setAttribute("aria-hidden", "true");
     else button.removeAttribute("aria-hidden");
     const isRovingStop = i === focusIdx && !hidden;
@@ -412,7 +417,7 @@ function repaint(root, year, month) {
   // itself does, or the grid keeps announcing the month it was
   // server-rendered for.
   const gridEl = root.querySelector("[data-gsxui-slot-calendar-grid]");
-  if (gridEl) gridEl.setAttribute("aria-label", captionText(year, month));
+  if (gridEl) gridEl.setAttribute("aria-label", captionText(loc, year, month));
 }
 
 // updateCaption writes the same text to every element carrying
@@ -421,7 +426,7 @@ function repaint(root, year, month) {
 // visible selects), per calendar.gsx's own doc comment on why dropdown
 // layout needs a second, textual announcement target.
 function updateCaption(root, year, month) {
-  const text = captionText(year, month);
+  const text = captionText(localeOf(root), year, month);
   for (const el of root.querySelectorAll("[data-gsxui-slot-calendar-caption]")) {
     el.textContent = text;
   }
