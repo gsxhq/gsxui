@@ -18,6 +18,15 @@ var sweptMessages = []struct {
 	{"sheet", "Close"},
 	{"toast", "Close"},
 	{"toaster", "Notifications"},
+	{"carousel", "Previous slide"},
+	{"carousel", "Next slide"},
+	{"sidebar", "Sidebar"},
+	{"sidebar", "Displays the mobile sidebar."},
+	{"sidebar", "Toggle Sidebar"},
+	{"breadcrumb", "More"},
+	{"pagination", "Previous"},
+	{"pagination", "Next"},
+	{"pagination", "More pages"},
 }
 
 // overridableLiterals are English literals that precede `{ attrs... }` in
@@ -62,12 +71,24 @@ func TestSweptMessagesOnlyAppearInsideT(t *testing.T) {
 			if strings.Contains(line, asText) || strings.TrimSpace(line) == m.text {
 				t.Errorf("%s.gsx:%d writes %q as bare text", m.file, i+1, m.text)
 			}
+			if isOverridableLine(m.file, line) {
+				continue
+			}
 			bare += strings.Count(line, quoted) - strings.Count(line, wrapped)
 		}
 		if bare != 0 {
 			t.Errorf("%s.gsx: %q appears %d time(s) outside T(...)", m.file, m.text, bare)
 		}
 	}
+}
+
+func isOverridableLine(file, line string) bool {
+	for _, l := range overridableLiterals {
+		if l.file == file && strings.Contains(line, l.text) {
+			return true
+		}
+	}
+	return false
 }
 
 func TestOverridableLiteralsPrecedeAttrs(t *testing.T) {

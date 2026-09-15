@@ -89,13 +89,15 @@ func TestDeps(t *testing.T) {
 	}
 
 	// breadcrumb.gsx imports ui/icon (BreadcrumbSeparator's default
-	// ChevronRight, BreadcrumbEllipsis's Ellipsis/MoreHorizontal).
+	// ChevronRight, BreadcrumbEllipsis's Ellipsis/MoreHorizontal) and now
+	// calls T (BreadcrumbEllipsis's "More" label), pulling in i18n too.
+	// Deps sorts its result, so i18n < icon alphabetically.
 	deps, err = registry.Deps("breadcrumb")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"icon"}) {
-		t.Fatalf("breadcrumb deps = %v, want [icon]", deps)
+	if !reflect.DeepEqual(deps, []string{"i18n", "icon"}) {
+		t.Fatalf("breadcrumb deps = %v, want [i18n icon]", deps)
 	}
 
 	// carousel.gsx composes Button (CarouselPrevious/CarouselNext) — an
@@ -103,13 +105,15 @@ func TestDeps(t *testing.T) {
 	// dialog's own Deps entry above — AND imports ui/icon
 	// (CarouselPrevious/CarouselNext's ArrowLeft/ArrowRight), the ordinary
 	// house default (accordion/breadcrumb/pagination/spinner all do the
-	// same). Deps sorts its result, so button < icon alphabetically.
+	// same) — AND now calls T (the "Previous slide"/"Next slide" control
+	// labels), pulling in i18n too. Deps sorts its result, so button <
+	// i18n < icon alphabetically.
 	deps, err = registry.Deps("carousel")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"button", "icon"}) {
-		t.Fatalf("carousel deps = %v, want [button icon]", deps)
+	if !reflect.DeepEqual(deps, []string{"button", "i18n", "icon"}) {
+		t.Fatalf("carousel deps = %v, want [button i18n icon]", deps)
 	}
 
 	// kbd.gsx, aspect-ratio.gsx, and progress.gsx have no icon import and no
@@ -160,13 +164,15 @@ func TestDeps(t *testing.T) {
 
 	// pagination.gsx imports ui/icon (ChevronLeft/ChevronRight/Ellipsis).
 	// Its Button relationship is now token composition in the shared style
-	// contract, not a Go code dependency for the vendored source graph.
+	// contract, not a Go code dependency for the vendored source graph. It
+	// now also calls T (the "Previous"/"Next"/"More pages" labels), pulling
+	// in i18n too. Deps sorts its result, so i18n < icon alphabetically.
 	deps, err = registry.Deps("pagination")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"icon"}) {
-		t.Fatalf("pagination deps = %v, want [icon]", deps)
+	if !reflect.DeepEqual(deps, []string{"i18n", "icon"}) {
+		t.Fatalf("pagination deps = %v, want [i18n icon]", deps)
 	}
 
 	// button-group.gsx has no icon import; ButtonGroupSeparator calls
@@ -467,13 +473,15 @@ func TestDeps(t *testing.T) {
 	// (SidebarMenuSkeleton), and ui.Tooltip/TooltipContent
 	// (SidebarMenuButton's tooltip branch) directly — flat package
 	// intra-package edges, same declIndex-resolved shape as combobox's own
-	// input-group/icon deps above. Deps sorts its result.
+	// input-group/icon deps above. It now also calls T directly (Sidebar's
+	// mobile title/description, SidebarTrigger's label), pulling in i18n
+	// too. Deps sorts its result, so i18n < icon alphabetically.
 	deps, err = registry.Deps("sidebar")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"button", "icon", "input", "separator", "sheet", "skeleton", "tooltip"}) {
-		t.Fatalf("sidebar deps = %v, want [button icon input separator sheet skeleton tooltip]", deps)
+	if !reflect.DeepEqual(deps, []string{"button", "i18n", "icon", "input", "separator", "sheet", "skeleton", "tooltip"}) {
+		t.Fatalf("sidebar deps = %v, want [button i18n icon input separator sheet skeleton tooltip]", deps)
 	}
 
 	// Calendar's controls compose Button's public styling token in markup

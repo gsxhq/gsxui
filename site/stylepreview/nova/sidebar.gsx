@@ -104,9 +104,9 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 					data-gsxui-slot-sidebar
 				>
 					<SheetHeader class={ "sr-only p-0" } data-gsxui-slot-sidebar-mobile-header>
-						<SheetTitle data-gsxui-slot-sidebar-mobile-title>Sidebar</SheetTitle>
+						<SheetTitle data-gsxui-slot-sidebar-mobile-title>{ T("Sidebar") }</SheetTitle>
 						<SheetDescription data-gsxui-slot-sidebar-mobile-description>
-							Displays the mobile sidebar.
+							{ T("Displays the mobile sidebar.") }
 						</SheetDescription>
 					</SheetHeader>
 					<div data-gsxui-slot-sidebar-mobile-inner>{ children }</div>
@@ -156,7 +156,7 @@ component SidebarTrigger(attrs gsx.Attrs) {
 		data-gsxui-slot-sidebar-trigger
 	>
 		<icon.PanelLeft class={ "rtl:rotate-180" }/>
-		<span class={ "sr-only" } data-gsxui-slot-sidebar-trigger-label>Toggle Sidebar</span>
+		<span class={ "sr-only" } data-gsxui-slot-sidebar-trigger-label>{ T("Toggle Sidebar") }</span>
 	</Button>
 }
 

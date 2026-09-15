@@ -93,6 +93,6 @@ component BreadcrumbEllipsis(attrs gsx.Attrs) {
 		data-gsxui-slot-breadcrumb-ellipsis
 	>
 		<icon.Ellipsis/>
-		<span data-gsxui-slot-breadcrumb-ellipsis-label>More</span>
+		<span data-gsxui-slot-breadcrumb-ellipsis-label>{ T("More") }</span>
 	</span>
 }
