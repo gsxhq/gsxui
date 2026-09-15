@@ -1,0 +1,16 @@
+package i18n
+
+import (
+	"context"
+
+	"example.com/app/ui"
+)
+
+// Translate renders every ui.T. The English text is the message id; an
+// unknown one renders as English.
+func Translate(ctx context.Context, m ui.T) string {
+	if s, ok := catalog.For(ctx).Lookup(string(m)); ok {
+		return s
+	}
+	return string(m)
+}

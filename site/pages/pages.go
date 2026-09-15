@@ -23,6 +23,7 @@ type Docs struct {
 	Theming        `route:"/theming Theming"`
 	Rtl            `route:"/rtl RTL"`
 	NpmFree        `route:"/npm-free npm-free"`
+	I18n           `route:"/i18n Internationalization"`
 }
 
 // ServeHTTP is the fallback for any path under "/" that no child route

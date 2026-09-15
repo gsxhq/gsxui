@@ -102,6 +102,7 @@ func TestSiteLayoutModes(t *testing.T) {
 		{path: "/components", mode: "docs"},
 		{path: "/components/button", mode: "docs"},
 		{path: "/docs/getting-started", mode: "docs"},
+		{path: "/docs/i18n", mode: "docs"},
 		{path: "/theme", mode: "workspace"},
 	}
 
@@ -203,6 +204,19 @@ func TestDocsTableOfContents(t *testing.T) {
 				{id: "component-markers", title: "Stable component markers"},
 				{id: "caller-utilities", title: "Caller utilities win"},
 				{id: "breaking-migration", title: "Breaking migration"},
+			},
+		},
+		{
+			path: "/docs/i18n",
+			items: []struct {
+				id    string
+				title string
+			}{
+				{id: "get-started", title: "Get started"},
+				{id: "how-it-works", title: "How it works"},
+				{id: "calendar", title: "Calendar"},
+				{id: "leftover-english", title: "Finding leftover English"},
+				{id: "not-translated", title: "Not translated"},
 			},
 		},
 	}
