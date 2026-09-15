@@ -348,3 +348,60 @@ component Card(tone string, children gsx.Node) {
 		t.Errorf("checkHelperCalls() = %q, want every gap reported", err)
 	}
 }
+
+func TestGenerateAllPassesHelperFilesThroughWithoutRecipes(t *testing.T) {
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+	if err := GenerateAll(root, false); err != nil {
+		t.Fatalf("GenerateAll() error = %v", err)
+	}
+	for _, path := range []string{
+		"registry/generated/nova/i18n.gsx",
+		"registry/generated/maia/i18n.gsx",
+		"site/stylepreview/nova/i18n.gsx",
+		"site/stylepreview/maia/i18n.gsx",
+		"ui/i18n.gsx",
+	} {
+		content, err := os.ReadFile(filepath.Join(root, path))
+		if err != nil {
+			t.Errorf("missing helper artifact %s: %v", path, err)
+			continue
+		}
+		wantPackage := "package ui"
+		if strings.HasPrefix(path, "site/stylepreview/") {
+			wantPackage = "package " + strings.Split(path, "/")[2]
+		}
+		if !strings.HasPrefix(string(content), wantPackage+"\n") {
+			t.Errorf("%s: package clause = %q, want %q", path, firstLine(content), wantPackage)
+		}
+		if !strings.Contains(string(content), "type T string") {
+			t.Errorf("%s: helper body was not copied through", path)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(root, "registry", "canonical", "i18n_recipe.gen.go")); !os.IsNotExist(err) {
+		t.Errorf("helper file must not get a recipe accessor set: %v", err)
+	}
+	if err := GenerateAll(root, true); err != nil {
+		t.Fatalf("GenerateAll(check) after write = %v, want nil", err)
+	}
+}
+
+// A file that declares a component but no shape is still an error: only a
+// component-less file is a helper.
+func TestGenerateAllRejectsAComponentWithoutAShape(t *testing.T) {
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+	src := "package canonical\n\ncomponent Zzz() {\n\t<div></div>\n}\n"
+	if err := os.WriteFile(filepath.Join(root, "registry", "canonical", "zzz.gsx"), []byte(src), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err := GenerateAll(root, false)
+	if err == nil || !strings.Contains(err.Error(), "declares no shape") {
+		t.Fatalf("GenerateAll() error = %v, want a no-shape error", err)
+	}
+}
+
+func firstLine(b []byte) string {
+	line, _, _ := strings.Cut(string(b), "\n")
+	return line
+}
