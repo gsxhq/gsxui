@@ -1,7 +1,7 @@
 package empty
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -12,20 +12,20 @@ import (
 // Basic doesn't compose; DEVIATED from rather than invented).
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.Empty>
-			<ui.EmptyHeader>
-				<ui.EmptyMedia>الوسائط الافتراضية</ui.EmptyMedia>
-				<ui.EmptyMedia variant="icon">
+		<uirtl.Empty>
+			<uirtl.EmptyHeader>
+				<uirtl.EmptyMedia>الوسائط الافتراضية</uirtl.EmptyMedia>
+				<uirtl.EmptyMedia variant="icon">
 					<icon.Inbox/>
-				</ui.EmptyMedia>
-				<ui.EmptyTitle>لا توجد مشاريع بعد</ui.EmptyTitle>
-				<ui.EmptyDescription>
+				</uirtl.EmptyMedia>
+				<uirtl.EmptyTitle>لا توجد مشاريع بعد</uirtl.EmptyTitle>
+				<uirtl.EmptyDescription>
 					لم تقم بإنشاء أي مشاريع بعد. ابدأ بإنشاء مشروعك الأول.
-				</ui.EmptyDescription>
-			</ui.EmptyHeader>
-			<ui.EmptyContent>
-				<ui.Button>إنشاء مشروع</ui.Button>
-			</ui.EmptyContent>
-		</ui.Empty>
+				</uirtl.EmptyDescription>
+			</uirtl.EmptyHeader>
+			<uirtl.EmptyContent>
+				<uirtl.Button>إنشاء مشروع</uirtl.Button>
+			</uirtl.EmptyContent>
+		</uirtl.Empty>
 	</div>
 }

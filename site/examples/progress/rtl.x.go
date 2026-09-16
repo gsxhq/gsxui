@@ -5,7 +5,7 @@ package progress
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -13,7 +13,7 @@ import (
 // Rtl mirrors shadcn's own progress-rtl demo's single upload-progress bar
 // (translated label, value 56), wrapped in dir="rtl". shadcn's demo also
 // composes a ProgressLabel/ProgressValue pair and Arabic-Indic numeral
-// formatting; this dir's ui.Progress exposes neither (see basic.gsx),
+// formatting; this dir's uirtl.Progress exposes neither (see basic.gsx),
 // so a single bare Progress at the same value stands in.
 
 //line rtl.gsx:11:1
@@ -23,7 +23,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:12:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"w-full max-w-sm\">")
 //line rtl.gsx:13:3
-		_gsxgw.Node(ctx, ui.Progress(56, nil))
+		_gsxgw.Node(ctx, uirtl.Progress(56, nil))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

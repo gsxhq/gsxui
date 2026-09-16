@@ -5,7 +5,7 @@ package item
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -23,19 +23,19 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:14:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"flex w-full max-w-md flex-col gap-6\">")
 //line rtl.gsx:15:3
-		_gsxgw.Node(ctx, ui.Item("outline", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Item("outline", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:4
-			_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:5
-				_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("عنصر أساسي")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:18:5
-				_gsxgw.Node(ctx, ui.ItemDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ItemDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("عنصر بسيط يحتوي على عنوان ووصف.")
 					return _gsxgw.Err()
@@ -43,10 +43,10 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:20:4
-			_gsxgw.Node(ctx, ui.ItemActions(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ItemActions(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:21:5
-				_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("إجراء")
 					return _gsxgw.Err()
@@ -56,20 +56,20 @@ func Rtl() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:24:3
-		_gsxgw.Node(ctx, ui.Item("outline", "sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Item("outline", "sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:25:4
-			_gsxgw.Node(ctx, ui.ItemMedia("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ItemMedia("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:26:5
 				_gsxgw.Node(ctx, icon.BadgeCheck(_gsxrt.Attrs{{Key: "class", Value: "size-5"}}...))
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:28:4
-			_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:5
-				_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("تم التحقق من ملفك الشخصي.")
 					return _gsxgw.Err()
@@ -77,7 +77,7 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:31:4
-			_gsxgw.Node(ctx, ui.ItemActions(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ItemActions(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:32:5
 				_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))

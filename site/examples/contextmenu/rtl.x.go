@@ -5,7 +5,7 @@ package contextmenu
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -23,23 +23,23 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:13:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:14:3
-		_gsxgw.Node(ctx, ui.ContextMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.ContextMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:4
-			_gsxgw.Node(ctx, ui.ContextMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ContextMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("انقر بزر الماوس الأيمن هنا")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm"}}))
 //line rtl.gsx:20:4
-			_gsxgw.Node(ctx, ui.ContextMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ContextMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:21:5
-				_gsxgw.Node(ctx, ui.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("رجوع")
 //line rtl.gsx:23:6
-					_gsxgw.Node(ctx, ui.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘[")
 						return _gsxgw.Err()
@@ -47,11 +47,11 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:25:5
-				_gsxgw.Node(ctx, ui.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("تقدم")
 //line rtl.gsx:27:6
-					_gsxgw.Node(ctx, ui.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘]")
 						return _gsxgw.Err()
@@ -59,11 +59,11 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
 //line rtl.gsx:29:5
-				_gsxgw.Node(ctx, ui.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("إعادة تحميل")
 //line rtl.gsx:31:6
-					_gsxgw.Node(ctx, ui.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘R")
 						return _gsxgw.Err()
@@ -71,9 +71,9 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:33:5
-				_gsxgw.Node(ctx, ui.ContextMenuSeparator(nil))
+				_gsxgw.Node(ctx, uirtl.ContextMenuSeparator(nil))
 //line rtl.gsx:34:5
-				_gsxgw.Node(ctx, ui.ContextMenuItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ContextMenuItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("حذف")
 					return _gsxgw.Err()

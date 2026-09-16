@@ -1,6 +1,6 @@
 package spinner
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl mirrors shadcn's own spinner-rtl demo: a muted Item row pairing a
 // Spinner with a processing-payment title and a trailing amount, translated
@@ -9,16 +9,16 @@ import "github.com/gsxhq/gsxui/ui"
 // "١٠٠٫٠٠ دولار" string shadcn's own Arabic translation table supplies.
 component Rtl() {
 	<div dir="rtl" lang="ar" class="flex w-full max-w-xs flex-col gap-4">
-		<ui.Item variant="muted">
-			<ui.ItemMedia>
-				<ui.Spinner/>
-			</ui.ItemMedia>
-			<ui.ItemContent>
-				<ui.ItemTitle class="line-clamp-1">جاري معالجة الدفع...</ui.ItemTitle>
-			</ui.ItemContent>
-			<ui.ItemContent class="flex-none justify-end">
+		<uirtl.Item variant="muted">
+			<uirtl.ItemMedia>
+				<uirtl.Spinner/>
+			</uirtl.ItemMedia>
+			<uirtl.ItemContent>
+				<uirtl.ItemTitle class="line-clamp-1">جاري معالجة الدفع...</uirtl.ItemTitle>
+			</uirtl.ItemContent>
+			<uirtl.ItemContent class="flex-none justify-end">
 				<span class="text-sm tabular-nums">١٠٠.٠٠ دولار</span>
-			</ui.ItemContent>
-		</ui.Item>
+			</uirtl.ItemContent>
+		</uirtl.Item>
 	</div>
 }

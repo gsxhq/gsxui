@@ -1,7 +1,7 @@
 package button
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -11,18 +11,18 @@ import (
 // spinner — translated to Arabic, wrapped in dir="rtl".
 component Rtl() {
 	<div dir="rtl" lang="ar" class="flex flex-wrap items-center gap-2">
-		<ui.Button variant="outline">زر</ui.Button>
-		<ui.Button variant="destructive">حذف</ui.Button>
-		<ui.Button variant="outline">
+		<uirtl.Button variant="outline">زر</uirtl.Button>
+		<uirtl.Button variant="destructive">حذف</uirtl.Button>
+		<uirtl.Button variant="outline">
 			إرسال
 			<uiicon.ArrowRight class="rtl:rotate-180"/>
-		</ui.Button>
-		<ui.Button variant="outline" size="icon" aria-label="Add">
+		</uirtl.Button>
+		<uirtl.Button variant="outline" size="icon" aria-label="Add">
 			<uiicon.Plus/>
-		</ui.Button>
-		<ui.Button variant="secondary" disabled>
-			<ui.Spinner/>
+		</uirtl.Button>
+		<uirtl.Button variant="secondary" disabled>
+			<uirtl.Spinner/>
 			جاري التحميل
-		</ui.Button>
+		</uirtl.Button>
 	</div>
 }

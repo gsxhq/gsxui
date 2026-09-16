@@ -1,6 +1,6 @@
 package avatar
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl mirrors shadcn's own avatar-rtl demo shape: a loaded avatar, and an
 // overlapping group with a "+N" count tile, wrapped in dir="rtl". gsxui
@@ -10,24 +10,24 @@ import "github.com/gsxhq/gsxui/ui"
 // the Arabic-Indic "+٣" shadcn's own translations table uses for ar.
 component Rtl() {
 	<div dir="rtl" lang="ar" class="flex flex-row flex-wrap items-center gap-6">
-		<ui.Avatar>
-			<ui.AvatarImage src={avatarSVG |> dataURL("image/svg+xml")} alt="Ada Lovelace"/>
-			<ui.AvatarFallback>AL</ui.AvatarFallback>
-		</ui.Avatar>
+		<uirtl.Avatar>
+			<uirtl.AvatarImage src={avatarSVG |> dataURL("image/svg+xml")} alt="Ada Lovelace"/>
+			<uirtl.AvatarFallback>AL</uirtl.AvatarFallback>
+		</uirtl.Avatar>
 		<div class="flex -space-x-2">
-			<ui.Avatar class="ring-2 ring-background">
-				<ui.AvatarImage src={avatarSVG |> dataURL("image/svg+xml")} alt="Ada Lovelace"/>
-				<ui.AvatarFallback>AL</ui.AvatarFallback>
-			</ui.Avatar>
-			<ui.Avatar class="ring-2 ring-background">
-				<ui.AvatarFallback>GH</ui.AvatarFallback>
-			</ui.Avatar>
-			<ui.Avatar class="ring-2 ring-background">
-				<ui.AvatarFallback>AT</ui.AvatarFallback>
-			</ui.Avatar>
-			<ui.Avatar class="ring-2 ring-background">
-				<ui.AvatarFallback>{ "+٣" }</ui.AvatarFallback>
-			</ui.Avatar>
+			<uirtl.Avatar class="ring-2 ring-background">
+				<uirtl.AvatarImage src={avatarSVG |> dataURL("image/svg+xml")} alt="Ada Lovelace"/>
+				<uirtl.AvatarFallback>AL</uirtl.AvatarFallback>
+			</uirtl.Avatar>
+			<uirtl.Avatar class="ring-2 ring-background">
+				<uirtl.AvatarFallback>GH</uirtl.AvatarFallback>
+			</uirtl.Avatar>
+			<uirtl.Avatar class="ring-2 ring-background">
+				<uirtl.AvatarFallback>AT</uirtl.AvatarFallback>
+			</uirtl.Avatar>
+			<uirtl.Avatar class="ring-2 ring-background">
+				<uirtl.AvatarFallback>{ "+٣" }</uirtl.AvatarFallback>
+			</uirtl.Avatar>
 		</div>
 	</div>
 }

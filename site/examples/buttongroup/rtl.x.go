@@ -5,7 +5,7 @@ package buttongroup
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -26,10 +26,10 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:16:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"flex flex-wrap items-start gap-6\">")
 //line rtl.gsx:17:3
-		_gsxgw.Node(ctx, ui.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:4
-			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:5
 				_gsxgw.Node(ctx, icon.ArrowLeft(_gsxrt.Attrs{{Key: "class", Value: "rtl:rotate-180"}}...))
@@ -38,16 +38,16 @@ func Rtl() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:22:3
-		_gsxgw.Node(ctx, ui.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:23:4
-			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("أرشفة")
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:24:4
-			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("تقرير")
 				return _gsxgw.Err()
@@ -55,23 +55,23 @@ func Rtl() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:26:3
-		_gsxgw.Node(ctx, ui.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:27:4
-			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:28:5
 				_gsxgw.Node(ctx, icon.Minus())
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Decrease quantity"}}))
 //line rtl.gsx:30:4
-			_gsxgw.Node(ctx, ui.ButtonGroupText(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ButtonGroupText(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("42")
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:31:4
-			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:32:5
 				_gsxgw.Node(ctx, icon.Plus())

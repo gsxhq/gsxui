@@ -1,7 +1,7 @@
 package inputgroup
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -11,43 +11,43 @@ import (
 component Rtl() {
 	<div dir="rtl" lang="ar">
 		<div class="flex w-full max-w-sm flex-col gap-4">
-			<ui.InputGroup>
-				<ui.InputGroupAddon>
+			<uirtl.InputGroup>
+				<uirtl.InputGroupAddon>
 					<icon.Search class="size-4"/>
-				</ui.InputGroupAddon>
-				<ui.InputGroupInput placeholder="بحث..."/>
-			</ui.InputGroup>
-			<ui.InputGroup>
-				<ui.InputGroupInput placeholder="البريد الإلكتروني" type="email"/>
-				<ui.InputGroupAddon align="inline-end">
-					<ui.InputGroupButton aria-label="إرسال">
+				</uirtl.InputGroupAddon>
+				<uirtl.InputGroupInput placeholder="بحث..."/>
+			</uirtl.InputGroup>
+			<uirtl.InputGroup>
+				<uirtl.InputGroupInput placeholder="البريد الإلكتروني" type="email"/>
+				<uirtl.InputGroupAddon align="inline-end">
+					<uirtl.InputGroupButton aria-label="إرسال">
 						<icon.Send/>
-					</ui.InputGroupButton>
-				</ui.InputGroupAddon>
-			</ui.InputGroup>
-			<ui.InputGroup data-disabled="true">
-				<ui.InputGroupAddon align="block-start">
-					<ui.InputGroupText>الرابط</ui.InputGroupText>
-				</ui.InputGroupAddon>
-				<ui.InputGroupInput disabled placeholder="معطل"/>
-				<ui.InputGroupAddon align="block-end">
-					<ui.InputGroupText>مطلوب</ui.InputGroupText>
-				</ui.InputGroupAddon>
-			</ui.InputGroup>
+					</uirtl.InputGroupButton>
+				</uirtl.InputGroupAddon>
+			</uirtl.InputGroup>
+			<uirtl.InputGroup data-disabled="true">
+				<uirtl.InputGroupAddon align="block-start">
+					<uirtl.InputGroupText>الرابط</uirtl.InputGroupText>
+				</uirtl.InputGroupAddon>
+				<uirtl.InputGroupInput disabled placeholder="معطل"/>
+				<uirtl.InputGroupAddon align="block-end">
+					<uirtl.InputGroupText>مطلوب</uirtl.InputGroupText>
+				</uirtl.InputGroupAddon>
+			</uirtl.InputGroup>
 			<div class="flex flex-wrap gap-2">
-				<ui.InputGroupButton variant="default">افتراضي</ui.InputGroupButton>
-				<ui.InputGroupButton variant="destructive">مدمر</ui.InputGroupButton>
-				<ui.InputGroupButton variant="outline">مخطط</ui.InputGroupButton>
-				<ui.InputGroupButton variant="secondary">ثانوي</ui.InputGroupButton>
-				<ui.InputGroupButton variant="link">رابط</ui.InputGroupButton>
-				<ui.InputGroupButton size="sm">صغير</ui.InputGroupButton>
-				<ui.InputGroupButton size="icon-sm" aria-label="أيقونة">
+				<uirtl.InputGroupButton variant="default">افتراضي</uirtl.InputGroupButton>
+				<uirtl.InputGroupButton variant="destructive">مدمر</uirtl.InputGroupButton>
+				<uirtl.InputGroupButton variant="outline">مخطط</uirtl.InputGroupButton>
+				<uirtl.InputGroupButton variant="secondary">ثانوي</uirtl.InputGroupButton>
+				<uirtl.InputGroupButton variant="link">رابط</uirtl.InputGroupButton>
+				<uirtl.InputGroupButton size="sm">صغير</uirtl.InputGroupButton>
+				<uirtl.InputGroupButton size="icon-sm" aria-label="أيقونة">
 					<icon.Send/>
-				</ui.InputGroupButton>
+				</uirtl.InputGroupButton>
 			</div>
-			<ui.InputGroup>
-				<ui.InputGroupInput aria-invalid="true" value="قيمة غير صالحة"/>
-			</ui.InputGroup>
+			<uirtl.InputGroup>
+				<uirtl.InputGroupInput aria-invalid="true" value="قيمة غير صالحة"/>
+			</uirtl.InputGroup>
 		</div>
 	</div>
 }

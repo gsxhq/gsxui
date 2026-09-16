@@ -1,7 +1,7 @@
 package alert
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -9,17 +9,17 @@ import (
 // new-feature Alert, translated to Arabic, wrapped in dir="rtl".
 component Rtl() {
 	<div dir="rtl" lang="ar" class="grid w-full max-w-md items-start gap-4">
-		<ui.Alert>
+		<uirtl.Alert>
 			<uiicon.CircleCheck/>
-			<ui.AlertTitle>تم الدفع بنجاح</ui.AlertTitle>
-			<ui.AlertDescription>
+			<uirtl.AlertTitle>تم الدفع بنجاح</uirtl.AlertTitle>
+			<uirtl.AlertDescription>
 				تمت معالجة دفعتك البالغة 29.99 دولارًا. تم إرسال إيصال إلى عنوان بريدك الإلكتروني.
-			</ui.AlertDescription>
-		</ui.Alert>
-		<ui.Alert>
+			</uirtl.AlertDescription>
+		</uirtl.Alert>
+		<uirtl.Alert>
 			<uiicon.Info/>
-			<ui.AlertTitle>ميزة جديدة متاحة</ui.AlertTitle>
-			<ui.AlertDescription>لقد أضفنا دعم الوضع الداكن. يمكنك تفعيله في إعدادات حسابك.</ui.AlertDescription>
-		</ui.Alert>
+			<uirtl.AlertTitle>ميزة جديدة متاحة</uirtl.AlertTitle>
+			<uirtl.AlertDescription>لقد أضفنا دعم الوضع الداكن. يمكنك تفعيله في إعدادات حسابك.</uirtl.AlertDescription>
+		</uirtl.Alert>
 	</div>
 }

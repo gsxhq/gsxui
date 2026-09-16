@@ -5,7 +5,7 @@
 // hyphenated "scroll-area" (see scrollarea.go).
 package scrollarea
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // tagsRtl mirrors this dir's own basic.gsx tags list (shadcn's own
 // scroll-area-demo.tsx tag shape), trimmed the same way.
@@ -20,15 +20,15 @@ var tagsRtl = []string{
 // w-48 box of tag rows as this dir's own Basic, title translated to
 // Arabic and wrapped in dir="rtl".
 component Rtl() {
-	<ui.ScrollArea dir="rtl" lang="ar" class="h-72 w-48 rounded-md border">
+	<uirtl.ScrollArea dir="rtl" lang="ar" class="h-72 w-48 rounded-md border">
 		<div class="p-4">
 			<h4 class="mb-4 text-sm leading-none font-medium">العلامات</h4>
 			{ for _, tag := range tagsRtl {
 				<div>
 					<div class="text-sm">{ tag }</div>
-					<ui.Separator class="my-2"/>
+					<uirtl.Separator class="my-2"/>
 				</div>
 			} }
 		</div>
-	</ui.ScrollArea>
+	</uirtl.ScrollArea>
 }

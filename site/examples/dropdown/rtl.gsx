@@ -1,7 +1,7 @@
 package dropdown
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 )
 
 // Rtl keeps Basic's flat menu shape (label, separator, plain items —
@@ -11,26 +11,26 @@ import (
 // account/profile/billing/settings vocabulary.
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.DropdownMenu>
-			<ui.Button
+		<uirtl.DropdownMenu>
+			<uirtl.Button
 				variant="outline"
 				data-gsxui-slot-dropdown-menu-trigger
 				aria-haspopup="menu"
 				aria-expanded="false"
 			>
 				فتح القائمة
-			</ui.Button>
-			<ui.DropdownMenuContent>
-				<ui.DropdownMenuGroup>
-					<ui.DropdownMenuLabel>الحساب</ui.DropdownMenuLabel>
-					<ui.DropdownMenuSeparator/>
-					<ui.DropdownMenuItem>الملف الشخصي</ui.DropdownMenuItem>
-					<ui.DropdownMenuItem>الفوترة</ui.DropdownMenuItem>
-					<ui.DropdownMenuItem>
-						الإعدادات <ui.DropdownMenuShortcut>⌘,</ui.DropdownMenuShortcut>
-					</ui.DropdownMenuItem>
-				</ui.DropdownMenuGroup>
-			</ui.DropdownMenuContent>
-		</ui.DropdownMenu>
+			</uirtl.Button>
+			<uirtl.DropdownMenuContent>
+				<uirtl.DropdownMenuGroup>
+					<uirtl.DropdownMenuLabel>الحساب</uirtl.DropdownMenuLabel>
+					<uirtl.DropdownMenuSeparator/>
+					<uirtl.DropdownMenuItem>الملف الشخصي</uirtl.DropdownMenuItem>
+					<uirtl.DropdownMenuItem>الفوترة</uirtl.DropdownMenuItem>
+					<uirtl.DropdownMenuItem>
+						الإعدادات <uirtl.DropdownMenuShortcut>⌘,</uirtl.DropdownMenuShortcut>
+					</uirtl.DropdownMenuItem>
+				</uirtl.DropdownMenuGroup>
+			</uirtl.DropdownMenuContent>
+		</uirtl.DropdownMenu>
 	</div>
 }

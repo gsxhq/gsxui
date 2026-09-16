@@ -5,7 +5,7 @@ package checkbox
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -19,15 +19,15 @@ func Rtl() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:11:2
-		_gsxgw.Node(ctx, ui.FieldGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.FieldGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:12:3
-			_gsxgw.Node(ctx, ui.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:13:4
-				_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "checkbox-rtl-terms"}}))
+				_gsxgw.Node(ctx, uirtl.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "checkbox-rtl-terms"}}))
 //line rtl.gsx:14:4
-				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("قبول الشروط والأحكام")
 					return _gsxgw.Err()
@@ -35,21 +35,21 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:16:3
-			_gsxgw.Node(ctx, ui.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:4
-				_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-rtl-terms-2"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, uirtl.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-rtl-terms-2"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
 //line rtl.gsx:18:4
-				_gsxgw.Node(ctx, ui.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:5
-					_gsxgw.Node(ctx, ui.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("قبول الشروط والأحكام")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: "checkbox-rtl-terms-2"}}))
 //line rtl.gsx:20:5
-					_gsxgw.Node(ctx, ui.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("بالنقر على هذا المربع، فإنك توافق على الشروط.")
 						return _gsxgw.Err()
@@ -59,12 +59,12 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:23:3
-			_gsxgw.Node(ctx, ui.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:4
-				_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-rtl-notify"}}, _gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, uirtl.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-rtl-notify"}}, _gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}})))
 //line rtl.gsx:25:4
-				_gsxgw.Node(ctx, ui.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("تفعيل الإشعارات")
 					return _gsxgw.Err()
@@ -72,24 +72,24 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}}))
 //line rtl.gsx:27:3
-			_gsxgw.Node(ctx, ui.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:28:4
-				_gsxgw.Node(ctx, ui.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:5
-					_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "checkbox-rtl-notify-2"}}))
+					_gsxgw.Node(ctx, uirtl.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "checkbox-rtl-notify-2"}}))
 //line rtl.gsx:30:5
-					_gsxgw.Node(ctx, ui.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:31:6
-						_gsxgw.Node(ctx, ui.FieldTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.FieldTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("تفعيل الإشعارات")
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:32:6
-						_gsxgw.Node(ctx, ui.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("يمكنك تفعيل أو إلغاء تفعيل الإشعارات في أي وقت.")
 							return _gsxgw.Err()

@@ -5,7 +5,7 @@ package label
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -20,9 +20,9 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:11:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"flex items-center gap-2\">")
 //line rtl.gsx:12:3
-		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "label-rtl-terms"}}))
+		_gsxgw.Node(ctx, uirtl.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "label-rtl-terms"}}))
 //line rtl.gsx:13:3
-		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("قبول الشروط والأحكام")
 			return _gsxgw.Err()

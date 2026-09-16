@@ -1,7 +1,7 @@
 package collapsible
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -11,8 +11,8 @@ import (
 // always-visible line, two more revealed by expanding.
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.Collapsible class="flex w-[350px] flex-col gap-2">
-			<ui.CollapsibleTrigger class="flex cursor-default items-center justify-between gap-4 px-4">
+		<uirtl.Collapsible class="flex w-[350px] flex-col gap-2">
+			<uirtl.CollapsibleTrigger class="flex cursor-default items-center justify-between gap-4 px-4">
 				<h4 class="text-sm font-semibold">الطلب #4189</h4>
 				<span
 					aria-hidden="true"
@@ -20,12 +20,12 @@ component Rtl() {
 				>
 					<icon.ChevronsUpDown/>
 				</span>
-			</ui.CollapsibleTrigger>
+			</uirtl.CollapsibleTrigger>
 			<div class="flex items-center justify-between rounded-md border px-4 py-2 text-sm">
 				<span class="text-muted-foreground">الحالة</span>
 				<span class="font-medium">تم الشحن</span>
 			</div>
-			<ui.CollapsibleContent class="flex flex-col gap-2">
+			<uirtl.CollapsibleContent class="flex flex-col gap-2">
 				<div class="rounded-md border px-4 py-2 text-sm">
 					<p class="font-medium">عنوان الشحن</p>
 					<p class="text-muted-foreground">100 Market St, San Francisco</p>
@@ -34,7 +34,7 @@ component Rtl() {
 					<p class="font-medium">العناصر</p>
 					<p class="text-muted-foreground">2x سماعات الاستوديو</p>
 				</div>
-			</ui.CollapsibleContent>
-		</ui.Collapsible>
+			</uirtl.CollapsibleContent>
+		</uirtl.Collapsible>
 	</div>
 }

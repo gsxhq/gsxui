@@ -2,14 +2,14 @@
 package label
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 )
 
 // Rtl mirrors shadcn's own label-rtl demo: a Checkbox paired with a Label
 // via matching id/for, translated to Arabic and wrapped in dir="rtl".
 component Rtl() {
 	<div dir="rtl" lang="ar" class="flex items-center gap-2">
-		<ui.Checkbox id="label-rtl-terms"/>
-		<ui.Label for="label-rtl-terms">قبول الشروط والأحكام</ui.Label>
+		<uirtl.Checkbox id="label-rtl-terms"/>
+		<uirtl.Label for="label-rtl-terms">قبول الشروط والأحكام</uirtl.Label>
 	</div>
 }

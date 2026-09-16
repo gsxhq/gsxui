@@ -1,6 +1,6 @@
 package hovercard
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl mirrors Basic's own hover-card-demo shape (link trigger, avatar +
 // name + description + joined-date card), translated to Arabic. shadcn's
@@ -9,23 +9,23 @@ import "github.com/gsxhq/gsxui/ui"
 // compose; DEVIATED from rather than invented.
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.HoverCard>
-			<ui.HoverCardTrigger>
-				<ui.Button variant="link">@nextjs</ui.Button>
-			</ui.HoverCardTrigger>
-			<ui.HoverCardContent class="w-80">
+		<uirtl.HoverCard>
+			<uirtl.HoverCardTrigger>
+				<uirtl.Button variant="link">@nextjs</uirtl.Button>
+			</uirtl.HoverCardTrigger>
+			<uirtl.HoverCardContent class="w-80">
 				<div class="flex justify-between gap-4">
-					<ui.Avatar>
-						<ui.AvatarImage src={avatarSVG |> dataURL("image/svg+xml")} alt="@nextjs"/>
-						<ui.AvatarFallback>VC</ui.AvatarFallback>
-					</ui.Avatar>
+					<uirtl.Avatar>
+						<uirtl.AvatarImage src={avatarSVG |> dataURL("image/svg+xml")} alt="@nextjs"/>
+						<uirtl.AvatarFallback>VC</uirtl.AvatarFallback>
+					</uirtl.Avatar>
 					<div class="space-y-1">
 						<h4 class="text-sm font-semibold">@nextjs</h4>
 						<p class="text-sm">إطار React – تم إنشاؤه وصيانته بواسطة @vercel.</p>
 						<div class="text-xs text-muted-foreground">انضم في ديسمبر 2021</div>
 					</div>
 				</div>
-			</ui.HoverCardContent>
-		</ui.HoverCard>
+			</uirtl.HoverCardContent>
+		</uirtl.HoverCard>
 	</div>
 }

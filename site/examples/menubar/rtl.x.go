@@ -5,7 +5,7 @@ package menubar
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -23,29 +23,29 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:14:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:15:3
-		_gsxgw.Node(ctx, ui.Menubar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Menubar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:4
-			_gsxgw.Node(ctx, ui.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:5
-				_gsxgw.Node(ctx, ui.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("ملف")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:18:5
-				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:6
-					_gsxgw.Node(ctx, ui.MenubarGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.MenubarGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:20:7
-						_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("علامة تبويب جديدة")
 //line rtl.gsx:22:8
-							_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw.Node(ctx, uirtl.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("⌘T")
 								return _gsxgw.Err()
@@ -53,11 +53,11 @@ func Rtl() _gsxrt.Node {
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:24:7
-						_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("نافذة جديدة")
 //line rtl.gsx:26:8
-							_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw.Node(ctx, uirtl.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("⌘N")
 								return _gsxgw.Err()
@@ -65,39 +65,39 @@ func Rtl() _gsxrt.Node {
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:28:7
-						_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("نافذة التصفح المتخفي الجديدة")
 							return _gsxgw.Err()
 						}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:30:6
-					_gsxgw.Node(ctx, ui.MenubarSub(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:32:6
+					_gsxgw.Node(ctx, uirtl.MenubarSub(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:31:7
-						_gsxgw.Node(ctx, ui.MenubarSubTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:33:7
+						_gsxgw.Node(ctx, uirtl.MenubarSubTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("مشاركة")
 							return _gsxgw.Err()
 						}), nil))
-//line rtl.gsx:32:7
-						_gsxgw.Node(ctx, ui.MenubarSubContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:34:7
+						_gsxgw.Node(ctx, uirtl.MenubarSubContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:33:8
-							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:35:8
+							_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("رابط البريد الإلكتروني")
 								return _gsxgw.Err()
 							}), nil))
-//line rtl.gsx:34:8
-							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:36:8
+							_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("الرسائل")
 								return _gsxgw.Err()
 							}), nil))
-//line rtl.gsx:35:8
-							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:37:8
+							_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("الملاحظات")
 								return _gsxgw.Err()
@@ -106,14 +106,14 @@ func Rtl() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:38:6
-					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line rtl.gsx:39:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:40:6
+					_gsxgw.Node(ctx, uirtl.MenubarSeparator(nil))
+//line rtl.gsx:41:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("طباعة...")
-//line rtl.gsx:41:7
-						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:43:7
+						_gsxgw.Node(ctx, uirtl.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘P")
 							return _gsxgw.Err()
@@ -124,78 +124,78 @@ func Rtl() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line rtl.gsx:45:4
-			_gsxgw.Node(ctx, ui.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:47:4
+			_gsxgw.Node(ctx, uirtl.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:46:5
-				_gsxgw.Node(ctx, ui.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:48:5
+				_gsxgw.Node(ctx, uirtl.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("تعديل")
 					return _gsxgw.Err()
 				}), nil))
-//line rtl.gsx:47:5
-				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:49:5
+				_gsxgw.Node(ctx, uirtl.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:48:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:50:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("تراجع")
-//line rtl.gsx:50:7
-						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:52:7
+						_gsxgw.Node(ctx, uirtl.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘Z")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:52:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:54:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("إعادة")
-//line rtl.gsx:54:7
-						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:56:7
+						_gsxgw.Node(ctx, uirtl.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⇧⌘Z")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:56:6
-					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line rtl.gsx:57:6
-					_gsxgw.Node(ctx, ui.MenubarSub(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:58:6
+					_gsxgw.Node(ctx, uirtl.MenubarSeparator(nil))
+//line rtl.gsx:59:6
+					_gsxgw.Node(ctx, uirtl.MenubarSub(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:58:7
-						_gsxgw.Node(ctx, ui.MenubarSubTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:60:7
+						_gsxgw.Node(ctx, uirtl.MenubarSubTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("بحث")
 							return _gsxgw.Err()
 						}), nil))
-//line rtl.gsx:59:7
-						_gsxgw.Node(ctx, ui.MenubarSubContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:61:7
+						_gsxgw.Node(ctx, uirtl.MenubarSubContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:60:8
-							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:62:8
+							_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("البحث على الويب")
 								return _gsxgw.Err()
 							}), nil))
-//line rtl.gsx:61:8
-							_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line rtl.gsx:62:8
-							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:63:8
+							_gsxgw.Node(ctx, uirtl.MenubarSeparator(nil))
+//line rtl.gsx:64:8
+							_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("بحث...")
 								return _gsxgw.Err()
 							}), nil))
-//line rtl.gsx:63:8
-							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:65:8
+							_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("البحث التالي")
 								return _gsxgw.Err()
 							}), nil))
-//line rtl.gsx:64:8
-							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:66:8
+							_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("البحث السابق")
 								return _gsxgw.Err()
@@ -204,22 +204,22 @@ func Rtl() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:67:6
-					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line rtl.gsx:68:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:69:6
+					_gsxgw.Node(ctx, uirtl.MenubarSeparator(nil))
+//line rtl.gsx:70:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("قص")
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:69:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:71:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("نسخ")
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:70:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:72:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("لصق")
 						return _gsxgw.Err()
@@ -228,50 +228,50 @@ func Rtl() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line rtl.gsx:73:4
-			_gsxgw.Node(ctx, ui.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:75:4
+			_gsxgw.Node(ctx, uirtl.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:74:5
-				_gsxgw.Node(ctx, ui.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:76:5
+				_gsxgw.Node(ctx, uirtl.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("عرض")
 					return _gsxgw.Err()
 				}), nil))
-//line rtl.gsx:75:5
-				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:77:5
+				_gsxgw.Node(ctx, uirtl.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:76:6
-					_gsxgw.Node(ctx, ui.MenubarCheckboxItem(true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:78:6
+					_gsxgw.Node(ctx, uirtl.MenubarCheckboxItem(true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("شريط الإشارات المرجعية")
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:77:6
-					_gsxgw.Node(ctx, ui.MenubarCheckboxItem(false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:79:6
+					_gsxgw.Node(ctx, uirtl.MenubarCheckboxItem(false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("عناوين URL الكاملة")
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:78:6
-					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line rtl.gsx:79:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:80:6
+					_gsxgw.Node(ctx, uirtl.MenubarSeparator(nil))
+//line rtl.gsx:81:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("إعادة تحميل")
-//line rtl.gsx:81:7
-						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:83:7
+						_gsxgw.Node(ctx, uirtl.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘R")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
-//line rtl.gsx:83:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:85:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("إعادة تحميل قسري")
-//line rtl.gsx:85:7
-						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:87:7
+						_gsxgw.Node(ctx, uirtl.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⇧⌘R")
 							return _gsxgw.Err()
@@ -282,53 +282,53 @@ func Rtl() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line rtl.gsx:89:4
-			_gsxgw.Node(ctx, ui.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:91:4
+			_gsxgw.Node(ctx, uirtl.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:90:5
-				_gsxgw.Node(ctx, ui.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:92:5
+				_gsxgw.Node(ctx, uirtl.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("الملفات الشخصية")
 					return _gsxgw.Err()
 				}), nil))
-//line rtl.gsx:91:5
-				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:93:5
+				_gsxgw.Node(ctx, uirtl.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:92:6
-					_gsxgw.Node(ctx, ui.MenubarRadioGroup("benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:94:6
+					_gsxgw.Node(ctx, uirtl.MenubarRadioGroup("benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:93:7
-						_gsxgw.Node(ctx, ui.MenubarRadioItem(false, "andy", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:95:7
+						_gsxgw.Node(ctx, uirtl.MenubarRadioItem(false, "andy", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Andy")
 							return _gsxgw.Err()
 						}), nil))
-//line rtl.gsx:94:7
-						_gsxgw.Node(ctx, ui.MenubarRadioItem(true, "benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:96:7
+						_gsxgw.Node(ctx, uirtl.MenubarRadioItem(true, "benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Benoit")
 							return _gsxgw.Err()
 						}), nil))
-//line rtl.gsx:95:7
-						_gsxgw.Node(ctx, ui.MenubarRadioItem(false, "luis", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:97:7
+						_gsxgw.Node(ctx, uirtl.MenubarRadioItem(false, "luis", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Luis")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:97:6
-					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line rtl.gsx:98:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:99:6
+					_gsxgw.Node(ctx, uirtl.MenubarSeparator(nil))
+//line rtl.gsx:100:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("تعديل...")
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:99:6
-					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line rtl.gsx:100:6
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:101:6
+					_gsxgw.Node(ctx, uirtl.MenubarSeparator(nil))
+//line rtl.gsx:102:6
+					_gsxgw.Node(ctx, uirtl.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("إضافة ملف شخصي...")
 						return _gsxgw.Err()

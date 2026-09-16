@@ -5,7 +5,7 @@ package spinner
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -23,20 +23,20 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:11:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"flex w-full max-w-xs flex-col gap-4\">")
 //line rtl.gsx:12:3
-		_gsxgw.Node(ctx, ui.Item("muted", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Item("muted", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:13:4
-			_gsxgw.Node(ctx, ui.ItemMedia("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ItemMedia("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:14:5
-				_gsxgw.Node(ctx, ui.Spinner(nil))
+				_gsxgw.Node(ctx, uirtl.Spinner(nil))
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:16:4
-			_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:5
-				_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("جاري معالجة الدفع...")
 					return _gsxgw.Err()
@@ -44,7 +44,7 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:19:4
-			_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:20:5
 				_gsxgw.S("<span class=\"text-sm tabular-nums\">١٠٠.٠٠ دولار</span>")

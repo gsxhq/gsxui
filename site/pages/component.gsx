@@ -187,7 +187,12 @@ component (c Component) Page(props ComponentProps) {
 							} }
 						</div>
 					} else {
-						<div class="border rounded-lg p-8 bg-background">
+						<div
+							class="border rounded-lg p-8 bg-background"
+							{ if ex.Name == "rtl" {
+								dir="rtl"
+							} }
+						>
 							{ ex.Node }
 						</div>
 					} }

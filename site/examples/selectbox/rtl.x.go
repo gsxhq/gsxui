@@ -5,7 +5,7 @@ package selectbox
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -21,53 +21,53 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:12:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:13:3
-		_gsxgw.Node(ctx, ui.Select("fruit-rtl", false, false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Select("fruit-rtl", false, false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:14:4
-			_gsxgw.Node(ctx, ui.SelectTrigger("sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.SelectTrigger("sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:5
-				_gsxgw.Node(ctx, ui.SelectValue("اختر فاكهة", nil))
+				_gsxgw.Node(ctx, uirtl.SelectValue("اختر فاكهة", nil))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "w-32"}}))
 //line rtl.gsx:17:4
-			_gsxgw.Node(ctx, ui.SelectContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.SelectContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:5
-				_gsxgw.Node(ctx, ui.SelectGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.SelectGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:6
-					_gsxgw.Node(ctx, ui.SelectLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("الفواكه")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:20:6
-					_gsxgw.Node(ctx, ui.SelectItem("apple", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectItem("apple", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("تفاح")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:21:6
-					_gsxgw.Node(ctx, ui.SelectItem("banana", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectItem("banana", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("موز")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:22:6
-					_gsxgw.Node(ctx, ui.SelectItem("blueberry", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectItem("blueberry", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("توت أزرق")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:23:6
-					_gsxgw.Node(ctx, ui.SelectItem("grapes", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectItem("grapes", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("عنب")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:24:6
-					_gsxgw.Node(ctx, ui.SelectItem("pineapple", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectItem("pineapple", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("أناناس")
 						return _gsxgw.Err()
@@ -75,30 +75,30 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:26:5
-				_gsxgw.Node(ctx, ui.SelectSeparator(nil))
+				_gsxgw.Node(ctx, uirtl.SelectSeparator(nil))
 //line rtl.gsx:27:5
-				_gsxgw.Node(ctx, ui.SelectGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.SelectGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:28:6
-					_gsxgw.Node(ctx, ui.SelectLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("الخضروات")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:29:6
-					_gsxgw.Node(ctx, ui.SelectItem("carrot", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectItem("carrot", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("جزر")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:30:6
-					_gsxgw.Node(ctx, ui.SelectItem("broccoli", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectItem("broccoli", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("بروكلي")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:31:6
-					_gsxgw.Node(ctx, ui.SelectItem("spinach", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SelectItem("spinach", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("سبانخ")
 						return _gsxgw.Err()

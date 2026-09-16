@@ -5,7 +5,7 @@ package table
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -25,40 +25,40 @@ func Rtl() _gsxrt.Node {
 			{"INV003", "غير مدفوع", "تحويل بنكي", "$350.00"},
 		}
 //line rtl.gsx:16:2
-		_gsxgw.Node(ctx, ui.Table(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Table(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:3
-			_gsxgw.Node(ctx, ui.TableCaption(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.TableCaption(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("قائمة بفواتيرك الأخيرة.")
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:18:3
-			_gsxgw.Node(ctx, ui.TableHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.TableHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:4
-				_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:20:5
-					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("الفاتورة")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "class", Value: "w-[100px]"}}))
 //line rtl.gsx:21:5
-					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("الحالة")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:22:5
-					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("الطريقة")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:23:5
-					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("المبلغ")
 						return _gsxgw.Err()
@@ -68,38 +68,38 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:26:3
-			_gsxgw.Node(ctx, ui.TableBody(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.TableBody(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:27:4
 				for _, inv := range invoices {
 //line rtl.gsx:28:5
-					_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:6
-						_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:29:40
+//line rtl.gsx:29:43
 							_gsxgw.Text(string(inv.Invoice))
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: "font-medium"}}))
 //line rtl.gsx:30:6
-						_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:30:20
+//line rtl.gsx:30:23
 							_gsxgw.Text(string(inv.Status))
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:31:6
-						_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:31:20
+//line rtl.gsx:31:23
 							_gsxgw.Text(string(inv.Method))
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:32:6
-						_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:32:39
+//line rtl.gsx:32:42
 							_gsxgw.Text(string(inv.Amount))
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: "text-right"}}))
@@ -109,19 +109,19 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:36:3
-			_gsxgw.Node(ctx, ui.TableFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.TableFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:37:4
-				_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:38:5
-					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("المجموع")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "colspan", Value: "3"}}))
 //line rtl.gsx:39:5
-					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("$2,500.00")
 						return _gsxgw.Err()

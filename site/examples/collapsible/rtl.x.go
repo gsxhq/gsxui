@@ -5,7 +5,7 @@ package collapsible
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -23,10 +23,10 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:13:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:14:3
-		_gsxgw.Node(ctx, ui.Collapsible(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Collapsible(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:4
-			_gsxgw.Node(ctx, ui.CollapsibleTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.CollapsibleTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:5
 				_gsxgw.S("<h4 class=\"text-sm font-semibold\">الطلب #4189</h4>")
@@ -44,7 +44,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:26:5
 			_gsxgw.S("<span class=\"font-medium\">تم الشحن</span></div>")
 //line rtl.gsx:28:4
-			_gsxgw.Node(ctx, ui.CollapsibleContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.CollapsibleContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:5
 				_gsxgw.S("<div class=\"rounded-md border px-4 py-2 text-sm\">")

@@ -2,7 +2,7 @@
 package radio
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 )
 
 // Rtl mirrors shadcn's own radio-group-rtl demo: three Field rows (default,
@@ -10,27 +10,27 @@ import (
 // FieldLabel/FieldDescription via FieldContent, translated to Arabic and
 // wrapped in dir="rtl".
 component Rtl() {
-	<ui.FieldGroup dir="rtl" lang="ar" class="w-fit">
-		<ui.Field orientation="horizontal">
-			<ui.Radio id="radio-rtl-default" name="radio-rtl-spacing"/>
-			<ui.FieldContent>
-				<ui.FieldLabel for="radio-rtl-default">افتراضي</ui.FieldLabel>
-				<ui.FieldDescription>تباعد قياسي لمعظم حالات الاستخدام.</ui.FieldDescription>
-			</ui.FieldContent>
-		</ui.Field>
-		<ui.Field orientation="horizontal">
-			<ui.Radio id="radio-rtl-comfortable" name="radio-rtl-spacing" checked/>
-			<ui.FieldContent>
-				<ui.FieldLabel for="radio-rtl-comfortable">مريح</ui.FieldLabel>
-				<ui.FieldDescription>مساحة أكبر بين العناصر.</ui.FieldDescription>
-			</ui.FieldContent>
-		</ui.Field>
-		<ui.Field orientation="horizontal">
-			<ui.Radio id="radio-rtl-compact" name="radio-rtl-spacing"/>
-			<ui.FieldContent>
-				<ui.FieldLabel for="radio-rtl-compact">مضغوط</ui.FieldLabel>
-				<ui.FieldDescription>تباعد أدنى للتخطيطات الكثيفة.</ui.FieldDescription>
-			</ui.FieldContent>
-		</ui.Field>
-	</ui.FieldGroup>
+	<uirtl.FieldGroup dir="rtl" lang="ar" class="w-fit">
+		<uirtl.Field orientation="horizontal">
+			<uirtl.Radio id="radio-rtl-default" name="radio-rtl-spacing"/>
+			<uirtl.FieldContent>
+				<uirtl.FieldLabel for="radio-rtl-default">افتراضي</uirtl.FieldLabel>
+				<uirtl.FieldDescription>تباعد قياسي لمعظم حالات الاستخدام.</uirtl.FieldDescription>
+			</uirtl.FieldContent>
+		</uirtl.Field>
+		<uirtl.Field orientation="horizontal">
+			<uirtl.Radio id="radio-rtl-comfortable" name="radio-rtl-spacing" checked/>
+			<uirtl.FieldContent>
+				<uirtl.FieldLabel for="radio-rtl-comfortable">مريح</uirtl.FieldLabel>
+				<uirtl.FieldDescription>مساحة أكبر بين العناصر.</uirtl.FieldDescription>
+			</uirtl.FieldContent>
+		</uirtl.Field>
+		<uirtl.Field orientation="horizontal">
+			<uirtl.Radio id="radio-rtl-compact" name="radio-rtl-spacing"/>
+			<uirtl.FieldContent>
+				<uirtl.FieldLabel for="radio-rtl-compact">مضغوط</uirtl.FieldLabel>
+				<uirtl.FieldDescription>تباعد أدنى للتخطيطات الكثيفة.</uirtl.FieldDescription>
+			</uirtl.FieldContent>
+		</uirtl.Field>
+	</uirtl.FieldGroup>
 }

@@ -3,7 +3,7 @@
 package navigationmenu
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -16,51 +16,51 @@ import (
 // here rather than duplicated.
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.NavigationMenu>
-			<ui.NavigationMenuList>
-				<ui.NavigationMenuItem>
-					<ui.NavigationMenuTrigger>البدء</ui.NavigationMenuTrigger>
-					<ui.NavigationMenuContent>
+		<uirtl.NavigationMenu>
+			<uirtl.NavigationMenuList>
+				<uirtl.NavigationMenuItem>
+					<uirtl.NavigationMenuTrigger>البدء</uirtl.NavigationMenuTrigger>
+					<uirtl.NavigationMenuContent>
 						<div class="grid w-96 gap-2">
-							<ui.NavigationMenuLink href="#">
+							<uirtl.NavigationMenuLink href="#">
 								<div class="text-sm font-medium">مقدمة</div>
 								<div class="text-muted-foreground">مكونات قابلة لإعادة الاستخدام مبنية باستخدام Tailwind CSS.</div>
-							</ui.NavigationMenuLink>
-							<ui.NavigationMenuLink href="#">
+							</uirtl.NavigationMenuLink>
+							<uirtl.NavigationMenuLink href="#">
 								<div class="text-sm font-medium">التثبيت</div>
 								<div class="text-muted-foreground">كيفية تثبيت التبعيات وتنظيم تطبيقك.</div>
-							</ui.NavigationMenuLink>
-							<ui.NavigationMenuLink href="#">
+							</uirtl.NavigationMenuLink>
+							<uirtl.NavigationMenuLink href="#">
 								<div class="text-sm font-medium">الطباعة</div>
 								<div class="text-muted-foreground">أنماط للعناوين والفقرات والقوائم...إلخ</div>
-							</ui.NavigationMenuLink>
+							</uirtl.NavigationMenuLink>
 						</div>
-					</ui.NavigationMenuContent>
-				</ui.NavigationMenuItem>
-				<ui.NavigationMenuItem>
-					<ui.NavigationMenuTrigger>مع أيقونة</ui.NavigationMenuTrigger>
-					<ui.NavigationMenuContent>
+					</uirtl.NavigationMenuContent>
+				</uirtl.NavigationMenuItem>
+				<uirtl.NavigationMenuItem>
+					<uirtl.NavigationMenuTrigger>مع أيقونة</uirtl.NavigationMenuTrigger>
+					<uirtl.NavigationMenuContent>
 						<div class="grid w-48 gap-1">
-							<ui.NavigationMenuLink href="#" class="flex-row items-center gap-2">
+							<uirtl.NavigationMenuLink href="#" class="flex-row items-center gap-2">
 								<icon.CircleAlert/>
 								قائمة الانتظار
-							</ui.NavigationMenuLink>
-							<ui.NavigationMenuLink href="#" class="flex-row items-center gap-2">
+							</uirtl.NavigationMenuLink>
+							<uirtl.NavigationMenuLink href="#" class="flex-row items-center gap-2">
 								<icon.CircleDashed/>
 								المهام
-							</ui.NavigationMenuLink>
-							<ui.NavigationMenuLink href="#" class="flex-row items-center gap-2">
+							</uirtl.NavigationMenuLink>
+							<uirtl.NavigationMenuLink href="#" class="flex-row items-center gap-2">
 								<icon.CircleCheck/>
 								منجز
-							</ui.NavigationMenuLink>
+							</uirtl.NavigationMenuLink>
 						</div>
-					</ui.NavigationMenuContent>
-				</ui.NavigationMenuItem>
-				<ui.NavigationMenuItem>
-					<ui.NavigationMenuLink variant="trigger" href="#">الوثائق</ui.NavigationMenuLink>
-				</ui.NavigationMenuItem>
-				<ui.NavigationMenuIndicator/>
-			</ui.NavigationMenuList>
-		</ui.NavigationMenu>
+					</uirtl.NavigationMenuContent>
+				</uirtl.NavigationMenuItem>
+				<uirtl.NavigationMenuItem>
+					<uirtl.NavigationMenuLink variant="trigger" href="#">الوثائق</uirtl.NavigationMenuLink>
+				</uirtl.NavigationMenuItem>
+				<uirtl.NavigationMenuIndicator/>
+			</uirtl.NavigationMenuList>
+		</uirtl.NavigationMenu>
 	</div>
 }

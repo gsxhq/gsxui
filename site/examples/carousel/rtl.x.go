@@ -5,7 +5,7 @@ package carousel
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -25,23 +25,23 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:13:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"mx-auto w-full max-w-xs\">")
 //line rtl.gsx:14:3
-		_gsxgw.Node(ctx, ui.Carousel("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Carousel("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:4
-			_gsxgw.Node(ctx, ui.CarouselContent("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.CarouselContent("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:5
 				for _, n := range rtlSlides {
 //line rtl.gsx:17:6
-					_gsxgw.Node(ctx, ui.CarouselItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CarouselItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:7
 						_gsxgw.S("<div class=\"p-1\">")
 //line rtl.gsx:19:8
-						_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:20:9
-							_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw.Node(ctx, uirtl.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:21:10
 								_gsxgw.S("<span class=\"text-4xl font-semibold\">")
@@ -59,9 +59,9 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:28:4
-			_gsxgw.Node(ctx, ui.CarouselPrevious("", nil))
+			_gsxgw.Node(ctx, uirtl.CarouselPrevious("", nil))
 //line rtl.gsx:29:4
-			_gsxgw.Node(ctx, ui.CarouselNext("", nil))
+			_gsxgw.Node(ctx, uirtl.CarouselNext("", nil))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "mx-auto w-full max-w-xs"}}))
 		_gsxgw.S("</div>")

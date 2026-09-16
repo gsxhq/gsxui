@@ -2,7 +2,7 @@
 package item
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -12,25 +12,25 @@ import (
 // translated to Arabic and wrapped in dir="rtl".
 component Rtl() {
 	<div dir="rtl" lang="ar" class="flex w-full max-w-md flex-col gap-6">
-		<ui.Item variant="outline">
-			<ui.ItemContent>
-				<ui.ItemTitle>عنصر أساسي</ui.ItemTitle>
-				<ui.ItemDescription>عنصر بسيط يحتوي على عنوان ووصف.</ui.ItemDescription>
-			</ui.ItemContent>
-			<ui.ItemActions>
-				<ui.Button variant="outline" size="sm">إجراء</ui.Button>
-			</ui.ItemActions>
-		</ui.Item>
-		<ui.Item variant="outline" size="sm">
-			<ui.ItemMedia>
+		<uirtl.Item variant="outline">
+			<uirtl.ItemContent>
+				<uirtl.ItemTitle>عنصر أساسي</uirtl.ItemTitle>
+				<uirtl.ItemDescription>عنصر بسيط يحتوي على عنوان ووصف.</uirtl.ItemDescription>
+			</uirtl.ItemContent>
+			<uirtl.ItemActions>
+				<uirtl.Button variant="outline" size="sm">إجراء</uirtl.Button>
+			</uirtl.ItemActions>
+		</uirtl.Item>
+		<uirtl.Item variant="outline" size="sm">
+			<uirtl.ItemMedia>
 				<icon.BadgeCheck class="size-5"/>
-			</ui.ItemMedia>
-			<ui.ItemContent>
-				<ui.ItemTitle>تم التحقق من ملفك الشخصي.</ui.ItemTitle>
-			</ui.ItemContent>
-			<ui.ItemActions>
+			</uirtl.ItemMedia>
+			<uirtl.ItemContent>
+				<uirtl.ItemTitle>تم التحقق من ملفك الشخصي.</uirtl.ItemTitle>
+			</uirtl.ItemContent>
+			<uirtl.ItemActions>
 				<icon.ChevronRight class="size-4"/>
-			</ui.ItemActions>
-		</ui.Item>
+			</uirtl.ItemActions>
+		</uirtl.Item>
 	</div>
 }

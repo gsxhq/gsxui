@@ -1,6 +1,6 @@
 package inputotp
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl wraps Basic's own 6-digit/2-group OTP layout in an Arabic dir="rtl"
 // form context (a label plus the surrounding div), but does NOT force
@@ -12,18 +12,18 @@ import "github.com/gsxhq/gsxui/ui"
 component Rtl() {
 	<div dir="rtl" lang="ar">
 		<label class="mb-2 block text-sm font-medium">رمز التحقق</label>
-		<ui.InputOTP maxlength="6" aria-invalid="true">
-			<ui.InputOTPGroup>
-				<ui.InputOTPSlot aria-invalid="true"/>
-				<ui.InputOTPSlot/>
-				<ui.InputOTPSlot/>
-			</ui.InputOTPGroup>
-			<ui.InputOTPSeparator/>
-			<ui.InputOTPGroup>
-				<ui.InputOTPSlot/>
-				<ui.InputOTPSlot/>
-				<ui.InputOTPSlot/>
-			</ui.InputOTPGroup>
-		</ui.InputOTP>
+		<uirtl.InputOTP maxlength="6" aria-invalid="true">
+			<uirtl.InputOTPGroup>
+				<uirtl.InputOTPSlot aria-invalid="true"/>
+				<uirtl.InputOTPSlot/>
+				<uirtl.InputOTPSlot/>
+			</uirtl.InputOTPGroup>
+			<uirtl.InputOTPSeparator/>
+			<uirtl.InputOTPGroup>
+				<uirtl.InputOTPSlot/>
+				<uirtl.InputOTPSlot/>
+				<uirtl.InputOTPSlot/>
+			</uirtl.InputOTPGroup>
+		</uirtl.InputOTP>
 	</div>
 }

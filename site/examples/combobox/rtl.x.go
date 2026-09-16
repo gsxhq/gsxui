@@ -5,7 +5,7 @@ package combobox
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -31,18 +31,18 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:19:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:20:3
-		_gsxgw.Node(ctx, ui.Combobox("category", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Combobox("category", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:21:4
-			_gsxgw.Node(ctx, ui.ComboboxInput("أضف فئات", true, false, false, nil, _gsxrt.Attrs{{Key: "class", Value: "w-[220px]"}}))
+			_gsxgw.Node(ctx, uirtl.ComboboxInput("أضف فئات", true, false, false, nil, _gsxrt.Attrs{{Key: "class", Value: "w-[220px]"}}))
 //line rtl.gsx:22:4
-			_gsxgw.Node(ctx, ui.ComboboxContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ComboboxContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:23:5
-				_gsxgw.Node(ctx, ui.ComboboxList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ComboboxList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:6
-					_gsxgw.Node(ctx, ui.ComboboxEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.ComboboxEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("لم يتم العثور على فئات.")
 						return _gsxgw.Err()
@@ -50,9 +50,9 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:25:6
 					for _, c := range categories {
 //line rtl.gsx:26:7
-						_gsxgw.Node(ctx, ui.ComboboxItem(c.Value, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.ComboboxItem(c.Value, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:26:57
+//line rtl.gsx:26:60
 							_gsxgw.Text(string(c.Label))
 							return _gsxgw.Err()
 						}), nil))

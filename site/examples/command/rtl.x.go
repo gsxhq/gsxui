@@ -5,7 +5,7 @@ package command
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -21,24 +21,24 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:11:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:12:3
-		_gsxgw.Node(ctx, ui.Command(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Command(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:13:4
-			_gsxgw.Node(ctx, ui.CommandInput("اكتب أمرًا أو ابحث...", nil))
+			_gsxgw.Node(ctx, uirtl.CommandInput("اكتب أمرًا أو ابحث...", nil))
 //line rtl.gsx:14:4
-			_gsxgw.Node(ctx, ui.CommandList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.CommandList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:5
-				_gsxgw.Node(ctx, ui.CommandEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.CommandEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("لم يتم العثور على نتائج.")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:16:5
-				_gsxgw.Node(ctx, ui.CommandGroup("اقتراحات", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.CommandGroup("اقتراحات", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:6
-					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:7
 						_gsxgw.Node(ctx, icon.Calendar())
@@ -47,7 +47,7 @@ func Rtl() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:21:6
-					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:22:7
 						_gsxgw.Node(ctx, icon.Smile())
@@ -56,7 +56,7 @@ func Rtl() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:25:6
-					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:26:7
 						_gsxgw.Node(ctx, icon.Calculator())
@@ -67,19 +67,19 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:30:5
-				_gsxgw.Node(ctx, ui.CommandSeparator(nil))
+				_gsxgw.Node(ctx, uirtl.CommandSeparator(nil))
 //line rtl.gsx:31:5
-				_gsxgw.Node(ctx, ui.CommandGroup("الإعدادات", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.CommandGroup("الإعدادات", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:32:6
-					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:33:7
 						_gsxgw.Node(ctx, icon.User())
 //line rtl.gsx:34:7
 						_gsxgw.S("<span>الملف الشخصي</span>")
 //line rtl.gsx:35:7
-						_gsxgw.Node(ctx, ui.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘P")
 							return _gsxgw.Err()
@@ -87,14 +87,14 @@ func Rtl() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:37:6
-					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:38:7
 						_gsxgw.Node(ctx, icon.CreditCard())
 //line rtl.gsx:39:7
 						_gsxgw.S("<span>الفوترة</span>")
 //line rtl.gsx:40:7
-						_gsxgw.Node(ctx, ui.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘B")
 							return _gsxgw.Err()
@@ -102,14 +102,14 @@ func Rtl() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:42:6
-					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:43:7
 						_gsxgw.Node(ctx, icon.Settings())
 //line rtl.gsx:44:7
 						_gsxgw.S("<span>الإعدادات</span>")
 //line rtl.gsx:45:7
-						_gsxgw.Node(ctx, ui.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘S")
 							return _gsxgw.Err()
@@ -123,15 +123,15 @@ func Rtl() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "max-w-md border shadow-md"}}))
 //line rtl.gsx:50:3
-		_gsxgw.Node(ctx, ui.CommandDialog("لوحة الأوامر", "البحث عن الأوامر", nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.CommandDialog("لوحة الأوامر", "البحث عن الأوامر", nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:51:4
-			_gsxgw.Node(ctx, ui.CommandInput("ابحث عن الأوامر...", nil))
+			_gsxgw.Node(ctx, uirtl.CommandInput("ابحث عن الأوامر...", nil))
 //line rtl.gsx:52:4
-			_gsxgw.Node(ctx, ui.CommandList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.CommandList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:53:5
-				_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("فتح الإعدادات")
 					return _gsxgw.Err()

@@ -1,6 +1,6 @@
 package sheet
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl mirrors shadcn's own sheet-rtl demo: the same profile-editor sheet as
 // Basic, but flipped to open from the left (the RTL-appropriate side) and
@@ -9,35 +9,35 @@ import "github.com/gsxhq/gsxui/ui"
 // same data-gsxui-dialog-close idiom Basic and Directions already use for
 // the identical button-in-button reason documented on Basic.
 component Rtl() {
-	<ui.Sheet>
-		<ui.Button
+	<uirtl.Sheet>
+		<uirtl.Button
 			variant="outline"
 			data-gsxui-slot-sheet-trigger
 			aria-haspopup="dialog"
 			aria-expanded="false"
 		>
 			فتح
-		</ui.Button>
-		<ui.SheetContent dir="rtl" lang="ar" side="left">
-			<ui.SheetHeader>
-				<ui.SheetTitle>تعديل الملف الشخصي</ui.SheetTitle>
-				<ui.SheetDescription>
+		</uirtl.Button>
+		<uirtl.SheetContent dir="rtl" lang="ar" side="left">
+			<uirtl.SheetHeader>
+				<uirtl.SheetTitle>تعديل الملف الشخصي</uirtl.SheetTitle>
+				<uirtl.SheetDescription>
 					قم بإجراء تغييرات على ملفك الشخصي هنا. انقر حفظ عند الانتهاء.
-				</ui.SheetDescription>
-			</ui.SheetHeader>
+				</uirtl.SheetDescription>
+			</uirtl.SheetHeader>
 			<div class="grid gap-4 px-4">
 				<div class="grid grid-cols-4 items-center gap-4">
-					<ui.Label for="sheet-rtl-name" class="text-right">الاسم</ui.Label>
-					<ui.Input id="sheet-rtl-name" value="Pedro Duarte" class="col-span-3"/>
+					<uirtl.Label for="sheet-rtl-name" class="text-right">الاسم</uirtl.Label>
+					<uirtl.Input id="sheet-rtl-name" value="Pedro Duarte" class="col-span-3"/>
 				</div>
 				<div class="grid grid-cols-4 items-center gap-4">
-					<ui.Label for="sheet-rtl-username" class="text-right">اسم المستخدم</ui.Label>
-					<ui.Input id="sheet-rtl-username" value="@peduarte" class="col-span-3"/>
+					<uirtl.Label for="sheet-rtl-username" class="text-right">اسم المستخدم</uirtl.Label>
+					<uirtl.Input id="sheet-rtl-username" value="@peduarte" class="col-span-3"/>
 				</div>
 			</div>
-			<ui.SheetFooter>
-				<ui.Button data-gsxui-dialog-close>حفظ التغييرات</ui.Button>
-			</ui.SheetFooter>
-		</ui.SheetContent>
-	</ui.Sheet>
+			<uirtl.SheetFooter>
+				<uirtl.Button data-gsxui-dialog-close>حفظ التغييرات</uirtl.Button>
+			</uirtl.SheetFooter>
+		</uirtl.SheetContent>
+	</uirtl.Sheet>
 }

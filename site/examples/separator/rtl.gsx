@@ -1,6 +1,6 @@
 package separator
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl mirrors shadcn's own separator-rtl demo: a title/subtitle block, a
 // Separator, then a description line, translated to Arabic and wrapped in
@@ -11,7 +11,7 @@ component Rtl() {
 			<div class="font-medium leading-none">shadcn/ui</div>
 			<div class="text-muted-foreground">الأساس لنظام التصميم الخاص بك</div>
 		</div>
-		<ui.Separator/>
+		<uirtl.Separator/>
 		<div>مجموعة من المكونات المصممة بشكل جميل يمكنك تخصيصها وتوسيعها والبناء عليها.</div>
 	</div>
 }

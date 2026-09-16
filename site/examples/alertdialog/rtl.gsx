@@ -1,7 +1,7 @@
 package alertdialog
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 )
 
 // Rtl mirrors Basic's destructive-confirm flow, translated to Arabic and
@@ -12,27 +12,27 @@ import (
 // Basic already establishes rather than inventing new API surface.
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.AlertDialog>
-			<ui.Button
+		<uirtl.AlertDialog>
+			<uirtl.Button
 				variant="outline"
 				data-gsxui-slot-alert-dialog-trigger
 				aria-haspopup="dialog"
 				aria-expanded="false"
 			>
 				إظهار الحوار
-			</ui.Button>
-			<ui.AlertDialogContent dir="rtl" lang="ar">
-				<ui.AlertDialogHeader>
-					<ui.AlertDialogTitle>هل أنت متأكد تمامًا؟</ui.AlertDialogTitle>
-					<ui.AlertDialogDescription>
+			</uirtl.Button>
+			<uirtl.AlertDialogContent dir="rtl" lang="ar">
+				<uirtl.AlertDialogHeader>
+					<uirtl.AlertDialogTitle>هل أنت متأكد تمامًا؟</uirtl.AlertDialogTitle>
+					<uirtl.AlertDialogDescription>
 						لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف حسابك نهائيًا من خوادمنا.
-					</ui.AlertDialogDescription>
-				</ui.AlertDialogHeader>
-				<ui.AlertDialogFooter>
-					<ui.AlertDialogCancel>إلغاء</ui.AlertDialogCancel>
-					<ui.AlertDialogAction>متابعة</ui.AlertDialogAction>
-				</ui.AlertDialogFooter>
-			</ui.AlertDialogContent>
-		</ui.AlertDialog>
+					</uirtl.AlertDialogDescription>
+				</uirtl.AlertDialogHeader>
+				<uirtl.AlertDialogFooter>
+					<uirtl.AlertDialogCancel>إلغاء</uirtl.AlertDialogCancel>
+					<uirtl.AlertDialogAction>متابعة</uirtl.AlertDialogAction>
+				</uirtl.AlertDialogFooter>
+			</uirtl.AlertDialogContent>
+		</uirtl.AlertDialog>
 	</div>
 }
