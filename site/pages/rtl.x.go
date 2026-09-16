@@ -40,31 +40,55 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:24:5
 			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">RTL</h1>")
 //line rtl.gsx:25:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">Every gsxui component renders correctly in a right-to-left document. Set ")
-//line rtl.gsx:26:79
-			_gsxgw.S("<code>dir=\"rtl\"</code> and the components you've already vendored adapt on their own — no RTL variant to install or opt into.</p></div>")
+			_gsxgw.S("<p class=\"text-muted-foreground\">Opt in once and the components you vendor use logical direction classes, so one build serves")
+//line rtl.gsx:27:6
+			_gsxgw.S("<code>dir=\"ltr\"</code> and ")
+//line rtl.gsx:27:33
+			_gsxgw.S("<code>dir=\"rtl\"</code> alike.</p></div>")
 //line rtl.gsx:30:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line rtl.gsx:31:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[0], nil))
 //line rtl.gsx:32:5
-			_gsxgw.S("<p>Set ")
-//line rtl.gsx:33:10
-			_gsxgw.S("<code>dir=\"rtl\"</code> on ")
-//line rtl.gsx:33:36
-			_gsxgw.S("<code>&lt;html&gt;</code> for a fully right-to-left page, or on any subtree — a single Arabic or Hebrew panel inside a left-to-right app, for example:</p>")
-//line rtl.gsx:36:5
+			_gsxgw.S("<p>Set the flag when you initialise, then add components as usual:</p>")
+//line rtl.gsx:33:5
 			_gsxgw.S("<pre>")
-//line rtl.gsx:36:10
+//line rtl.gsx:33:10
 			_gsxgw.S("<code>")
-//line rtl.gsx:36:16
+//line rtl.gsx:33:16
+			_gsxgw.Node(ctx, hl.Node("snippets/rtl-init.sh"))
+			_gsxgw.S("</code></pre>")
+//line rtl.gsx:34:5
+			_gsxgw.S("<p>Components vendored before the flag was set are rewritten in place, keeping your edits:</p>")
+//line rtl.gsx:35:5
+			_gsxgw.S("<pre>")
+//line rtl.gsx:35:10
+			_gsxgw.S("<code>")
+//line rtl.gsx:35:16
+			_gsxgw.Node(ctx, hl.Node("snippets/rtl-migrate.sh"))
+			_gsxgw.S("</code></pre>")
+//line rtl.gsx:36:5
+			_gsxgw.S("<p>Set ")
+//line rtl.gsx:37:10
+			_gsxgw.S("<code>dir=\"rtl\"</code> on ")
+//line rtl.gsx:37:36
+			_gsxgw.S("<code>&lt;html&gt;</code>, or on any subtree, from the locale. An")
+//line rtl.gsx:38:6
+			_gsxgw.S("<code>rtl: true</code> project renders both directions; the document's ")
+//line rtl.gsx:38:77
+			_gsxgw.S("<code>dir</code> decides.</p>")
+//line rtl.gsx:40:5
+			_gsxgw.S("<pre>")
+//line rtl.gsx:40:10
+			_gsxgw.S("<code>")
+//line rtl.gsx:40:16
 			_gsxgw.Text(string(`<html lang="ar" dir="rtl">
   ...
 </html>`))
 			_gsxgw.S("</code></pre>")
-//line rtl.gsx:39:5
+//line rtl.gsx:43:5
 			_gsxgw.S("<p>Translating the strings components write themselves is covered on ")
-//line rtl.gsx:41:9
+//line rtl.gsx:45:9
 			_gsxgw.S("<a")
 			_gsxv0, _gsxerr := _gsxf0.URLFor(ctx, (I18n{}))
 			if _gsxerr != nil {
@@ -73,121 +97,139 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S(" href=\"")
 			_gsxgw.URL(string(_gsxv0))
 			_gsxgw.S("\">Internationalization</a>.</p></section>")
-//line rtl.gsx:44:4
+//line rtl.gsx:48:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line rtl.gsx:45:5
+//line rtl.gsx:49:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[1], nil))
-//line rtl.gsx:46:5
-			_gsxgw.S("<p>Four mechanisms carry direction through the component set, all driven by the ancestor's resolved ")
-//line rtl.gsx:48:15
-			_gsxgw.S("<code>dir</code>:</p>")
 //line rtl.gsx:50:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
 //line rtl.gsx:51:6
 			_gsxgw.S("<li>")
 //line rtl.gsx:52:7
-			_gsxgw.S("<strong>Logical Tailwind classes.</strong> Components use ")
-//line rtl.gsx:52:65
-			_gsxgw.S("<code>ms-*</code>/")
-//line rtl.gsx:52:83
-			_gsxgw.S("<code>me-*</code>,")
+			_gsxgw.S("<strong>Logical classes, at install time.</strong> With ")
+//line rtl.gsx:52:63
+			_gsxgw.S("<code>\"rtl\": true</code> in")
 //line rtl.gsx:53:7
-			_gsxgw.S("<code>start-*</code>/")
-//line rtl.gsx:53:28
-			_gsxgw.S("<code>end-*</code>, and ")
-//line rtl.gsx:53:52
-			_gsxgw.S("<code>text-start</code>/")
-//line rtl.gsx:53:76
-			_gsxgw.S("<code>text-end</code> instead of physical ")
-//line rtl.gsx:54:16
-			_gsxgw.S("<code>ml-*</code>/")
-//line rtl.gsx:54:34
-			_gsxgw.S("<code>left-*</code>, so spacing and alignment mirror for free.</li>")
-//line rtl.gsx:56:6
+			_gsxgw.S("<code>gsxui.json</code>, ")
+//line rtl.gsx:53:32
+			_gsxgw.S("<code>gsxui add</code> rewrites physical classes in what it vendors:")
+//line rtl.gsx:54:7
+			_gsxgw.S("<code>ml-*</code> to ")
+//line rtl.gsx:54:28
+			_gsxgw.S("<code>ms-*</code>, ")
+//line rtl.gsx:54:47
+			_gsxgw.S("<code>left-*</code> to ")
+//line rtl.gsx:54:70
+			_gsxgw.S("<code>start-*</code>,")
+//line rtl.gsx:55:7
+			_gsxgw.S("<code>text-left</code> to ")
+//line rtl.gsx:55:33
+			_gsxgw.S("<code>text-start</code>, and the rest of shadcn's table.")
+//line rtl.gsx:56:7
+			_gsxgw.S("<code>translate-x-*</code> and ")
+//line rtl.gsx:56:38
+			_gsxgw.S("<code>space-x-*</code> gain ")
+//line rtl.gsx:56:66
+			_gsxgw.S("<code>rtl:</code> companions.</li>")
+//line rtl.gsx:58:6
 			_gsxgw.S("<li>")
-//line rtl.gsx:57:7
+//line rtl.gsx:59:7
 			_gsxgw.S("<strong>Directional icons.</strong> Chevrons and arrows that encode a left/right meaning carry")
-//line rtl.gsx:58:7
-			_gsxgw.S("<code>rtl:rotate-180</code>, flipping only under an RTL ancestor.</li>")
-//line rtl.gsx:60:6
+//line rtl.gsx:60:7
+			_gsxgw.S("<code>rtl:rotate-180</code>.</li>")
+//line rtl.gsx:62:6
 			_gsxgw.S("<li>")
-//line rtl.gsx:61:7
-			_gsxgw.S("<strong>Direction-aware floating positioning.</strong> Popover, dropdown-menu, select, tooltip, and the rest of the floating-UI family resolve their placement in JS at position time, so \"start\"-aligned content opens on the correct physical side.</li>")
-//line rtl.gsx:65:6
+//line rtl.gsx:63:7
+			_gsxgw.S("<strong>Direction-aware floating positioning.</strong> Popover, dropdown-menu, select, tooltip and the rest of the floating family resolve placement in JS at position time.</li>")
+//line rtl.gsx:66:6
 			_gsxgw.S("<li>")
-//line rtl.gsx:66:7
-			_gsxgw.S("<strong>Mirrored keyboard semantics.</strong> Arrow keys in menus, tabs, carousel, calendar, and the other roving-focus components mirror by meaning per WAI-ARIA — under RTL, ArrowLeft means \"toward the next item\" and opens submenus, the way ArrowRight does under LTR.</li></ul>")
-//line rtl.gsx:71:5
-			_gsxgw.S("<p>Two deliberate exceptions. ")
-//line rtl.gsx:72:33
-			_gsxgw.S("<code>input-otp</code>'s digit group stays pinned ")
-//line rtl.gsx:72:83
-			_gsxgw.S("<code>dir=\"ltr\"</code>: a code like ")
-//line rtl.gsx:73:11
-			_gsxgw.S("<code>482915</code> reads left-to-right even inside an RTL form, matching real Arabic and Hebrew UIs. And Sheet, Drawer, and Sidebar keep their ")
-//line rtl.gsx:74:44
+//line rtl.gsx:67:7
+			_gsxgw.S("<strong>Mirrored keyboard semantics.</strong> Arrow keys in menus, tabs, carousel, calendar and the other roving-focus components mirror by meaning per WAI-ARIA.</li>")
+//line rtl.gsx:70:6
+			_gsxgw.S("<li>")
+//line rtl.gsx:71:7
+			_gsxgw.S("<strong>The demos on this page</strong> render from the transformed components, the same output")
+//line rtl.gsx:72:7
+			_gsxgw.S("<code>gsxui add</code> produces with the flag set.</li></ul>")
+//line rtl.gsx:75:5
+			_gsxgw.S("<p>Not transformed:</p>")
+//line rtl.gsx:76:5
+			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
+//line rtl.gsx:77:6
+			_gsxgw.S("<li>Sheet, Drawer and Sidebar ")
+//line rtl.gsx:78:33
 			_gsxgw.S("<code>side=\"left\"</code>/")
-//line rtl.gsx:74:69
-			_gsxgw.S("<code>side=\"right\"</code> prop")
-//line rtl.gsx:75:6
-			_gsxgw.S("<strong>physical</strong>, matching shadcn's ")
-//line rtl.gsx:75:51
-			_gsxgw.S("<code>data-side</code> contract — a ")
-//line rtl.gsx:75:89
-			_gsxgw.S("<code>side=\"right\"</code>sidebar stays on the visual right under either direction, while everything inside it still mirrors normally.</p></section>")
-//line rtl.gsx:79:4
+//line rtl.gsx:78:58
+			_gsxgw.S("<code>side=\"right\"</code> stay physical, matching shadcn's ")
+//line rtl.gsx:79:16
+			_gsxgw.S("<code>data-side</code> contract; their interiors mirror.</li>")
+//line rtl.gsx:81:6
+			_gsxgw.S("<li>")
+//line rtl.gsx:81:10
+			_gsxgw.S("<code>input-otp</code>'s digit group stays pinned ")
+//line rtl.gsx:81:60
+			_gsxgw.S("<code>dir=\"ltr\"</code>.</li>")
+//line rtl.gsx:82:6
+			_gsxgw.S("<li>Behaviour JS carries no classes and is untouched.</li>")
+//line rtl.gsx:83:6
+			_gsxgw.S("<li>Sized logical slide utilities (")
+//line rtl.gsx:84:38
+			_gsxgw.S("<code>slide-in-from-start-2</code>) match only elements that themselves carry ")
+//line rtl.gsx:85:13
+			_gsxgw.S("<code>dir</code> in the current tw-animate-css build; gsxui emits none.</li></ul></section>")
+//line rtl.gsx:89:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line rtl.gsx:80:5
+//line rtl.gsx:90:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[2], nil))
-//line rtl.gsx:81:5
+//line rtl.gsx:91:5
 			_gsxgw.S("<p>An Arabic sign-in card: unmodified ")
-//line rtl.gsx:82:41
+//line rtl.gsx:92:41
 			_gsxgw.S("<code>Card</code>, ")
-//line rtl.gsx:82:60
+//line rtl.gsx:92:60
 			_gsxgw.S("<code>Label</code>, ")
-//line rtl.gsx:82:80
+//line rtl.gsx:92:80
 			_gsxgw.S("<code>Input</code>, and ")
-//line rtl.gsx:83:10
+//line rtl.gsx:93:10
 			_gsxgw.S("<code>Button</code>, wrapped in ")
-//line rtl.gsx:83:42
+//line rtl.gsx:93:42
 			_gsxgw.S("<code>dir=\"rtl\"</code>.</p>")
-//line rtl.gsx:85:5
+//line rtl.gsx:95:5
 			_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
-//line rtl.gsx:86:6
+//line rtl.gsx:96:6
 			_gsxgw.Node(ctx, loginExample.Node)
 			_gsxgw.S("</div>")
-//line rtl.gsx:88:5
+//line rtl.gsx:98:5
 			_gsxgw.S("<div class=\"relative\"")
 			_gsxgw.BoolAttr("data-site-example", true)
 			_gsxgw.S(">")
-//line rtl.gsx:89:6
+//line rtl.gsx:99:6
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm\">")
-//line rtl.gsx:91:7
+//line rtl.gsx:101:7
 			_gsxgw.S("<code>")
-//line rtl.gsx:91:13
+//line rtl.gsx:101:13
 			_gsxgw.Node(ctx, hl.Node(loginExample.SourcePath))
 			_gsxgw.S("</code></pre>")
-//line rtl.gsx:92:6
+//line rtl.gsx:102:6
 			_gsxgw.S("<button type=\"button\"")
 			_gsxgw.BoolAttr("data-site-copy", true)
 			_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div>")
-//line rtl.gsx:100:5
+//line rtl.gsx:110:5
 			_gsxgw.S("<p>More RTL variants live on their own component pages: ")
-//line rtl.gsx:101:59
+//line rtl.gsx:111:59
 			_gsxgw.S("<a href=\"/components/calendar\">Calendar</a>, ")
-//line rtl.gsx:102:8
+//line rtl.gsx:112:8
 			_gsxgw.S("<a href=\"/components/pagination\">Pagination</a>, and ")
-//line rtl.gsx:102:61
+//line rtl.gsx:112:61
 			_gsxgw.S("<a href=\"/components/sidebar\">Sidebar</a> each register an \"RTL\" example alongside their other demos.</p></section>")
-//line rtl.gsx:106:4
+//line rtl.gsx:116:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line rtl.gsx:107:5
+//line rtl.gsx:117:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[3], nil))
-//line rtl.gsx:108:5
+//line rtl.gsx:118:5
 			_gsxgw.S("<p>The site's own Latin type is Geist. For Arabic content, pair it with ")
-//line rtl.gsx:110:11
+//line rtl.gsx:120:11
 			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Sans+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Sans Arabic</a> (a UI sans) or ")
-//line rtl.gsx:112:9
+//line rtl.gsx:122:9
 			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Naskh Arabic</a> (better for longer prose). Load the Arabic font as a fallback rather than replacing Geist outright, so Latin text — brand names, code — keeps rendering in Geist inside an RTL document.</p></section></div>")
 			return _gsxgw.Err()
 		})))

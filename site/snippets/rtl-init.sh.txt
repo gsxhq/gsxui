@@ -1,0 +1,2 @@
+gsxui init --rtl
+gsxui add button card

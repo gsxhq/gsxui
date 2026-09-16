@@ -23,15 +23,19 @@ component (rt Rtl) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">RTL</h1>
 				<p class="text-muted-foreground">
-					Every gsxui component renders correctly in a right-to-left document. Set <code>dir="rtl"</code> and the
-					components you've already vendored adapt on their own — no RTL variant to install or opt into.
+					Opt in once and the components you vendor use logical direction classes, so one build serves
+					<code>dir="ltr"</code> and <code>dir="rtl"</code> alike.
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
 				<docHeading item={rtlTOCItems[0]}/>
+				<p>Set the flag when you initialise, then add components as usual:</p>
+				<pre><code>{ hl.Node("snippets/rtl-init.sh") }</code></pre>
+				<p>Components vendored before the flag was set are rewritten in place, keeping your edits:</p>
+				<pre><code>{ hl.Node("snippets/rtl-migrate.sh") }</code></pre>
 				<p>
-					Set <code>dir="rtl"</code> on <code>&lt;html&gt;</code> for a fully right-to-left page, or on any subtree — a
-					single Arabic or Hebrew panel inside a left-to-right app, for example:
+					Set <code>dir="rtl"</code> on <code>&lt;html&gt;</code>, or on any subtree, from the locale. An
+					<code>rtl: true</code> project renders both directions; the document's <code>dir</code> decides.
 				</p>
 				<pre><code>{ `<html lang="ar" dir="rtl">
   ...
@@ -43,38 +47,44 @@ component (rt Rtl) Page() {
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={rtlTOCItems[1]}/>
-				<p>
-					Four mechanisms carry direction through the component set, all driven by the ancestor's
-					resolved <code>dir</code>:
-				</p>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
-						<strong>Logical Tailwind classes.</strong> Components use <code>ms-*</code>/<code>me-*</code>,
-						<code>start-*</code>/<code>end-*</code>, and <code>text-start</code>/<code>text-end</code> instead of
-						physical <code>ml-*</code>/<code>left-*</code>, so spacing and alignment mirror for free.
+						<strong>Logical classes, at install time.</strong> With <code>"rtl": true</code> in
+						<code>gsxui.json</code>, <code>gsxui add</code> rewrites physical classes in what it vendors:
+						<code>ml-*</code> to <code>ms-*</code>, <code>left-*</code> to <code>start-*</code>,
+						<code>text-left</code> to <code>text-start</code>, and the rest of shadcn's table.
+						<code>translate-x-*</code> and <code>space-x-*</code> gain <code>rtl:</code> companions.
 					</li>
 					<li>
 						<strong>Directional icons.</strong> Chevrons and arrows that encode a left/right meaning carry
-						<code>rtl:rotate-180</code>, flipping only under an RTL ancestor.
+						<code>rtl:rotate-180</code>.
 					</li>
 					<li>
-						<strong>Direction-aware floating positioning.</strong> Popover, dropdown-menu, select, tooltip, and the rest
-						of the floating-UI family resolve their placement in JS at position time, so "start"-aligned content opens
-						on the correct physical side.
+						<strong>Direction-aware floating positioning.</strong> Popover, dropdown-menu, select, tooltip and the rest
+						of the floating family resolve placement in JS at position time.
 					</li>
 					<li>
-						<strong>Mirrored keyboard semantics.</strong> Arrow keys in menus, tabs, carousel, calendar, and the other
-						roving-focus components mirror by meaning per WAI-ARIA — under RTL, ArrowLeft means "toward the next item"
-						and opens submenus, the way ArrowRight does under LTR.
+						<strong>Mirrored keyboard semantics.</strong> Arrow keys in menus, tabs, carousel, calendar and the other
+						roving-focus components mirror by meaning per WAI-ARIA.
+					</li>
+					<li>
+						<strong>The demos on this page</strong> render from the transformed components, the same output
+						<code>gsxui add</code> produces with the flag set.
 					</li>
 				</ul>
-				<p>
-					Two deliberate exceptions. <code>input-otp</code>'s digit group stays pinned <code>dir="ltr"</code>: a code
-					like <code>482915</code> reads left-to-right even inside an RTL form, matching real Arabic and Hebrew UIs. And
-					Sheet, Drawer, and Sidebar keep their <code>side="left"</code>/<code>side="right"</code> prop
-					<strong>physical</strong>, matching shadcn's <code>data-side</code> contract — a <code>side="right"</code>
-					sidebar stays on the visual right under either direction, while everything inside it still mirrors normally.
-				</p>
+				<p>Not transformed:</p>
+				<ul class="list-disc space-y-2 pl-6">
+					<li>
+						Sheet, Drawer and Sidebar <code>side="left"</code>/<code>side="right"</code> stay physical, matching
+						shadcn's <code>data-side</code> contract; their interiors mirror.
+					</li>
+					<li><code>input-otp</code>'s digit group stays pinned <code>dir="ltr"</code>.</li>
+					<li>Behaviour JS carries no classes and is untouched.</li>
+					<li>
+						Sized logical slide utilities (<code>slide-in-from-start-2</code>) match only elements that themselves
+						carry <code>dir</code> in the current tw-animate-css build; gsxui emits none.
+					</li>
+				</ul>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={rtlTOCItems[2]}/>
