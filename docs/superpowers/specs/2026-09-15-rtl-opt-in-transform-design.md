@@ -239,7 +239,8 @@ tw-animate-css sized-slide caveat.
   RTL. gsxui therefore treats a token as side-keyed when its variant
   contains `data-[side=left]`, `data-[side=right]`, `data-side=left]` or
   `data-side=right]`, or when it sits in a value arm of a `switch side`
-  or an `if side …` inside a class list, and leaves every such token
+  or an `if side …` inside a class list (Drawer names the same parameter
+  `direction`; both identifiers count), and leaves every such token
   unchanged: positioning, borders, radii and slides alike. This is the
   existing ruling that Sheet, Drawer and Sidebar `side` is physical, and
   `jstest/specs/rtl.spec.ts` already pins it.

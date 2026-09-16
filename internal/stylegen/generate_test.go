@@ -383,6 +383,12 @@ func TestGenerateAllEmitsTheSiteRTLPackage(t *testing.T) {
 	if !strings.Contains(string(sheet), `"inset-y-0 left-0 h-full`) {
 		t.Errorf("sheet side arm must stay physical in site/uirtl")
 	}
+	// Drawer names the same physical-placement prop `direction`, after vaul's
+	// API; its arms stay physical for the same reason Sheet's do.
+	drawer, _ := os.ReadFile(filepath.Join(root, "site", "uirtl", "drawer.gsx"))
+	if !strings.Contains(string(drawer), `"inset-y-0 left-0 right-auto h-full`) {
+		t.Errorf("drawer direction arm must stay physical in site/uirtl")
+	}
 	if err := GenerateAll(root, true); err != nil {
 		t.Fatalf("GenerateAll(check) after write = %v", err)
 	}

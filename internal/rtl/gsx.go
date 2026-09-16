@@ -99,7 +99,8 @@ func GSX(filename string, src []byte) ([]byte, error) {
 
 // classLists finds every class literal: class="…" static attributes, and
 // inside class={ … } every element literal, pair key, and value-form
-// if/switch arm literal. Arms of `switch side` / `if side …` are side-keyed.
+// if/switch arm literal. Arms keyed on a placement parameter — `switch side`
+// / `if side …`, and Drawer's `switch direction` — are side-keyed.
 func classLists(filename string, src []byte) ([]classList, error) {
 	fset := token.NewFileSet()
 	file, err := gsxparser.ParseFile(fset, filename, src, 0)
@@ -142,9 +143,9 @@ func classLists(filename string, src []byte) ([]classList, error) {
 					continue
 				}
 				if part.CF.If != nil {
-					sideKeyed := mentionsSide(part.CF.If.Cond)
+					sideKeyed := mentionsPlacement(part.CF.If.Cond)
 					for vi := part.CF.If; vi != nil; vi = vi.ElseIf {
-						sideKeyed = sideKeyed || mentionsSide(vi.Cond)
+						sideKeyed = sideKeyed || mentionsPlacement(vi.Cond)
 						if vi.Then != nil {
 							if l, ok, err := armLiteral(fset, src, vi.Then, sideKeyed); err != nil {
 								walkErr = err
@@ -164,7 +165,7 @@ func classLists(filename string, src []byte) ([]classList, error) {
 					}
 				}
 				if part.CF.Switch != nil {
-					sideKeyed := mentionsSide(part.CF.Switch.Tag)
+					sideKeyed := mentionsPlacement(part.CF.Switch.Tag)
 					for _, c := range part.CF.Switch.Cases {
 						if c.Value == nil {
 							continue
@@ -227,16 +228,19 @@ func literalIn(fset *token.FileSet, src []byte, expr string, exprPos token.Pos, 
 	return classList{Value: value, Start: start, End: end, Quoting: quoting, SideKeyed: sideKeyed}, true, nil
 }
 
-// mentionsSide reports whether a switch tag or if condition is keyed on the
-// component's side parameter. Sheet, Drawer and Sidebar all name it `side`.
-func mentionsSide(goExpr string) bool {
+// mentionsPlacement reports whether a switch tag or if condition is keyed on
+// the component's physical-placement parameter, whose arms stay physical.
+// Sheet and Sidebar name it `side`; Drawer names the same prop `direction`,
+// after vaul's own API. Both identifiers count, and no other class-list
+// switch or condition in ui/*.gsx uses either name for anything else.
+func mentionsPlacement(goExpr string) bool {
 	parsed, err := goparser.ParseExpr(goExpr)
 	if err != nil {
 		return false
 	}
 	found := false
 	goast.Inspect(parsed, func(n goast.Node) bool {
-		if id, ok := n.(*goast.Ident); ok && id.Name == "side" {
+		if id, ok := n.(*goast.Ident); ok && (id.Name == "side" || id.Name == "direction") {
 			found = true
 		}
 		return !found
