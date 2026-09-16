@@ -257,3 +257,7 @@ tw-animate-css sized-slide caveat.
   package consumers cannot import; the RTL page carries a one-line note.
   `gsxui migrate` with no subcommand exits non-zero with the list,
   consistent with the CLI's other usage errors.
+- Every RTL example on the site (not only the four named above) renders
+  from `site/uirtl`, and the component page frames an `rtl` example with
+  `dir="rtl"`, as upstream's preview does, so width-constrained demos sit
+  at the inline start.

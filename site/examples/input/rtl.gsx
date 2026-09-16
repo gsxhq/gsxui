@@ -1,6 +1,6 @@
 package input
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl keeps Basic's single default Input, wrapped in dir="rtl". shadcn's
 // own input-rtl demo wraps it in a Field/FieldLabel/FieldDescription API
@@ -8,6 +8,6 @@ import "github.com/gsxhq/gsxui/ui"
 // rather than invented.
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.Input type="email" placeholder="انت@مثال.com"/>
+		<uirtl.Input type="email" placeholder="انت@مثال.com"/>
 	</div>
 }

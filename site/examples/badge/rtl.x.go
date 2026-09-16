@@ -5,7 +5,7 @@ package badge
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -22,31 +22,31 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:12:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"flex w-full flex-wrap justify-center gap-2\">")
 //line rtl.gsx:13:3
-		_gsxgw.Node(ctx, ui.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("شارة")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:14:3
-		_gsxgw.Node(ctx, ui.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("ثانوي")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:15:3
-		_gsxgw.Node(ctx, ui.Badge("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Badge("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("مدمر")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:16:3
-		_gsxgw.Node(ctx, ui.Badge("outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Badge("outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("مخطط")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:17:3
-		_gsxgw.Node(ctx, ui.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:4
 			_gsxgw.Node(ctx, uiicon.BadgeCheck())
@@ -54,7 +54,7 @@ func Rtl() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:21:3
-		_gsxgw.Node(ctx, ui.Badge("outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Badge("outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("إشارة مرجعية")
 //line rtl.gsx:23:4

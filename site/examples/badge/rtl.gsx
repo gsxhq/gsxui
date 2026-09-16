@@ -1,7 +1,7 @@
 package badge
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -10,17 +10,17 @@ import (
 // dir="rtl".
 component Rtl() {
 	<div dir="rtl" lang="ar" class="flex w-full flex-wrap justify-center gap-2">
-		<ui.Badge>شارة</ui.Badge>
-		<ui.Badge variant="secondary">ثانوي</ui.Badge>
-		<ui.Badge variant="destructive">مدمر</ui.Badge>
-		<ui.Badge variant="outline">مخطط</ui.Badge>
-		<ui.Badge variant="secondary">
+		<uirtl.Badge>شارة</uirtl.Badge>
+		<uirtl.Badge variant="secondary">ثانوي</uirtl.Badge>
+		<uirtl.Badge variant="destructive">مدمر</uirtl.Badge>
+		<uirtl.Badge variant="outline">مخطط</uirtl.Badge>
+		<uirtl.Badge variant="secondary">
 			<uiicon.BadgeCheck/>
 			متحقق
-		</ui.Badge>
-		<ui.Badge variant="outline">
+		</uirtl.Badge>
+		<uirtl.Badge variant="outline">
 			إشارة مرجعية
 			<uiicon.Bookmark/>
-		</ui.Badge>
+		</uirtl.Badge>
 	</div>
 }

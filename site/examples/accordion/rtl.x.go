@@ -5,7 +5,7 @@ package accordion
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -20,19 +20,19 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:8:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:9:3
-		_gsxgw.Node(ctx, ui.Accordion("faq-rtl", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Accordion("faq-rtl", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:10:4
-			_gsxgw.Node(ctx, ui.AccordionItem("faq-rtl", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.AccordionItem("faq-rtl", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:11:5
-				_gsxgw.Node(ctx, ui.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("كيف يمكنني إعادة تعيين كلمة المرور؟")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:12:5
-				_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("انقر على 'نسيت كلمة المرور' في صفحة تسجيل الدخول، أدخل عنوان بريدك الإلكتروني، وسنرسل لك رابطًا لإعادة تعيين كلمة المرور. سينتهي صلاحية الرابط خلال 24 ساعة.")
 					return _gsxgw.Err()
@@ -40,16 +40,16 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:17:4
-			_gsxgw.Node(ctx, ui.AccordionItem("faq-rtl", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.AccordionItem("faq-rtl", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:5
-				_gsxgw.Node(ctx, ui.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("هل يمكنني تغيير خطة الاشتراك الخاصة بي؟")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:19:5
-				_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("نعم، يمكنك ترقية أو تخفيض خطتك في أي وقت من إعدادات حسابك. ستظهر التغييرات في دورة الفوترة التالية.")
 					return _gsxgw.Err()
@@ -57,16 +57,16 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:23:4
-			_gsxgw.Node(ctx, ui.AccordionItem("faq-rtl", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.AccordionItem("faq-rtl", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:5
-				_gsxgw.Node(ctx, ui.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("ما هي طرق الدفع التي تقبلونها؟")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:25:5
-				_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("نقبل جميع بطاقات الائتمان الرئيسية و PayPal والتحويلات المصرفية. تتم معالجة جميع المدفوعات بأمان من خلال شركاء الدفع لدينا.")
 					return _gsxgw.Err()

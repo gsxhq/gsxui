@@ -5,7 +5,7 @@ package card
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -21,28 +21,28 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:9:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"w-full max-w-sm\">")
 //line rtl.gsx:10:3
-		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:11:4
-			_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:12:5
-				_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("تسجيل الدخول إلى حسابك")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:13:5
-				_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("أدخل بريدك الإلكتروني أدناه لتسجيل الدخول إلى حسابك")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:14:5
-				_gsxgw.Node(ctx, ui.CardAction(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.CardAction(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:6
-					_gsxgw.Node(ctx, ui.Button("link", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.Button("link", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("إنشاء حساب")
 						return _gsxgw.Err()
@@ -52,7 +52,7 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:18:4
-			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:5
 				_gsxgw.S("<form>")
@@ -61,20 +61,20 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:21:7
 				_gsxgw.S("<div class=\"grid gap-2\">")
 //line rtl.gsx:22:8
-				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("البريد الإلكتروني")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "card-rtl-email"}}))
 //line rtl.gsx:23:8
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "card-rtl-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, uirtl.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "card-rtl-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
 //line rtl.gsx:25:7
 				_gsxgw.S("<div class=\"grid gap-2\">")
 //line rtl.gsx:26:8
 				_gsxgw.S("<div class=\"flex items-center\">")
 //line rtl.gsx:27:9
-				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("كلمة المرور")
 					return _gsxgw.Err()
@@ -82,21 +82,21 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:28:9
 				_gsxgw.S("<a href=\"#\" class=\"ms-auto inline-block text-sm underline-offset-4 hover:underline\">نسيت كلمة المرور؟</a></div>")
 //line rtl.gsx:30:8
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "card-rtl-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, uirtl.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "card-rtl-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div></div></form>")
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:35:4
-			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:36:5
-				_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("تسجيل الدخول")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "type", Value: "submit"}}, _gsxrt.Attrs{{Key: "class", Value: "w-full"}})))
 //line rtl.gsx:37:5
-				_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("تسجيل الدخول باستخدام Google")
 					return _gsxgw.Err()

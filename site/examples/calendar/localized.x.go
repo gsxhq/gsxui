@@ -7,7 +7,7 @@ import (
 
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 	_gsxty1 "time"
 )
@@ -21,7 +21,7 @@ var LocalizedDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // is identical), wide and narrow weekday names, and Arabic-Indic digits.
 // The day label puts the day before the month, and the week starts on
 // Saturday.
-var Arabic = ui.CalendarLocale{
+var Arabic = uirtl.CalendarLocale{
 	Months: [12]string{
 		"يناير",
 		"فبراير",
@@ -68,7 +68,7 @@ func Localized(month time.Time) _gsxrt.Node {
 //line localized.gsx:56:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line localized.gsx:57:3
-		_gsxgw.Node(ctx, ui.Calendar("single", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Saturday, true, "dropdown", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", Arabic, nil))
+		_gsxgw.Node(ctx, uirtl.Calendar("single", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Saturday, true, "dropdown", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", Arabic, nil))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

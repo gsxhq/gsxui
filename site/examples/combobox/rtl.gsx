@@ -1,6 +1,6 @@
 package combobox
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 var categories = []struct{ Value, Label string }{
 	{"technology", "التكنولوجيا"},
@@ -17,16 +17,16 @@ var categories = []struct{ Value, Label string }{
 // this directory's Basic and are DEVIATED from here rather than invented).
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.Combobox name="category" value="">
-			<ui.ComboboxInput placeholder="أضف فئات" showTrigger class="w-[220px]"/>
-			<ui.ComboboxContent>
-				<ui.ComboboxList>
-					<ui.ComboboxEmpty>لم يتم العثور على فئات.</ui.ComboboxEmpty>
+		<uirtl.Combobox name="category" value="">
+			<uirtl.ComboboxInput placeholder="أضف فئات" showTrigger class="w-[220px]"/>
+			<uirtl.ComboboxContent>
+				<uirtl.ComboboxList>
+					<uirtl.ComboboxEmpty>لم يتم العثور على فئات.</uirtl.ComboboxEmpty>
 					{ for _, c := range categories {
-						<ui.ComboboxItem value={c.Value} selected={false}>{ c.Label }</ui.ComboboxItem>
+						<uirtl.ComboboxItem value={c.Value} selected={false}>{ c.Label }</uirtl.ComboboxItem>
 					} }
-				</ui.ComboboxList>
-			</ui.ComboboxContent>
-		</ui.Combobox>
+				</uirtl.ComboboxList>
+			</uirtl.ComboboxContent>
+		</uirtl.Combobox>
 	</div>
 }

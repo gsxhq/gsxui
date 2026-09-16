@@ -227,43 +227,47 @@ func (c Component) Page(props ComponentProps) _gsxrt.Node {
 						_gsxgw.S("</div>")
 					} else {
 //line component.gsx:190:7
-						_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
-//line component.gsx:191:8
+						_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\"")
+						if ex.Name == "rtl" {
+							_gsxgw.S(" dir=\"rtl\"")
+						}
+						_gsxgw.S(">")
+//line component.gsx:196:8
 						_gsxgw.Node(ctx, ex.Node)
 						_gsxgw.S("</div>")
 					}
 				}
-//line component.gsx:194:6
+//line component.gsx:199:6
 				_gsxgw.S("<div class=\"relative\"")
 				_gsxgw.BoolAttr("data-site-example", true)
 				_gsxgw.S(">")
-//line component.gsx:195:7
+//line component.gsx:200:7
 				_gsxgw.S("<pre class=\"overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm\">")
-//line component.gsx:197:8
+//line component.gsx:202:8
 				_gsxgw.S("<code>")
-//line component.gsx:197:14
+//line component.gsx:202:14
 				_gsxgw.Node(ctx, hl.Node(ex.SourcePath))
 				_gsxgw.S("</code></pre>")
-//line component.gsx:198:7
+//line component.gsx:203:7
 				_gsxgw.S("<button type=\"button\"")
 				_gsxgw.BoolAttr("data-site-copy", true)
 				_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div></section>")
 			}
-//line component.gsx:208:4
+//line component.gsx:213:4
 			_gsxgw.S("<footer class=\"flex flex-col gap-3 border-t border-border pt-6 text-sm text-muted-foreground\">")
-//line component.gsx:209:5
+//line component.gsx:214:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-card-foreground\">")
-//line component.gsx:211:6
+//line component.gsx:216:6
 			_gsxgw.S("<code>")
-//line component.gsx:211:12
+//line component.gsx:216:12
 			_gsxgw.Text(string("gsxui add " + props.Name))
 			_gsxgw.S("</code></pre>")
-//line component.gsx:212:5
+//line component.gsx:217:5
 			if props.Name == "icon" {
-//line component.gsx:213:6
+//line component.gsx:218:6
 				_gsxgw.S("<a href=\"https://lucide.dev\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the icon set on lucide.dev</a>")
 			} else {
-//line component.gsx:222:6
+//line component.gsx:227:6
 				_gsxgw.S("<a href=\"")
 				_gsxgw.URL(string("https://ui.shadcn.com/docs/components/" + shadcnName(props.Name)))
 				_gsxgw.S("\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the original on shadcn/ui</a>")

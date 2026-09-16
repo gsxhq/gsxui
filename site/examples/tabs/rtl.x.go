@@ -5,7 +5,7 @@ package tabs
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -19,31 +19,31 @@ func Rtl() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:9:2
-		_gsxgw.Node(ctx, ui.Tabs("overview", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Tabs("overview", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:10:3
-			_gsxgw.Node(ctx, ui.TabsList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.TabsList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:11:4
-				_gsxgw.Node(ctx, ui.TabsTrigger("overview", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.TabsTrigger("overview", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("نظرة عامة")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:12:4
-				_gsxgw.Node(ctx, ui.TabsTrigger("analytics", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.TabsTrigger("analytics", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("التحليلات")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:13:4
-				_gsxgw.Node(ctx, ui.TabsTrigger("reports", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.TabsTrigger("reports", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("التقارير")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:14:4
-				_gsxgw.Node(ctx, ui.TabsTrigger("settings", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.TabsTrigger("settings", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("الإعدادات")
 					return _gsxgw.Err()
@@ -51,22 +51,22 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:16:3
-			_gsxgw.Node(ctx, ui.TabsContent("overview", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.TabsContent("overview", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:4
-				_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:5
-					_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:6
-						_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("نظرة عامة")
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:20:6
-						_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("عرض مقاييسك الرئيسية وأنشطة المشروع الأخيرة. تتبع التقدم عبر جميع مشاريعك النشطة.")
 							return _gsxgw.Err()
@@ -74,7 +74,7 @@ func Rtl() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:24:5
-					_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("لديك ١٢ مشروعًا نشطًا و٣ مهام معلقة.")
 						return _gsxgw.Err()
@@ -83,31 +83,31 @@ func Rtl() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line rtl.gsx:27:3
-			_gsxgw.Node(ctx, ui.TabsContent("analytics", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:29:3
+			_gsxgw.Node(ctx, uirtl.TabsContent("analytics", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:28:4
-				_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:30:4
+				_gsxgw.Node(ctx, uirtl.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:29:5
-					_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:31:5
+					_gsxgw.Node(ctx, uirtl.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:30:6
-						_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:32:6
+						_gsxgw.Node(ctx, uirtl.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("التحليلات")
 							return _gsxgw.Err()
 						}), nil))
-//line rtl.gsx:31:6
-						_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:33:6
+						_gsxgw.Node(ctx, uirtl.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("تتبع مقاييس الأداء ومشاركة المستخدمين. راقب الاتجاهات وحدد فرص النمو.")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:33:5
-					_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:37:5
+					_gsxgw.Node(ctx, uirtl.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("زادت مشاهدات الصفحة بنسبة ٢٥٪ مقارنة بالشهر الماضي.")
 						return _gsxgw.Err()
@@ -116,31 +116,31 @@ func Rtl() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line rtl.gsx:38:3
-			_gsxgw.Node(ctx, ui.TabsContent("reports", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:42:3
+			_gsxgw.Node(ctx, uirtl.TabsContent("reports", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:39:4
-				_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:43:4
+				_gsxgw.Node(ctx, uirtl.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:40:5
-					_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:44:5
+					_gsxgw.Node(ctx, uirtl.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:41:6
-						_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:45:6
+						_gsxgw.Node(ctx, uirtl.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("التقارير")
 							return _gsxgw.Err()
 						}), nil))
-//line rtl.gsx:42:6
-						_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:46:6
+						_gsxgw.Node(ctx, uirtl.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("إنشاء وتنزيل تقاريرك التفصيلية. تصدير البيانات بتنسيقات متعددة للتحليل.")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:46:5
-					_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:50:5
+					_gsxgw.Node(ctx, uirtl.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("لديك ٥ تقارير جاهزة ومتاحة للتصدير.")
 						return _gsxgw.Err()
@@ -149,31 +149,31 @@ func Rtl() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line rtl.gsx:49:3
-			_gsxgw.Node(ctx, ui.TabsContent("settings", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:53:3
+			_gsxgw.Node(ctx, uirtl.TabsContent("settings", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:50:4
-				_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:54:4
+				_gsxgw.Node(ctx, uirtl.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:51:5
-					_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:55:5
+					_gsxgw.Node(ctx, uirtl.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:52:6
-						_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:56:6
+						_gsxgw.Node(ctx, uirtl.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("الإعدادات")
 							return _gsxgw.Err()
 						}), nil))
-//line rtl.gsx:53:6
-						_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:57:6
+						_gsxgw.Node(ctx, uirtl.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("إدارة تفضيلات حسابك وخياراته. تخصيص تجربتك لتناسب احتياجاتك.")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line rtl.gsx:55:5
-					_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:59:5
+					_gsxgw.Node(ctx, uirtl.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("تكوين الإشعارات والأمان والسمات.")
 						return _gsxgw.Err()

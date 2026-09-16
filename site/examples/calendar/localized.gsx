@@ -3,7 +3,7 @@ package calendar
 import (
 	"time"
 
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 )
 
 // LocalizedDefaultMonth mirrors Basic's own DefaultMonth (2026-01).
@@ -13,7 +13,7 @@ var LocalizedDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // is identical), wide and narrow weekday names, and Arabic-Indic digits.
 // The day label puts the day before the month, and the week starts on
 // Saturday.
-var Arabic = ui.CalendarLocale{
+var Arabic = uirtl.CalendarLocale{
 	Months: [12]string{
 		"يناير",
 		"فبراير",
@@ -54,7 +54,7 @@ var Arabic = ui.CalendarLocale{
 // month for the Go/JS agreement diff.
 component Localized(month time.Time) {
 	<div dir="rtl" lang="ar">
-		<ui.Calendar
+		<uirtl.Calendar
 			mode="single"
 			month={month}
 			weekStartsOn={time.Saturday}

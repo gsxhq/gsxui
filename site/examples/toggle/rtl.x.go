@@ -5,7 +5,7 @@ package toggle
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -21,7 +21,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:11:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:12:3
-		_gsxgw.Node(ctx, ui.Toggle(false, "outline", "sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Toggle(false, "outline", "sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:13:4
 			_gsxgw.Node(ctx, icon.Bookmark())

@@ -5,7 +5,7 @@ package input
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -22,7 +22,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:10:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:11:3
-		_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "انت@مثال.com"}})))
+		_gsxgw.Node(ctx, uirtl.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "انت@مثال.com"}})))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

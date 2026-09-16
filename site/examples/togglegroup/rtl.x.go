@@ -5,7 +5,7 @@ package togglegroup
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -21,22 +21,22 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:9:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:10:3
-		_gsxgw.Node(ctx, ui.ToggleGroup("single", "outline", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.ToggleGroup("single", "outline", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:11:4
-			_gsxgw.Node(ctx, ui.ToggleGroupItem("single", "outline", "", "", true, "list", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ToggleGroupItem("single", "outline", "", "", true, "list", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("قائمة")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "قائمة"}}))
 //line rtl.gsx:14:4
-			_gsxgw.Node(ctx, ui.ToggleGroupItem("single", "outline", "", "", false, "grid", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ToggleGroupItem("single", "outline", "", "", false, "grid", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("شبكة")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "شبكة"}}))
-//line rtl.gsx:15:4
-			_gsxgw.Node(ctx, ui.ToggleGroupItem("single", "outline", "", "", false, "cards", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line rtl.gsx:17:4
+			_gsxgw.Node(ctx, uirtl.ToggleGroupItem("single", "outline", "", "", false, "cards", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("بطاقات")
 				return _gsxgw.Err()

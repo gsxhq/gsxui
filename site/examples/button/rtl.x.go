@@ -5,7 +5,7 @@ package button
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -23,19 +23,19 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:13:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"flex flex-wrap items-center gap-2\">")
 //line rtl.gsx:14:3
-		_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("زر")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:15:3
-		_gsxgw.Node(ctx, ui.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("حذف")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:16:3
-		_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("إرسال")
 //line rtl.gsx:18:4
@@ -43,17 +43,17 @@ func Rtl() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:20:3
-		_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:21:4
 			_gsxgw.Node(ctx, uiicon.Plus())
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Add"}}))
 //line rtl.gsx:23:3
-		_gsxgw.Node(ctx, ui.Button("secondary", "", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Button("secondary", "", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:4
-			_gsxgw.Node(ctx, ui.Spinner(nil))
+			_gsxgw.Node(ctx, uirtl.Spinner(nil))
 			_gsxgw.S("جاري التحميل")
 			return _gsxgw.Err()
 		}), nil))

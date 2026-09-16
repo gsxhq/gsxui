@@ -5,7 +5,7 @@ package aspectratio
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -21,7 +21,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:9:2
 		_gsxgw.S("<figure dir=\"rtl\" lang=\"ar\" class=\"w-full max-w-sm\">")
 //line rtl.gsx:10:3
-		_gsxgw.Node(ctx, ui.AspectRatio("16 / 9", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.AspectRatio("16 / 9", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("16 / 9")
 			return _gsxgw.Err()

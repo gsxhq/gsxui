@@ -1,6 +1,6 @@
 package table
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl mirrors shadcn's own table-rtl demo: the same invoices table as Data
 // plus a payment-method column and a footer total row, translated to
@@ -13,31 +13,31 @@ component Rtl() {
 			{"INV003", "غير مدفوع", "تحويل بنكي", "$350.00"},
 		}
 	}}
-	<ui.Table dir="rtl" lang="ar">
-		<ui.TableCaption>قائمة بفواتيرك الأخيرة.</ui.TableCaption>
-		<ui.TableHeader>
-			<ui.TableRow>
-				<ui.TableHead class="w-[100px]">الفاتورة</ui.TableHead>
-				<ui.TableHead>الحالة</ui.TableHead>
-				<ui.TableHead>الطريقة</ui.TableHead>
-				<ui.TableHead class="text-right">المبلغ</ui.TableHead>
-			</ui.TableRow>
-		</ui.TableHeader>
-		<ui.TableBody>
+	<uirtl.Table dir="rtl" lang="ar">
+		<uirtl.TableCaption>قائمة بفواتيرك الأخيرة.</uirtl.TableCaption>
+		<uirtl.TableHeader>
+			<uirtl.TableRow>
+				<uirtl.TableHead class="w-[100px]">الفاتورة</uirtl.TableHead>
+				<uirtl.TableHead>الحالة</uirtl.TableHead>
+				<uirtl.TableHead>الطريقة</uirtl.TableHead>
+				<uirtl.TableHead class="text-right">المبلغ</uirtl.TableHead>
+			</uirtl.TableRow>
+		</uirtl.TableHeader>
+		<uirtl.TableBody>
 			{ for _, inv := range invoices {
-				<ui.TableRow>
-					<ui.TableCell class="font-medium">{ inv.Invoice }</ui.TableCell>
-					<ui.TableCell>{ inv.Status }</ui.TableCell>
-					<ui.TableCell>{ inv.Method }</ui.TableCell>
-					<ui.TableCell class="text-right">{ inv.Amount }</ui.TableCell>
-				</ui.TableRow>
+				<uirtl.TableRow>
+					<uirtl.TableCell class="font-medium">{ inv.Invoice }</uirtl.TableCell>
+					<uirtl.TableCell>{ inv.Status }</uirtl.TableCell>
+					<uirtl.TableCell>{ inv.Method }</uirtl.TableCell>
+					<uirtl.TableCell class="text-right">{ inv.Amount }</uirtl.TableCell>
+				</uirtl.TableRow>
 			} }
-		</ui.TableBody>
-		<ui.TableFooter>
-			<ui.TableRow>
-				<ui.TableCell colspan="3">المجموع</ui.TableCell>
-				<ui.TableCell class="text-right">$2,500.00</ui.TableCell>
-			</ui.TableRow>
-		</ui.TableFooter>
-	</ui.Table>
+		</uirtl.TableBody>
+		<uirtl.TableFooter>
+			<uirtl.TableRow>
+				<uirtl.TableCell colspan="3">المجموع</uirtl.TableCell>
+				<uirtl.TableCell class="text-right">$2,500.00</uirtl.TableCell>
+			</uirtl.TableRow>
+		</uirtl.TableFooter>
+	</uirtl.Table>
 }

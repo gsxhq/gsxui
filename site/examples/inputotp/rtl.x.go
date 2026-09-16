@@ -5,7 +5,7 @@ package inputotp
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -27,30 +27,30 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:14:3
 		_gsxgw.S("<label class=\"mb-2 block text-sm font-medium\">رمز التحقق</label>")
 //line rtl.gsx:15:3
-		_gsxgw.Node(ctx, ui.InputOTP(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputOTP(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:4
-			_gsxgw.Node(ctx, ui.InputOTPGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.InputOTPGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:5
-				_gsxgw.Node(ctx, ui.InputOTPSlot(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}))
+				_gsxgw.Node(ctx, uirtl.InputOTPSlot(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}))
 //line rtl.gsx:18:5
-				_gsxgw.Node(ctx, ui.InputOTPSlot(nil))
+				_gsxgw.Node(ctx, uirtl.InputOTPSlot(nil))
 //line rtl.gsx:19:5
-				_gsxgw.Node(ctx, ui.InputOTPSlot(nil))
+				_gsxgw.Node(ctx, uirtl.InputOTPSlot(nil))
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:21:4
-			_gsxgw.Node(ctx, ui.InputOTPSeparator(nil))
+			_gsxgw.Node(ctx, uirtl.InputOTPSeparator(nil))
 //line rtl.gsx:22:4
-			_gsxgw.Node(ctx, ui.InputOTPGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.InputOTPGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:23:5
-				_gsxgw.Node(ctx, ui.InputOTPSlot(nil))
+				_gsxgw.Node(ctx, uirtl.InputOTPSlot(nil))
 //line rtl.gsx:24:5
-				_gsxgw.Node(ctx, ui.InputOTPSlot(nil))
+				_gsxgw.Node(ctx, uirtl.InputOTPSlot(nil))
 //line rtl.gsx:25:5
-				_gsxgw.Node(ctx, ui.InputOTPSlot(nil))
+				_gsxgw.Node(ctx, uirtl.InputOTPSlot(nil))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()

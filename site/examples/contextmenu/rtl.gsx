@@ -1,7 +1,7 @@
 package contextmenu
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 )
 
 // Rtl mirrors shadcn's own context-menu-rtl demo's Arabic strings for the
@@ -11,28 +11,28 @@ import (
 // them either).
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.ContextMenu>
-			<ui.ContextMenuTrigger
+		<uirtl.ContextMenu>
+			<uirtl.ContextMenuTrigger
 				class="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm"
 			>
 				انقر بزر الماوس الأيمن هنا
-			</ui.ContextMenuTrigger>
-			<ui.ContextMenuContent class="w-52">
-				<ui.ContextMenuItem>
+			</uirtl.ContextMenuTrigger>
+			<uirtl.ContextMenuContent class="w-52">
+				<uirtl.ContextMenuItem>
 					رجوع
-					<ui.ContextMenuShortcut>⌘[</ui.ContextMenuShortcut>
-				</ui.ContextMenuItem>
-				<ui.ContextMenuItem aria-disabled="true" data-disabled="true">
+					<uirtl.ContextMenuShortcut>⌘[</uirtl.ContextMenuShortcut>
+				</uirtl.ContextMenuItem>
+				<uirtl.ContextMenuItem aria-disabled="true" data-disabled="true">
 					تقدم
-					<ui.ContextMenuShortcut>⌘]</ui.ContextMenuShortcut>
-				</ui.ContextMenuItem>
-				<ui.ContextMenuItem>
+					<uirtl.ContextMenuShortcut>⌘]</uirtl.ContextMenuShortcut>
+				</uirtl.ContextMenuItem>
+				<uirtl.ContextMenuItem>
 					إعادة تحميل
-					<ui.ContextMenuShortcut>⌘R</ui.ContextMenuShortcut>
-				</ui.ContextMenuItem>
-				<ui.ContextMenuSeparator/>
-				<ui.ContextMenuItem variant="destructive">حذف</ui.ContextMenuItem>
-			</ui.ContextMenuContent>
-		</ui.ContextMenu>
+					<uirtl.ContextMenuShortcut>⌘R</uirtl.ContextMenuShortcut>
+				</uirtl.ContextMenuItem>
+				<uirtl.ContextMenuSeparator/>
+				<uirtl.ContextMenuItem variant="destructive">حذف</uirtl.ContextMenuItem>
+			</uirtl.ContextMenuContent>
+		</uirtl.ContextMenu>
 	</div>
 }

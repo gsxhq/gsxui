@@ -1,7 +1,7 @@
 package toggle
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -9,9 +9,9 @@ import (
 // bookmark icon with a translated label, wrapped in dir="rtl".
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.Toggle variant="outline" size="sm" aria-label="Toggle bookmark">
+		<uirtl.Toggle variant="outline" size="sm" aria-label="Toggle bookmark">
 			<icon.Bookmark/>
 			إشارة مرجعية
-		</ui.Toggle>
+		</uirtl.Toggle>
 	</div>
 }

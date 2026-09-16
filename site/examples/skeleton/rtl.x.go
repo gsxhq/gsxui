@@ -5,7 +5,7 @@ package skeleton
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -22,13 +22,13 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:10:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"flex items-center gap-4\">")
 //line rtl.gsx:11:3
-		_gsxgw.Node(ctx, ui.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "size-12 rounded-full"}}))
+		_gsxgw.Node(ctx, uirtl.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "size-12 rounded-full"}}))
 //line rtl.gsx:12:3
 		_gsxgw.S("<div class=\"grid gap-2\">")
 //line rtl.gsx:13:4
-		_gsxgw.Node(ctx, ui.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "h-4 w-[250px]"}}))
+		_gsxgw.Node(ctx, uirtl.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "h-4 w-[250px]"}}))
 //line rtl.gsx:14:4
-		_gsxgw.Node(ctx, ui.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "h-4 w-[200px]"}}))
+		_gsxgw.Node(ctx, uirtl.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "h-4 w-[200px]"}}))
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()
 	})

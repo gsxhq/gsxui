@@ -1,6 +1,6 @@
 package carousel
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 var rtlSlides = []string{"١", "٢", "٣", "٤", "٥"}
 
@@ -11,22 +11,22 @@ var rtlSlides = []string{"١", "٢", "٣", "٤", "٥"}
 // pattern (and pagination/rtl.gsx) relies on for logical-property flip.
 component Rtl() {
 	<div dir="rtl" lang="ar" class="mx-auto w-full max-w-xs">
-		<ui.Carousel orientation="" class="mx-auto w-full max-w-xs">
-			<ui.CarouselContent orientation="">
+		<uirtl.Carousel orientation="" class="mx-auto w-full max-w-xs">
+			<uirtl.CarouselContent orientation="">
 				{ for _, n := range rtlSlides {
-					<ui.CarouselItem orientation="">
+					<uirtl.CarouselItem orientation="">
 						<div class="p-1">
-							<ui.Card>
-								<ui.CardContent class="flex aspect-square items-center justify-center p-6">
+							<uirtl.Card>
+								<uirtl.CardContent class="flex aspect-square items-center justify-center p-6">
 									<span class="text-4xl font-semibold">{ n }</span>
-								</ui.CardContent>
-							</ui.Card>
+								</uirtl.CardContent>
+							</uirtl.Card>
 						</div>
-					</ui.CarouselItem>
+					</uirtl.CarouselItem>
 				} }
-			</ui.CarouselContent>
-			<ui.CarouselPrevious orientation=""/>
-			<ui.CarouselNext orientation=""/>
-		</ui.Carousel>
+			</uirtl.CarouselContent>
+			<uirtl.CarouselPrevious orientation=""/>
+			<uirtl.CarouselNext orientation=""/>
+		</uirtl.Carousel>
 	</div>
 }

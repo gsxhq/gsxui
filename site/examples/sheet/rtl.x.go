@@ -5,7 +5,7 @@ package sheet
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -22,28 +22,28 @@ func Rtl() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:12:2
-		_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:13:3
-			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("فتح")
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-sheet-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
 //line rtl.gsx:21:3
-			_gsxgw.Node(ctx, ui.SheetContent("left", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.SheetContent("left", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:22:4
-				_gsxgw.Node(ctx, ui.SheetHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.SheetHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:23:5
-					_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("تعديل الملف الشخصي")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:24:5
-					_gsxgw.Node(ctx, ui.SheetDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SheetDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("قم بإجراء تغييرات على ملفك الشخصي هنا. انقر حفظ عند الانتهاء.")
 						return _gsxgw.Err()
@@ -55,30 +55,30 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:29:5
 				_gsxgw.S("<div class=\"grid grid-cols-4 items-center gap-4\">")
 //line rtl.gsx:30:6
-				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("الاسم")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: "sheet-rtl-name"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
 //line rtl.gsx:31:6
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-rtl-name"}}, _gsxrt.Attrs{{Key: "value", Value: "Pedro Duarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
+				_gsxgw.Node(ctx, uirtl.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-rtl-name"}}, _gsxrt.Attrs{{Key: "value", Value: "Pedro Duarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
 				_gsxgw.S("</div>")
 //line rtl.gsx:33:5
 				_gsxgw.S("<div class=\"grid grid-cols-4 items-center gap-4\">")
 //line rtl.gsx:34:6
-				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("اسم المستخدم")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: "sheet-rtl-username"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
 //line rtl.gsx:35:6
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-rtl-username"}}, _gsxrt.Attrs{{Key: "value", Value: "@peduarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
+				_gsxgw.Node(ctx, uirtl.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-rtl-username"}}, _gsxrt.Attrs{{Key: "value", Value: "@peduarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
 				_gsxgw.S("</div></div>")
 //line rtl.gsx:38:4
-				_gsxgw.Node(ctx, ui.SheetFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.SheetFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:39:5
-					_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("حفظ التغييرات")
 						return _gsxgw.Err()
