@@ -172,6 +172,9 @@ The RTL page's "How it works" becomes:
 
 - Set `rtl: true` in `gsxui.json` (`gsxui init --rtl`); `gsxui add` then
   rewrites physical direction classes to logical ones in what it vendors.
+- An `rtl: true` project renders both directions: the document's `dir`
+  decides at render time, so `dir="ltr"` looks exactly as before and
+  `dir="rtl"` mirrors. Set `dir` from the locale as today.
 - `gsxui migrate rtl` rewrites components you installed before opting in.
 - Directional icons carry `rtl:rotate-180`; floating placement and keyboard
   semantics mirror in JS (the existing bullets, unchanged).
