@@ -224,3 +224,31 @@ func TestLoadConfigMissing(t *testing.T) {
 		t.Fatalf("want actionable error, got %v", err)
 	}
 }
+
+func TestConfigRTLRoundTripsAndDefaultsFalse(t *testing.T) {
+	dir := t.TempDir()
+	cfg := DefaultConfig()
+	if cfg.RTL {
+		t.Fatal("RTL must default to false")
+	}
+	cfg.RTL = true
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	raw, _ := os.ReadFile(filepath.Join(dir, "gsxui.json"))
+	if !strings.Contains(string(raw), `"rtl": true`) {
+		t.Fatalf("gsxui.json missing rtl: %s", raw)
+	}
+	loaded, err := LoadConfig(dir)
+	if err != nil || !loaded.RTL {
+		t.Fatalf("RTL not round-tripped: %+v %v", loaded, err)
+	}
+	cfg.RTL = false
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	raw, _ = os.ReadFile(filepath.Join(dir, "gsxui.json"))
+	if strings.Contains(string(raw), "rtl") {
+		t.Fatalf("false rtl must be omitted: %s", raw)
+	}
+}
