@@ -1,0 +1,22 @@
+package ui
+
+import "github.com/gsxhq/gsx"
+
+component Fixture(side string, active string, children gsx.Node, attrs gsx.Attrs) {
+	<div class="ms-2 text-start" data-a>
+		<span
+			class={
+				"ps-4 -translate-x-1/2 rtl:translate-x-1/2",
+				"border-s": active == "left",
+				switch side { case "left": "left-0 border-r slide-in-from-left" default: "right-0 border-l" }
+			}
+			title="pl-4 stays: not a class"
+		>
+			{ children }
+		</span>
+		<i class={ "data-[side=left]:-right-1 hover:me-2", attrs.Class() }></i>
+		<b class={ `me-1` }></b>
+		<u class={ if active == "a" { "ms-3" } else if active == "b" { "me-3" } else { "ps-3" } }></u>
+		<em class={ if side == "left" { "ml-3" } else { "mr-3" } }></em>
+	</div>
+}
