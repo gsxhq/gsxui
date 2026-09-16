@@ -389,6 +389,16 @@ func TestGenerateAllEmitsTheSiteRTLPackage(t *testing.T) {
 	if !strings.Contains(string(drawer), `"inset-y-0 left-0 right-auto h-full`) {
 		t.Errorf("drawer direction arm must stay physical in site/uirtl")
 	}
+	// The same physical side spelled as vaul's own attribute variant, on the
+	// base class list rather than in an arm.
+	for _, class := range []string{
+		"data-[vaul-drawer-direction=left]:rounded-r-xl",
+		"data-[vaul-drawer-direction=left]:border-r",
+	} {
+		if !strings.Contains(string(drawer), class) {
+			t.Errorf("drawer variant %q must stay physical in site/uirtl", class)
+		}
+	}
 	if err := GenerateAll(root, true); err != nil {
 		t.Fatalf("GenerateAll(check) after write = %v", err)
 	}
