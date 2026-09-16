@@ -35,6 +35,7 @@ func init() {
 	})
 	Register("dropdown-menu", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampledropdown.Rtl(),
 		SourcePath: "dropdown/rtl.gsx",

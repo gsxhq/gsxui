@@ -11,6 +11,7 @@ func init() {
 	})
 	Register("slider", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleslider.Rtl(),
 		SourcePath: "slider/rtl.gsx",

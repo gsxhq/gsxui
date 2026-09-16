@@ -159,6 +159,7 @@ func init() {
 	})
 	Register("calendar", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplecalendar.Rtl(),
 		SourcePath: "calendar/rtl.gsx",
@@ -167,6 +168,7 @@ func init() {
 	})
 	Register("calendar", Example{
 		Name:       "localized",
+		Dir:        "rtl",
 		Title:      "Localized",
 		Node:       examplecalendar.Localized(examplecalendar.LocalizedDefaultMonth),
 		SourcePath: "calendar/localized.gsx",

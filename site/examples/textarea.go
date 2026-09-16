@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("textarea", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampletextarea.Rtl(),
 		SourcePath: "textarea/rtl.gsx",

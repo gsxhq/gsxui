@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("separator", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleseparator.Rtl(),
 		SourcePath: "separator/rtl.gsx",

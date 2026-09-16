@@ -20,6 +20,7 @@ func init() {
 	})
 	Register("button", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplebutton.Rtl(),
 		SourcePath: "button/rtl.gsx",

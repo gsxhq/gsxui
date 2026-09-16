@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("switch", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleswitch.Rtl(),
 		SourcePath: "switchctl/rtl.gsx",

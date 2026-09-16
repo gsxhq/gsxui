@@ -11,6 +11,7 @@ func init() {
 	})
 	Register("command", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplecommand.Rtl(),
 		SourcePath: "command/rtl.gsx",

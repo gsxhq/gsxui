@@ -23,6 +23,7 @@ func init() {
 	})
 	Register("input-otp", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleinputotp.Rtl(),
 		SourcePath: "inputotp/rtl.gsx",

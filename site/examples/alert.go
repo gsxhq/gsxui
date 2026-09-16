@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("alert", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplealert.Rtl(),
 		SourcePath: "alert/rtl.gsx",

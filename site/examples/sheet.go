@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("sheet", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplesheet.Rtl(),
 		SourcePath: "sheet/rtl.gsx",

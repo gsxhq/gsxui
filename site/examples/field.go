@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("field", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplefield.Rtl(),
 		SourcePath: "field/rtl.gsx",

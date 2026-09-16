@@ -11,6 +11,7 @@ func init() {
 	})
 	Register("hover-card", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplehovercard.Rtl(),
 		SourcePath: "hovercard/rtl.gsx",

@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("tooltip", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampletooltip.Rtl(),
 		SourcePath: "tooltip/rtl.gsx",

@@ -23,6 +23,7 @@ func init() {
 	})
 	Register("toggle-group", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampletogglegroup.Rtl(),
 		SourcePath: "togglegroup/rtl.gsx",

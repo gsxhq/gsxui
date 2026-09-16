@@ -11,6 +11,7 @@ func init() {
 	})
 	Register("pagination", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplepagination.Rtl(),
 		SourcePath: "pagination/rtl.gsx",

@@ -11,6 +11,7 @@ func init() {
 	})
 	Register("progress", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleprogress.Rtl(),
 		SourcePath: "progress/rtl.gsx",

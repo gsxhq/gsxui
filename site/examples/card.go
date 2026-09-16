@@ -23,6 +23,7 @@ func init() {
 	})
 	Register("card", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplecard.Rtl(),
 		SourcePath: "card/rtl.gsx",

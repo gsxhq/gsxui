@@ -11,6 +11,7 @@ func init() {
 	})
 	Register("popover", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplepopover.Rtl(),
 		SourcePath: "popover/rtl.gsx",

@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("scroll-area", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplescrollarea.Rtl(),
 		SourcePath: "scrollarea/rtl.gsx",
