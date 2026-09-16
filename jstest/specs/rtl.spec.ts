@@ -354,4 +354,17 @@ test.describe("rtl", () => {
     expect(className).toMatch(/(?:^|\s)rtl:\[&::-webkit-slider-runnable-track\]/);
     expect(className).toMatch(/(?:^|\s)rtl:\[&::-moz-range-track\]/);
   });
+
+  test("native-select chevron sits at the logical end (visual left) in the RTL login demo", async ({ page }) => {
+    // The demo renders from site/uirtl, the transform's output. Issue #32's
+    // reported symptom was this chevron staying on the physical right.
+    await page.goto("/x/rtl/login");
+    const wrapper = page.locator("[data-gsxui-slot-native-select-wrapper]").first();
+    await expect(wrapper).toBeVisible();
+    const chevron = wrapper.locator("> svg");
+    const wrapperBox = await wrapper.boundingBox();
+    const chevronBox = await chevron.boundingBox();
+    if (!wrapperBox || !chevronBox) throw new Error("missing bounding boxes");
+    expect(chevronBox.x + chevronBox.width / 2).toBeLessThan(wrapperBox.x + wrapperBox.width / 2);
+  });
 });

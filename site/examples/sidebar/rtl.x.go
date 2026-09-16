@@ -5,7 +5,7 @@ package sidebar
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -25,43 +25,43 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:15:2
 		_gsxgw.S("<div dir=\"rtl\">")
 //line rtl.gsx:16:3
-		_gsxgw.Node(ctx, ui.SidebarProvider(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.SidebarProvider(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:4
-			_gsxgw.Node(ctx, ui.Sidebar(true, "right", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Sidebar(true, "right", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:5
-				_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:6
 					_gsxgw.S("<div class=\"px-2 py-1 text-sm font-semibold\">شركة أكمي</div>")
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:21:5
-				_gsxgw.Node(ctx, ui.SidebarSeparator(nil))
+				_gsxgw.Node(ctx, uirtl.SidebarSeparator(nil))
 //line rtl.gsx:22:5
-				_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:23:6
-					_gsxgw.Node(ctx, ui.SidebarGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.SidebarGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:7
-						_gsxgw.Node(ctx, ui.SidebarGroupLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.SidebarGroupLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("التطبيق")
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:25:7
-						_gsxgw.Node(ctx, ui.SidebarGroupContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.SidebarGroupContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:26:8
-							_gsxgw.Node(ctx, ui.SidebarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw.Node(ctx, uirtl.SidebarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:27:9
-								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw.Node(ctx, uirtl.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:28:10
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "الرئيسية", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, uirtl.SidebarMenuButton(true, "", "", "الرئيسية", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:11
 										_gsxgw.Node(ctx, icon.House())
@@ -72,10 +72,10 @@ func Rtl() _gsxrt.Node {
 									return _gsxgw.Err()
 								}), nil))
 //line rtl.gsx:33:9
-								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw.Node(ctx, uirtl.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:34:10
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "البريد الوارد", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, uirtl.SidebarMenuButton(false, "", "", "البريد الوارد", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:35:11
 										_gsxgw.Node(ctx, icon.Inbox())
@@ -86,10 +86,10 @@ func Rtl() _gsxrt.Node {
 									return _gsxgw.Err()
 								}), nil))
 //line rtl.gsx:39:9
-								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw.Node(ctx, uirtl.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:40:10
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "الإعدادات", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, uirtl.SidebarMenuButton(false, "", "", "الإعدادات", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:41:11
 										_gsxgw.Node(ctx, icon.Settings())
@@ -108,16 +108,16 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:49:5
-				_gsxgw.Node(ctx, ui.SidebarRail(nil))
+				_gsxgw.Node(ctx, uirtl.SidebarRail(nil))
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:51:4
-			_gsxgw.Node(ctx, ui.SidebarInset(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.SidebarInset(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:52:5
 				_gsxgw.S("<header class=\"flex h-12 items-center gap-2 border-b px-4\">")
 //line rtl.gsx:53:6
-				_gsxgw.Node(ctx, ui.SidebarTrigger(nil))
+				_gsxgw.Node(ctx, uirtl.SidebarTrigger(nil))
 //line rtl.gsx:54:6
 				_gsxgw.S("<span class=\"text-sm text-muted-foreground\">لوحة التحكم</span></header>")
 //line rtl.gsx:56:5

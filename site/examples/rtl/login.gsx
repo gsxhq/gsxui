@@ -3,24 +3,25 @@
 // the other site/examples packages are.
 package rtl
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Login is an Arabic sign-in card rendered under dir="rtl": every part —
-// Card, Label, Input, Button — adapts through logical Tailwind properties
-// alone, no RTL-specific markup of its own. This is the /docs/rtl page's
+// Card, Label, Input, NativeSelect, Button — adapts because the demo
+// renders the transformed site/uirtl package, the same output gsxui add
+// produces for a project with "rtl": true. This is the /docs/rtl page's
 // "Try it out" demo.
 component Login() {
 	<div dir="rtl" lang="ar" class="max-w-sm">
-		<ui.Card>
-			<ui.CardHeader>
-				<ui.CardTitle>تسجيل الدخول</ui.CardTitle>
-				<ui.CardDescription>أدخل بيانات حسابك للمتابعة</ui.CardDescription>
-			</ui.CardHeader>
-			<ui.CardContent>
+		<uirtl.Card>
+			<uirtl.CardHeader>
+				<uirtl.CardTitle>تسجيل الدخول</uirtl.CardTitle>
+				<uirtl.CardDescription>أدخل بيانات حسابك للمتابعة</uirtl.CardDescription>
+			</uirtl.CardHeader>
+			<uirtl.CardContent>
 				<form class="flex flex-col gap-4">
 					<div class="flex flex-col gap-2">
-						<ui.Label for="rtl-login-email">البريد الإلكتروني</ui.Label>
-						<ui.Input
+						<uirtl.Label for="rtl-login-email">البريد الإلكتروني</uirtl.Label>
+						<uirtl.Input
 							id="rtl-login-email"
 							type="email"
 							name="email"
@@ -30,15 +31,28 @@ component Login() {
 						/>
 					</div>
 					<div class="flex flex-col gap-2">
-						<ui.Label for="rtl-login-password">كلمة المرور</ui.Label>
-						<ui.Input id="rtl-login-password" type="password" name="password" autocomplete="current-password" required/>
+						<uirtl.Label for="rtl-login-password">كلمة المرور</uirtl.Label>
+						<uirtl.Input
+							id="rtl-login-password"
+							type="password"
+							name="password"
+							autocomplete="current-password"
+							required
+						/>
 					</div>
-					<ui.Button type="submit" class="w-full">دخول</ui.Button>
+					<div class="flex flex-col gap-2">
+						<uirtl.Label for="rtl-login-language">اللغة</uirtl.Label>
+						<uirtl.NativeSelect id="rtl-login-language" name="language">
+							<uirtl.NativeSelectOption value="ar" selected={true}>العربية</uirtl.NativeSelectOption>
+							<uirtl.NativeSelectOption value="en">English</uirtl.NativeSelectOption>
+						</uirtl.NativeSelect>
+					</div>
+					<uirtl.Button type="submit" class="w-full">دخول</uirtl.Button>
 				</form>
-			</ui.CardContent>
-			<ui.CardFooter>
+			</uirtl.CardContent>
+			<uirtl.CardFooter>
 				<p class="text-sm text-muted-foreground">ليس لديك حساب؟ إنشاء حساب</p>
-			</ui.CardFooter>
-		</ui.Card>
+			</uirtl.CardFooter>
+		</uirtl.Card>
 	</div>
 }

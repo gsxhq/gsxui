@@ -5,71 +5,98 @@ package rtl
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
 //line login.gsx:8:1
 // Login is an Arabic sign-in card rendered under dir="rtl": every part —
-// Card, Label, Input, Button — adapts through logical Tailwind properties
-// alone, no RTL-specific markup of its own. This is the /docs/rtl page's
+// Card, Label, Input, NativeSelect, Button — adapts because the demo
+// renders the transformed site/uirtl package, the same output gsxui add
+// produces for a project with "rtl": true. This is the /docs/rtl page's
 // "Try it out" demo.
 
-//line login.gsx:12:1
+//line login.gsx:13:1
 func Login() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line login.gsx:13:2
+//line login.gsx:14:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"max-w-sm\">")
-//line login.gsx:14:3
-		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:15:3
+		_gsxgw.Node(ctx, uirtl.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line login.gsx:15:4
-			_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:16:4
+			_gsxgw.Node(ctx, uirtl.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line login.gsx:16:5
-				_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:17:5
+				_gsxgw.Node(ctx, uirtl.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("تسجيل الدخول")
 					return _gsxgw.Err()
 				}), nil))
-//line login.gsx:17:5
-				_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:18:5
+				_gsxgw.Node(ctx, uirtl.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("أدخل بيانات حسابك للمتابعة")
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line login.gsx:19:4
-			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:20:4
+			_gsxgw.Node(ctx, uirtl.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line login.gsx:20:5
+//line login.gsx:21:5
 				_gsxgw.S("<form class=\"flex flex-col gap-4\">")
-//line login.gsx:21:6
+//line login.gsx:22:6
 				_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line login.gsx:22:7
-				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:23:7
+				_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("البريد الإلكتروني")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "rtl-login-email"}}))
-//line login.gsx:23:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+//line login.gsx:24:7
+				_gsxgw.Node(ctx, uirtl.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
-//line login.gsx:32:6
+//line login.gsx:33:6
 				_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line login.gsx:33:7
-				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:34:7
+				_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("كلمة المرور")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "rtl-login-password"}}))
-//line login.gsx:34:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "name", Value: "password"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+//line login.gsx:35:7
+				_gsxgw.Node(ctx, uirtl.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "name", Value: "password"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
-//line login.gsx:36:6
-				_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:43:6
+				_gsxgw.S("<div class=\"flex flex-col gap-2\">")
+//line login.gsx:44:7
+				_gsxgw.Node(ctx, uirtl.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("اللغة")
+					return _gsxgw.Err()
+				}), _gsxrt.Attrs{{Key: "for", Value: "rtl-login-language"}}))
+//line login.gsx:45:7
+				_gsxgw.Node(ctx, uirtl.NativeSelect(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line login.gsx:46:8
+					_gsxgw.Node(ctx, uirtl.NativeSelectOption("ar", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("العربية")
+						return _gsxgw.Err()
+					}), nil))
+//line login.gsx:47:8
+					_gsxgw.Node(ctx, uirtl.NativeSelectOption("en", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("English")
+						return _gsxgw.Err()
+					}), nil))
+					return _gsxgw.Err()
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-language"}}, _gsxrt.Attrs{{Key: "name", Value: "language"}})))
+				_gsxgw.S("</div>")
+//line login.gsx:50:6
+				_gsxgw.Node(ctx, uirtl.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("دخول")
 					return _gsxgw.Err()
@@ -77,10 +104,10 @@ func Login() _gsxrt.Node {
 				_gsxgw.S("</form>")
 				return _gsxgw.Err()
 			}), nil))
-//line login.gsx:39:4
-			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line login.gsx:53:4
+			_gsxgw.Node(ctx, uirtl.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line login.gsx:40:5
+//line login.gsx:54:5
 				_gsxgw.S("<p class=\"text-sm text-muted-foreground\">ليس لديك حساب؟ إنشاء حساب</p>")
 				return _gsxgw.Err()
 			}), nil))
