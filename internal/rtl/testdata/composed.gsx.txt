@@ -2,7 +2,7 @@ package ui
 
 import "github.com/gsxhq/gsx"
 
-component Fixture(side string, active string, children gsx.Node, attrs gsx.Attrs) {
+component Fixture(side string, direction string, active string, children gsx.Node, attrs gsx.Attrs) {
 	<div class="ml-2 text-left" data-a>
 		<span
 			class={
@@ -18,5 +18,6 @@ component Fixture(side string, active string, children gsx.Node, attrs gsx.Attrs
 		<b class={ `mr-1` }></b>
 		<u class={ if active == "a" { "ml-3" } else if active == "b" { "mr-3" } else { "pl-3" } }></u>
 		<em class={ if side == "left" { "ml-3" } else { "mr-3" } }></em>
+		<s class={ switch direction { case "left": "left-0 border-r" default: "right-0 border-l" } }></s>
 	</div>
 }
