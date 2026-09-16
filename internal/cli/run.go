@@ -23,7 +23,7 @@ var runCommand = func(dir, name string, args ...string) error {
 // Run dispatches the gsxui subcommands.
 func Run(args []string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("usage: gsxui <init|add|apply|list> [args]")
+		return fmt.Errorf("usage: gsxui <init|add|apply|migrate|list> [args]")
 	}
 	switch args[0] {
 	case "init":
@@ -32,9 +32,11 @@ func Run(args []string) error {
 		return runAdd(args[1:])
 	case "apply":
 		return runApply(args[1:])
+	case "migrate":
+		return runMigrate(args[1:])
 	case "list":
 		return runList(args[1:])
 	default:
-		return fmt.Errorf("unknown command %q (want init, add, apply, or list)", args[0])
+		return fmt.Errorf("unknown command %q (want init, add, apply, migrate, or list)", args[0])
 	}
 }
