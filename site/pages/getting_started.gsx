@@ -52,13 +52,13 @@ component (g GettingStarted) Page() {
 				<div class="mt-4 flex flex-col gap-3">
 					<docHeading item={gettingStartedTOCItems[2]}/>
 					<p>
-						If you customized the Vite config, entry file, package manager, or gsxui paths, <code>gsxui init</code>stops
-						before writing anything and prints what to wire up yourself:
+						If you customized the Vite config, entry file, package manager, or gsxui
+						paths, <code>gsxui init</code> stops before writing anything and prints what to wire up yourself:
 					</p>
 					<pre><code>{ hl.Node("snippets/manual-integration") }</code></pre>
 					<p>
-						Not using Vite — or npm — at all? See <a href={NpmFree{} |> url}>npm-free</a>: <code>gsxui init</code>
-						detects the missing scaffold and initializes without either.
+						Not using Vite — or npm — at all? See <a href={NpmFree{} |> url}>npm-free</a>
+						: <code>gsxui init</code>{ " " }detects the missing scaffold and initializes without either.
 					</p>
 				</div>
 			</section>

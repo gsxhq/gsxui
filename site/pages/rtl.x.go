@@ -41,6 +41,8 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">RTL</h1>")
 //line rtl.gsx:25:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">Opt in once and the components you vendor use logical direction classes, so one build serves")
+//line rtl.gsx:26:98
+			_gsxgw.Text(string(" "))
 //line rtl.gsx:27:6
 			_gsxgw.S("<code>dir=\"ltr\"</code> and ")
 //line rtl.gsx:27:33
@@ -73,6 +75,8 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S("<code>dir=\"rtl\"</code> on ")
 //line rtl.gsx:37:36
 			_gsxgw.S("<code>&lt;html&gt;</code>, or on any subtree, from the locale. An")
+//line rtl.gsx:37:101
+			_gsxgw.Text(string(" "))
 //line rtl.gsx:38:6
 			_gsxgw.S("<code>rtl: true</code> project renders both directions; the document's ")
 //line rtl.gsx:38:77
@@ -109,10 +113,14 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S("<strong>Logical classes, at install time.</strong> With ")
 //line rtl.gsx:52:63
 			_gsxgw.S("<code>\"rtl\": true</code> in")
+//line rtl.gsx:52:90
+			_gsxgw.Text(string(" "))
 //line rtl.gsx:53:7
 			_gsxgw.S("<code>gsxui.json</code>, ")
 //line rtl.gsx:53:32
 			_gsxgw.S("<code>gsxui add</code> rewrites physical classes in what it vendors:")
+//line rtl.gsx:53:100
+			_gsxgw.Text(string(" "))
 //line rtl.gsx:54:7
 			_gsxgw.S("<code>ml-*</code> to ")
 //line rtl.gsx:54:28
@@ -121,10 +129,14 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S("<code>left-*</code> to ")
 //line rtl.gsx:54:70
 			_gsxgw.S("<code>start-*</code>,")
+//line rtl.gsx:54:91
+			_gsxgw.Text(string(" "))
 //line rtl.gsx:55:7
 			_gsxgw.S("<code>text-left</code> to ")
 //line rtl.gsx:55:33
 			_gsxgw.S("<code>text-start</code>, and the rest of shadcn's table.")
+//line rtl.gsx:55:89
+			_gsxgw.Text(string(" "))
 //line rtl.gsx:56:7
 			_gsxgw.S("<code>translate-x-*</code> and ")
 //line rtl.gsx:56:38
@@ -135,6 +147,8 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S("<li>")
 //line rtl.gsx:59:7
 			_gsxgw.S("<strong>Directional icons.</strong> Chevrons and arrows that encode a left/right meaning carry")
+//line rtl.gsx:59:101
+			_gsxgw.Text(string(" "))
 //line rtl.gsx:60:7
 			_gsxgw.S("<code>rtl:rotate-180</code>.</li>")
 //line rtl.gsx:62:6
@@ -149,6 +163,8 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S("<li>")
 //line rtl.gsx:71:7
 			_gsxgw.S("<strong>The demos on this page</strong> render from the transformed components, the same output")
+//line rtl.gsx:71:102
+			_gsxgw.Text(string(" "))
 //line rtl.gsx:72:7
 			_gsxgw.S("<code>gsxui add</code> produces with the flag set.</li></ul>")
 //line rtl.gsx:75:5
