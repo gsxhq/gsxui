@@ -5,7 +5,7 @@ package resizable
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -21,10 +21,10 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:9:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:10:3
-		_gsxgw.Node(ctx, ui.ResizablePanelGroup("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.ResizablePanelGroup("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:11:4
-			_gsxgw.Node(ctx, ui.ResizablePanel("50%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ResizablePanel("50%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:12:5
 				_gsxgw.S("<div class=\"flex h-[200px] items-center justify-center p-6\">")
@@ -33,15 +33,15 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:16:4
-			_gsxgw.Node(ctx, ui.ResizableHandle("horizontal", true, nil))
+			_gsxgw.Node(ctx, uirtl.ResizableHandle("horizontal", true, nil))
 //line rtl.gsx:17:4
-			_gsxgw.Node(ctx, ui.ResizablePanel("50%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.ResizablePanel("50%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:5
-				_gsxgw.Node(ctx, ui.ResizablePanelGroup("vertical", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.ResizablePanelGroup("vertical", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:6
-					_gsxgw.Node(ctx, ui.ResizablePanel("25%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.ResizablePanel("25%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:20:7
 						_gsxgw.S("<div class=\"flex h-full items-center justify-center p-6\">")
@@ -50,9 +50,9 @@ func Rtl() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:24:6
-					_gsxgw.Node(ctx, ui.ResizableHandle("vertical", true, nil))
+					_gsxgw.Node(ctx, uirtl.ResizableHandle("vertical", true, nil))
 //line rtl.gsx:25:6
-					_gsxgw.Node(ctx, ui.ResizablePanel("75%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.ResizablePanel("75%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:26:7
 						_gsxgw.S("<div class=\"flex h-full items-center justify-center p-6\">")

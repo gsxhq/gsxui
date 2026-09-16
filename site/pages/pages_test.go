@@ -520,6 +520,27 @@ func normalizedHTMLText(node *html.Node) string {
 	return strings.Join(strings.Fields(text.String()), " ")
 }
 
+// findElementByClassContainingText returns the first element with the given
+// class attribute value whose text content contains want, or nil if none
+// matches. It is used to locate a specific example's frame div on a
+// /components/{name} page, where every example shares the same frame class
+// but only one contains the distinguishing text.
+func findElementByClassContainingText(document *html.Node, class string, want string) *html.Node {
+	var found *html.Node
+	walkHTML(document, func(node *html.Node) {
+		if found != nil || node.Type != html.ElementNode {
+			return
+		}
+		if got, ok := htmlAttribute(node, "class"); !ok || got != class {
+			return
+		}
+		if strings.Contains(normalizedHTMLText(node), want) {
+			found = node
+		}
+	})
+	return found
+}
+
 // TestComponentPageRoute is the Task 2 integration smoke test for
 // /components/{name}: a registered component renders the preview panel
 // (live component) next to its literal, unescaped-by-identifier source
@@ -702,6 +723,40 @@ func TestComponentPageRoute(t *testing.T) {
 		}
 	})
 
+	// The frame div wrapping an inline (non-isolated) example is LTR by
+	// default; an example registered with Dir: "rtl" must have its frame
+	// itself carry dir="rtl" (mirroring upstream's own preview surface) so
+	// a width-constrained demo sits at the inline start instead of hugging
+	// the physical left.
+	t.Run("rtl example frame carries dir=rtl", func(t *testing.T) {
+		document := renderDocument(t, handler, "/components/alert")
+		frame := findElementByClassContainingText(
+			document, "border rounded-lg p-8 bg-background", "تم الدفع بنجاح",
+		)
+		if frame == nil {
+			t.Fatalf("could not find the alert rtl example's frame element")
+		}
+		if dir, ok := htmlAttribute(frame, "dir"); !ok || dir != "rtl" {
+			t.Errorf("alert rtl example frame dir = %q, ok = %v, want \"rtl\"", dir, ok)
+		}
+	})
+
+	// calendar's Localized example is registered as Name "localized" (not
+	// "rtl") but carries Dir: "rtl" — proving the frame follows Dir, not
+	// the example's Name.
+	t.Run("localized example frame carries dir=rtl (Dir, not Name, drives the frame)", func(t *testing.T) {
+		document := renderDocument(t, handler, "/components/calendar")
+		frame := findElementByClassContainingText(
+			document, "border rounded-lg p-8 bg-background", "يناير",
+		)
+		if frame == nil {
+			t.Fatalf("could not find the calendar localized example's frame element")
+		}
+		if dir, ok := htmlAttribute(frame, "dir"); !ok || dir != "rtl" {
+			t.Errorf("calendar localized example frame dir = %q, ok = %v, want \"rtl\"", dir, ok)
+		}
+	})
+
 	t.Run("unknown component", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/components/nope", nil)
 		rec := httptest.NewRecorder()
@@ -711,6 +766,47 @@ func TestComponentPageRoute(t *testing.T) {
 			t.Fatalf("GET /components/nope = %d, want %d; body:\n%s", rec.Code, http.StatusNotFound, rec.Body.String())
 		}
 	})
+}
+
+// TestRTLExamplesRenderFromUirtl proves every example registered with
+// Dir: "rtl" across the whole registry renders from site/uirtl, the
+// transformed package, rather than the untransformed ui: every shipped ui
+// component's text-left maps to text-start under the transform (see
+// site/uirtl/alert.gsx and friends), so a Dir: "rtl" example whose rendered
+// markup still contains text-left is either importing ui directly or
+// wrapping a component the transform missed. It also guards the Dir field
+// itself: an example named "rtl" that forgot to set Dir: "rtl" would
+// silently drop out of both this sweep and the component page's frame
+// condition (site/pages/component.gsx checks ex.Dir, not ex.Name), so a
+// missing Dir is asserted directly rather than only failing to appear here.
+func TestRTLExamplesRenderFromUirtl(t *testing.T) {
+	handler := newTestHandler(t)
+
+	for _, component := range examples.Components() {
+		for _, ex := range examples.For(component) {
+			if ex.Name == "rtl" && ex.Dir != "rtl" {
+				t.Errorf(
+					"%s: example named %q has Dir %q, want \"rtl\" (a future registration cannot forget the field)",
+					component, ex.Name, ex.Dir,
+				)
+			}
+			if ex.Dir != "rtl" {
+				continue
+			}
+			t.Run(component+"/"+ex.Name, func(t *testing.T) {
+				path := "/examples/" + component + "/" + ex.Name
+				req := httptest.NewRequest(http.MethodGet, path, nil)
+				rec := httptest.NewRecorder()
+				handler.ServeHTTP(rec, req)
+				if rec.Code != http.StatusOK {
+					t.Fatalf("GET %s = %d, want %d; body:\n%s", path, rec.Code, http.StatusOK, rec.Body.String())
+				}
+				if body := rec.Body.String(); strings.Contains(body, "text-left") {
+					t.Errorf("Dir=rtl example %s/%s contains a physical text-left class, want site/uirtl's text-start; body:\n%s", component, ex.Name, body)
+				}
+			})
+		}
+	}
 }
 
 func TestExamplePreviewRoute(t *testing.T) {

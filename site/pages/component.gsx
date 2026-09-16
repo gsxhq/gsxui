@@ -38,6 +38,7 @@ type exampleProps struct {
 	ViewportWidth int
 	Previews      []examples.Preview
 	PreviewRTL    bool
+	Dir           string
 }
 
 // Props resolves the {name} path param against the examples registry.
@@ -64,6 +65,7 @@ func (Component) Props(r *http.Request) (ComponentProps, error) {
 			ViewportWidth: ex.ViewportWidth,
 			Previews:      ex.Previews,
 			PreviewRTL:    ex.PreviewRTL,
+			Dir:           ex.Dir,
 		}
 	}
 	return ComponentProps{Name: name, Title: capitalize(name), Examples: eps}, nil
@@ -187,7 +189,12 @@ component (c Component) Page(props ComponentProps) {
 							} }
 						</div>
 					} else {
-						<div class="border rounded-lg p-8 bg-background">
+						<div
+							class="border rounded-lg p-8 bg-background"
+							{ if ex.Dir == "rtl" {
+								dir="rtl"
+							} }
+						>
 							{ ex.Node }
 						</div>
 					} }

@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("native-select", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplenativeselect.Rtl(),
 		SourcePath: "nativeselect/rtl.gsx",

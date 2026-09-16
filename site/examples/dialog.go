@@ -23,6 +23,7 @@ func init() {
 	})
 	Register("dialog", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampledialog.Rtl(),
 		SourcePath: "dialog/rtl.gsx",

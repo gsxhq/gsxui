@@ -5,7 +5,7 @@ package inputgroup
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -24,29 +24,29 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:13:3
 		_gsxgw.S("<div class=\"flex w-full max-w-sm flex-col gap-4\">")
 //line rtl.gsx:14:4
-		_gsxgw.Node(ctx, ui.InputGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:5
-			_gsxgw.Node(ctx, ui.InputGroupAddon("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.InputGroupAddon("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:6
 				_gsxgw.Node(ctx, icon.Search(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:18:5
-			_gsxgw.Node(ctx, ui.InputGroupInput(_gsxrt.Attrs{{Key: "placeholder", Value: "بحث..."}}))
+			_gsxgw.Node(ctx, uirtl.InputGroupInput(_gsxrt.Attrs{{Key: "placeholder", Value: "بحث..."}}))
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:20:4
-		_gsxgw.Node(ctx, ui.InputGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:21:5
-			_gsxgw.Node(ctx, ui.InputGroupInput(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "البريد الإلكتروني"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}})))
+			_gsxgw.Node(ctx, uirtl.InputGroupInput(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "البريد الإلكتروني"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}})))
 //line rtl.gsx:22:5
-			_gsxgw.Node(ctx, ui.InputGroupAddon("inline-end", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.InputGroupAddon("inline-end", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:23:6
-				_gsxgw.Node(ctx, ui.InputGroupButton("", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.InputGroupButton("", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:7
 					_gsxgw.Node(ctx, icon.Send())
@@ -57,13 +57,13 @@ func Rtl() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:28:4
-		_gsxgw.Node(ctx, ui.InputGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:5
-			_gsxgw.Node(ctx, ui.InputGroupAddon("block-start", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.InputGroupAddon("block-start", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:30:6
-				_gsxgw.Node(ctx, ui.InputGroupText(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.InputGroupText(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("الرابط")
 					return _gsxgw.Err()
@@ -71,12 +71,12 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:32:5
-			_gsxgw.Node(ctx, ui.InputGroupInput(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "placeholder", Value: "معطل"}})))
+			_gsxgw.Node(ctx, uirtl.InputGroupInput(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "placeholder", Value: "معطل"}})))
 //line rtl.gsx:33:5
-			_gsxgw.Node(ctx, ui.InputGroupAddon("block-end", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.InputGroupAddon("block-end", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:34:6
-				_gsxgw.Node(ctx, ui.InputGroupText(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.InputGroupText(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("مطلوب")
 					return _gsxgw.Err()
@@ -88,43 +88,43 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:37:4
 		_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
 //line rtl.gsx:38:5
-		_gsxgw.Node(ctx, ui.InputGroupButton("default", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroupButton("default", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("افتراضي")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:39:5
-		_gsxgw.Node(ctx, ui.InputGroupButton("destructive", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroupButton("destructive", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("مدمر")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:40:5
-		_gsxgw.Node(ctx, ui.InputGroupButton("outline", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroupButton("outline", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("مخطط")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:41:5
-		_gsxgw.Node(ctx, ui.InputGroupButton("secondary", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroupButton("secondary", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("ثانوي")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:42:5
-		_gsxgw.Node(ctx, ui.InputGroupButton("link", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroupButton("link", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("رابط")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:43:5
-		_gsxgw.Node(ctx, ui.InputGroupButton("", "sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroupButton("", "sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("صغير")
 			return _gsxgw.Err()
 		}), nil))
 //line rtl.gsx:44:5
-		_gsxgw.Node(ctx, ui.InputGroupButton("", "icon-sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroupButton("", "icon-sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:45:6
 			_gsxgw.Node(ctx, icon.Send())
@@ -132,10 +132,10 @@ func Rtl() _gsxrt.Node {
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "أيقونة"}}))
 		_gsxgw.S("</div>")
 //line rtl.gsx:48:4
-		_gsxgw.Node(ctx, ui.InputGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.InputGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:49:5
-			_gsxgw.Node(ctx, ui.InputGroupInput(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "value", Value: "قيمة غير صالحة"}})))
+			_gsxgw.Node(ctx, uirtl.InputGroupInput(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "value", Value: "قيمة غير صالحة"}})))
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div></div>")

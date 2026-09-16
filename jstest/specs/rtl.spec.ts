@@ -354,4 +354,54 @@ test.describe("rtl", () => {
     expect(className).toMatch(/(?:^|\s)rtl:\[&::-webkit-slider-runnable-track\]/);
     expect(className).toMatch(/(?:^|\s)rtl:\[&::-moz-range-track\]/);
   });
+
+  test("switch thumb moves toward the inline end (visual left) when checked under RTL", async ({ page }) => {
+    // Renders from site/uirtl: the transform adds rtl:checked:before:-translate-x-…
+    // beside the physical checked:before:translate-x-…; this pins that the
+    // rtl companion wins the cascade in the compiled CSS.
+    //
+    // The thumb is the input's own ::before pseudo-element (ui/switch.gsx),
+    // so there is no real DOM node to read a bounding box from. And unlike
+    // the slider test above, transform-based interrogation doesn't work
+    // either: Tailwind v4's translate-x-* utilities set the standalone CSS
+    // `translate` property (not `transform`), and a percentage inside it
+    // stays symbolic in computed style (never resolved to a px offset)
+    // until layout — getComputedStyle(el, "::before").transform reads
+    // "none" whether checked or not, and DOMMatrixReadOnly can't parse the
+    // calc()-based `translate` string either. So, like the slider test,
+    // this verifies the mechanism directly: which of the two competing
+    // declarations for --tw-translate-x (the physical
+    // checked:before:translate-x-[calc(100%-2px)] vs. the rtl companion
+    // rtl:checked:before:-translate-x-[calc(100%-2px)]) the cascade
+    // resolves to on the checked ::before, under dir="rtl".
+    await page.goto("/x/switch/rtl");
+    const input = page.locator("[data-gsxui-slot-switch]").first();
+    await expect(input).toBeVisible();
+    const translateX = () =>
+      input.evaluate((el) =>
+        getComputedStyle(el, "::before").getPropertyValue("--tw-translate-x").trim(),
+      );
+
+    expect(await translateX()).toBe("0px");
+    await input.click();
+    await expect(input).toBeChecked();
+    // The rtl companion's value negates the physical one
+    // (calc(calc(100% - 2px) * -1)); the plain physical value alone
+    // (calc(100% - 2px), positive — toward the physical/visual right) would
+    // mean the rtl variant lost the cascade.
+    await expect.poll(translateX).toBe("calc(calc(100% - 2px) * -1)");
+  });
+
+  test("native-select chevron sits at the logical end (visual left) in the RTL login demo", async ({ page }) => {
+    // The demo renders from site/uirtl, the transform's output. Issue #32's
+    // reported symptom was this chevron staying on the physical right.
+    await page.goto("/x/rtl/login");
+    const wrapper = page.locator("[data-gsxui-slot-native-select-wrapper]").first();
+    await expect(wrapper).toBeVisible();
+    const chevron = wrapper.locator("> svg");
+    const wrapperBox = await wrapper.boundingBox();
+    const chevronBox = await chevron.boundingBox();
+    if (!wrapperBox || !chevronBox) throw new Error("missing bounding boxes");
+    expect(chevronBox.x + chevronBox.width / 2).toBeLessThan(wrapperBox.x + wrapperBox.width / 2);
+  });
 });

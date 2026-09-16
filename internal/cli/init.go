@@ -13,6 +13,7 @@ import (
 
 	gsxui "github.com/gsxhq/gsxui"
 	"github.com/gsxhq/gsxui/internal/preset"
+	"github.com/gsxhq/gsxui/internal/rtl"
 )
 
 type cssAssetTarget struct {
@@ -76,11 +77,12 @@ func runInit(args []string) error {
 	flags := flag.NewFlagSet("init", flag.ContinueOnError)
 	presetInput := flags.String("preset", "", "preset file, share code, raw JSON, URL, or - for stdin")
 	overwrite := flags.Bool("overwrite", false, "replace locally modified support files")
+	rtlFlag := flags.Bool("rtl", false, "vendor components with logical (direction-aware) classes; see /docs/rtl")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 	if len(flags.Args()) != 0 {
-		return fmt.Errorf("usage: gsxui init [--preset <file|code|->] [--overwrite]")
+		return fmt.Errorf("usage: gsxui init [--preset <file|code|->] [--overwrite] [--rtl]")
 	}
 	dir, err := os.Getwd()
 	if err != nil {
@@ -100,6 +102,9 @@ func runInit(args []string) error {
 		cfg = DefaultConfig()
 	default:
 		return err // unparsable or unreadable: never overwrite
+	}
+	if *rtlFlag {
+		cfg.RTL = true
 	}
 
 	selectedPreset, err := resolveInitPreset(dir, *presetInput)
@@ -249,6 +254,9 @@ func initArtifacts(dir, module string, cfg Config, selected preset.Preset, nonVi
 			content, err = composeStyleCSS(gsxui.Files, asset.source)
 			if err != nil {
 				return nil, err
+			}
+			if cfg.RTL {
+				content = rtl.CSS(content)
 			}
 		default:
 			content, err = fs.ReadFile(gsxui.Files, asset.source)

@@ -3,7 +3,7 @@ package calendar
 import (
 	"time"
 
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 )
 
 // RtlDefaultMonth mirrors Basic's own DefaultMonth (2026-01, never
@@ -15,7 +15,7 @@ var RtlDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // rtl:rotate-180, with no RTL-specific props of its own.
 component Rtl() {
 	<div dir="rtl">
-		<ui.Calendar
+		<uirtl.Calendar
 			mode="single"
 			month={RtlDefaultMonth}
 			weekStartsOn={time.Sunday}

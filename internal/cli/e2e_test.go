@@ -464,3 +464,96 @@ func activeModuleDir(t *testing.T, module string) string {
 	}
 	return dir
 }
+
+// TestE2ERTL is issue #32's table, end to end: a scratch consumer with
+// "rtl": true vendors every component the issue lists and none of the
+// physical classes it names survive. The module still builds.
+//
+// A few entries from the issue's table are sharpened here versus the literal
+// #32 wording, because a bare substring match (`strings.Contains`) can hit
+// unrelated text that legitimately survives the transform:
+//   - menubar.gsx: the issue's table lists the class order "pl-7 pr-1.5", but
+//     the nova sheet emits `pr-1.5 pl-7` (see registry/generated/nova/menubar.gsx);
+//     corrected to the real order and lengthened to "pr-1.5 pl-7 text-sm" so it
+//     doesn't also match the doc comment `py-1 pr-1.5 pl-7`, which quotes the
+//     pre-transform class and is deliberately left untouched by the transform.
+//   - menubar.gsx "left-1.5": lengthened to "hidden left-1.5 size-4" so it
+//     targets the real `absolute hidden left-1.5 size-4` indicator and not the
+//     doc comment that also spells out "left-1.5 size-4".
+//   - select.gsx / combobox.gsx "right-2": lengthened to "absolute right-2
+//     hidden" so it targets the real positioning class and not
+//     `slide-in-from-right-2`, a side-keyed animation utility that stays
+//     physical by design.
+//   - navigation-menu.gsx "ml-1": lengthened to "top-px ml-1 size-3" so it
+//     doesn't also match the doc comment "own ml-1 provides the visual gap".
+//   - alert-dialog.gsx "text-left": lengthened to the full class string
+//     "text-center sm:group-data-[size=default]/alert-dialog-content:text-left"
+//     so it doesn't also match the doc comment that quotes the same class.
+//   - toggle-group.gsx "rounded-l-lg"/"rounded-r-lg": lengthened to the full
+//     `group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg`
+//     (and the `:last:rounded-r-lg` counterpart) so they don't also match the
+//     doc comment's shorter paraphrase of the same rule.
+//   - tooltip.gsx: the issue's table lists `has-[kbd]:pr-1.5`, but gsxui's port
+//     targets the kbd slot by data attribute, not the bare element selector;
+//     the real pre-transform class is `has-[[data-gsxui-slot-kbd]]:pr-1.5`
+//     (see registry/generated/nova/tooltip.gsx).
+func TestE2ERTL(t *testing.T) {
+	if testing.Short() {
+		t.Skip("network-dependent e2e; run without -short")
+	}
+	t.Setenv("GOWORK", "off")
+	dir := scaffoldGSXProject(t)
+	t.Chdir(dir)
+	if err := Run([]string{"init", "--rtl"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"add",
+		"native-select", "select", "combobox", "dropdown-menu", "context-menu", "menubar", "command",
+		"navigation-menu", "accordion", "table", "alert", "alert-dialog", "field", "item", "input-group",
+		"sidebar", "toggle-group", "tooltip",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	gone := map[string][]string{
+		"native-select.gsx":   {"right-2.5", "pr-8"},
+		"select.gsx":          {"text-left", "pr-8 pl-1.5", "absolute right-2 hidden"},
+		"combobox.gsx":        {"pr-8 pl-1.5", "absolute right-2 hidden"},
+		"dropdown-menu.gsx":   {"pr-8 pl-1.5", "data-inset:pl-7", "ml-auto"},
+		"context-menu.gsx":    {"data-inset:pl-7", "ml-auto"},
+		"menubar.gsx":         {"pr-1.5 pl-7 text-sm", "hidden left-1.5 size-4", "ml-auto"},
+		"command.gsx":         {"pl-2", "ml-auto"},
+		"navigation-menu.gsx": {"top-px ml-1 size-3"},
+		"accordion.gsx":       {"text-left", "ml-auto"},
+		"table.gsx":           {"text-left", "pr-0"},
+		"alert.gsx":           {"text-left"},
+		"alert-dialog.gsx":    {"text-center sm:group-data-[size=default]/alert-dialog-content:text-left"},
+		"field.gsx":           {"text-left"},
+		"item.gsx":            {"text-left"},
+		"input-group.gsx":     {"pr-1.5", "pl-2"},
+		"toggle-group.gsx": {
+			"group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg",
+			"group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg",
+		},
+		"tooltip.gsx": {"has-[[data-gsxui-slot-kbd]]:pr-1.5"},
+	}
+	for file, classes := range gone {
+		src := readFile(t, dir, filepath.Join("ui", file))
+		for _, c := range classes {
+			if strings.Contains(src, c) {
+				t.Errorf("%s still carries %q", file, c)
+			}
+		}
+	}
+	// sidebar: the rail border is side-keyed and stays physical; the menu button text goes logical.
+	sidebar := readFile(t, dir, "ui/sidebar.gsx")
+	if !strings.Contains(sidebar, "[data-side=left]>&]:border-r") {
+		t.Error("sidebar rail border must stay physical")
+	}
+	if strings.Contains(sidebar, `"text-left`) || strings.Contains(sidebar, ` text-left`) {
+		t.Error("sidebar menu button text-left survived")
+	}
+	if !strings.Contains(readFile(t, dir, "ui/native-select.gsx"), "end-2.5") {
+		t.Error("native-select missing end-2.5")
+	}
+	mustRun(t, dir, "go", "build", "./...")
+}

@@ -5,7 +5,7 @@ package navigationmenu
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -26,27 +26,27 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:18:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:19:3
-		_gsxgw.Node(ctx, ui.NavigationMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.NavigationMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:20:4
-			_gsxgw.Node(ctx, ui.NavigationMenuList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.NavigationMenuList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:21:5
-				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:22:6
-					_gsxgw.Node(ctx, ui.NavigationMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.NavigationMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("البدء")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:23:6
-					_gsxgw.Node(ctx, ui.NavigationMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.NavigationMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:7
 						_gsxgw.S("<div class=\"grid w-96 gap-2\">")
 //line rtl.gsx:25:8
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:26:9
 							_gsxgw.S("<div class=\"text-sm font-medium\">مقدمة</div>")
@@ -55,7 +55,7 @@ func Rtl() _gsxrt.Node {
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 //line rtl.gsx:29:8
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:30:9
 							_gsxgw.S("<div class=\"text-sm font-medium\">التثبيت</div>")
@@ -64,7 +64,7 @@ func Rtl() _gsxrt.Node {
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 //line rtl.gsx:33:8
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:34:9
 							_gsxgw.S("<div class=\"text-sm font-medium\">الطباعة</div>")
@@ -78,21 +78,21 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:40:5
-				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:41:6
-					_gsxgw.Node(ctx, ui.NavigationMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.NavigationMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("مع أيقونة")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:42:6
-					_gsxgw.Node(ctx, ui.NavigationMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.NavigationMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:43:7
 						_gsxgw.S("<div class=\"grid w-48 gap-1\">")
 //line rtl.gsx:44:8
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:45:9
 							_gsxgw.Node(ctx, icon.CircleAlert())
@@ -100,7 +100,7 @@ func Rtl() _gsxrt.Node {
 							return _gsxgw.Err()
 						}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "href", Value: "#"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-row items-center gap-2"}})))
 //line rtl.gsx:48:8
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:49:9
 							_gsxgw.Node(ctx, icon.CircleDashed())
@@ -108,7 +108,7 @@ func Rtl() _gsxrt.Node {
 							return _gsxgw.Err()
 						}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "href", Value: "#"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-row items-center gap-2"}})))
 //line rtl.gsx:52:8
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:53:9
 							_gsxgw.Node(ctx, icon.CircleCheck())
@@ -121,10 +121,10 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:59:5
-				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:60:6
-					_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("الوثائق")
 						return _gsxgw.Err()
@@ -132,7 +132,7 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:62:5
-				_gsxgw.Node(ctx, ui.NavigationMenuIndicator(nil))
+				_gsxgw.Node(ctx, uirtl.NavigationMenuIndicator(nil))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()

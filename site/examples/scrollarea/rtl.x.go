@@ -5,7 +5,7 @@ package scrollarea
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -29,7 +29,7 @@ func Rtl() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:23:2
-		_gsxgw.Node(ctx, ui.ScrollArea("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.ScrollArea("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:3
 			_gsxgw.S("<div class=\"p-4\">")
@@ -45,7 +45,7 @@ func Rtl() _gsxrt.Node {
 				_gsxgw.Text(string(tag))
 				_gsxgw.S("</div>")
 //line rtl.gsx:29:6
-				_gsxgw.Node(ctx, ui.Separator("", _gsxrt.Attrs{{Key: "class", Value: "my-2"}}))
+				_gsxgw.Node(ctx, uirtl.Separator("", _gsxrt.Attrs{{Key: "class", Value: "my-2"}}))
 				_gsxgw.S("</div>")
 			}
 			_gsxgw.S("</div>")

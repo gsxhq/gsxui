@@ -629,3 +629,12 @@ input[type="radio"] {
   }
 }
 
+/* Logical transform-origin utilities. Tailwind ships none; shadcn's RTL
+   transform (and gsxui's internal/rtl) rewrites origin-top-left to
+   origin-top-start and so on, so the names must exist. */
+@utility origin-top-start { &:dir(ltr) { transform-origin: top left; } &:dir(rtl) { transform-origin: top right; } }
+@utility origin-top-end { &:dir(ltr) { transform-origin: top right; } &:dir(rtl) { transform-origin: top left; } }
+@utility origin-bottom-start { &:dir(ltr) { transform-origin: bottom left; } &:dir(rtl) { transform-origin: bottom right; } }
+@utility origin-bottom-end { &:dir(ltr) { transform-origin: bottom right; } &:dir(rtl) { transform-origin: bottom left; } }
+@utility origin-start { &:dir(ltr) { transform-origin: left; } &:dir(rtl) { transform-origin: right; } }
+@utility origin-end { &:dir(ltr) { transform-origin: right; } &:dir(rtl) { transform-origin: left; } }

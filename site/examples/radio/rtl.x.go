@@ -5,7 +5,7 @@ package radio
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -20,24 +20,24 @@ func Rtl() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:13:2
-		_gsxgw.Node(ctx, ui.FieldGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.FieldGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:14:3
-			_gsxgw.Node(ctx, ui.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:4
-				_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-rtl-default"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-rtl-spacing"}})))
+				_gsxgw.Node(ctx, uirtl.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-rtl-default"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-rtl-spacing"}})))
 //line rtl.gsx:16:4
-				_gsxgw.Node(ctx, ui.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:5
-					_gsxgw.Node(ctx, ui.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("افتراضي")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: "radio-rtl-default"}}))
 //line rtl.gsx:18:5
-					_gsxgw.Node(ctx, ui.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("تباعد قياسي لمعظم حالات الاستخدام.")
 						return _gsxgw.Err()
@@ -47,21 +47,21 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:21:3
-			_gsxgw.Node(ctx, ui.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:22:4
-				_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-rtl-comfortable"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-rtl-spacing"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, uirtl.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-rtl-comfortable"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-rtl-spacing"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
 //line rtl.gsx:23:4
-				_gsxgw.Node(ctx, ui.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:5
-					_gsxgw.Node(ctx, ui.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("مريح")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: "radio-rtl-comfortable"}}))
 //line rtl.gsx:25:5
-					_gsxgw.Node(ctx, ui.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("مساحة أكبر بين العناصر.")
 						return _gsxgw.Err()
@@ -71,21 +71,21 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:28:3
-			_gsxgw.Node(ctx, ui.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:4
-				_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-rtl-compact"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-rtl-spacing"}})))
+				_gsxgw.Node(ctx, uirtl.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-rtl-compact"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-rtl-spacing"}})))
 //line rtl.gsx:30:4
-				_gsxgw.Node(ctx, ui.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:31:5
-					_gsxgw.Node(ctx, ui.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("مضغوط")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: "radio-rtl-compact"}}))
 //line rtl.gsx:32:5
-					_gsxgw.Node(ctx, ui.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("تباعد أدنى للتخطيطات الكثيفة.")
 						return _gsxgw.Err()

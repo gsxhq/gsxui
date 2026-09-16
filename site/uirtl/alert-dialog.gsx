@@ -1,0 +1,107 @@
+package uirtl
+
+import "github.com/gsxhq/gsx"
+
+// AlertDialog composes Dialog's native top-layer and state machinery while
+// opting out of backdrop light dismissal.
+//
+// AlertDialogContent's own class is a NARROWING of Dialog's box: it travels
+// into <DialogContent>'s class attribute and merge.Merge settles the
+// competing max-w-* utilities there, the same way upstream lets twMerge
+// settle them. Every class attribute below is resolved to concrete utilities
+// at generation time.
+//
+// AlertDialogContent stamps data-size="default": upstream's `size` prop is
+// not ported (docs/jsx-parity.md ## alert-dialog), but its default value is
+// what every style's header rule keys its sm:+ left alignment on
+// (`sm:group-data-[size=default]/alert-dialog-content:text-left`), so the
+// attribute must be present for the ported sheets to render upstream's
+// default layout rather than its size="sm" one.
+component AlertDialog(children gsx.Node, attrs gsx.Attrs) {
+	<Dialog { attrs... } data-gsxui-slot-alert-dialog>{ children }</Dialog>
+}
+
+component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
+	<button
+		type="button"
+		aria-haspopup="dialog"
+		aria-expanded="false"
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-trigger
+	>
+		{ children }
+	</button>
+}
+
+component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
+	<DialogContent
+		class={
+			"group/alert-dialog-content",
+			"transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-popover text-popover-foreground ring-foreground/10 gap-4 rounded-xl p-4 ring-1 duration-100 max-w-xs sm:max-w-sm fixed z-50 top-1/2 start-1/2 w-full -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2"
+		}
+		hideCloseButton={true}
+		role="alertdialog"
+		data-gsxui-dialog-static
+		data-size="default"
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-content
+	>
+		{ children }
+	</DialogContent>
+}
+
+component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		class={
+			"grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-start"
+		}
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-header
+	>
+		{ children }
+	</div>
+}
+
+component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		class={ "bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end" }
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-footer
+	>
+		{ children }
+	</div>
+}
+
+component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
+	<h2 class={ "text-base font-medium" } { attrs... } data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>
+		{ children }
+	</h2>
+}
+
+component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
+	<p
+		class={
+			"text-muted-foreground *:[a]:hover:text-foreground text-sm text-balance md:text-pretty *:[a]:underline *:[a]:underline-offset-3"
+		}
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-description
+		data-gsxui-slot-dialog-description
+	>
+		{ children }
+	</p>
+}
+
+component AlertDialogAction(children gsx.Node, attrs gsx.Attrs) {
+	<Button data-gsxui-dialog-close { attrs... } data-gsxui-slot-alert-dialog-action>{ children }</Button>
+}
+
+component AlertDialogCancel(children gsx.Node, attrs gsx.Attrs) {
+	<Button
+		variant="outline"
+		data-gsxui-dialog-close
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-cancel
+	>
+		{ children }
+	</Button>
+}

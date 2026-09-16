@@ -1,7 +1,7 @@
 package buttongroup
 
 import (
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -14,23 +14,23 @@ import (
 // group shapes instead of introducing that composition here.
 component Rtl() {
 	<div dir="rtl" lang="ar" class="flex flex-wrap items-start gap-6">
-		<ui.ButtonGroup>
-			<ui.Button variant="outline" size="icon" aria-label="Go Back">
+		<uirtl.ButtonGroup>
+			<uirtl.Button variant="outline" size="icon" aria-label="Go Back">
 				<icon.ArrowLeft class="rtl:rotate-180"/>
-			</ui.Button>
-		</ui.ButtonGroup>
-		<ui.ButtonGroup>
-			<ui.Button variant="outline">أرشفة</ui.Button>
-			<ui.Button variant="outline">تقرير</ui.Button>
-		</ui.ButtonGroup>
-		<ui.ButtonGroup aria-label="Quantity">
-			<ui.Button variant="outline" size="icon" aria-label="Decrease quantity">
+			</uirtl.Button>
+		</uirtl.ButtonGroup>
+		<uirtl.ButtonGroup>
+			<uirtl.Button variant="outline">أرشفة</uirtl.Button>
+			<uirtl.Button variant="outline">تقرير</uirtl.Button>
+		</uirtl.ButtonGroup>
+		<uirtl.ButtonGroup aria-label="Quantity">
+			<uirtl.Button variant="outline" size="icon" aria-label="Decrease quantity">
 				<icon.Minus/>
-			</ui.Button>
-			<ui.ButtonGroupText>42</ui.ButtonGroupText>
-			<ui.Button variant="outline" size="icon" aria-label="Increase quantity">
+			</uirtl.Button>
+			<uirtl.ButtonGroupText>42</uirtl.ButtonGroupText>
+			<uirtl.Button variant="outline" size="icon" aria-label="Increase quantity">
 				<icon.Plus/>
-			</ui.Button>
-		</ui.ButtonGroup>
+			</uirtl.Button>
+		</uirtl.ButtonGroup>
 	</div>
 }

@@ -5,7 +5,7 @@ package pagination
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -22,23 +22,23 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:10:2
 		_gsxgw.S("<div dir=\"rtl\">")
 //line rtl.gsx:11:3
-		_gsxgw.Node(ctx, ui.Pagination(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Pagination(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:12:4
-			_gsxgw.Node(ctx, ui.PaginationContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.PaginationContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:13:5
-				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:14:6
-					_gsxgw.Node(ctx, ui.PaginationPrevious("#", nil))
+					_gsxgw.Node(ctx, uirtl.PaginationPrevious("#", nil))
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:16:5
-				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:6
-					_gsxgw.Node(ctx, ui.PaginationLink("#", false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.PaginationLink("#", false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("1")
 						return _gsxgw.Err()
@@ -46,10 +46,10 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:19:5
-				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:20:6
-					_gsxgw.Node(ctx, ui.PaginationLink("#", true, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.PaginationLink("#", true, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("2")
 						return _gsxgw.Err()
@@ -57,10 +57,10 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:22:5
-				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:23:6
-					_gsxgw.Node(ctx, ui.PaginationLink("#", false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.PaginationLink("#", false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("3")
 						return _gsxgw.Err()
@@ -68,17 +68,17 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:25:5
-				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:26:6
-					_gsxgw.Node(ctx, ui.PaginationEllipsis(nil))
+					_gsxgw.Node(ctx, uirtl.PaginationEllipsis(nil))
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:28:5
-				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:6
-					_gsxgw.Node(ctx, ui.PaginationNext("#", nil))
+					_gsxgw.Node(ctx, uirtl.PaginationNext("#", nil))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()

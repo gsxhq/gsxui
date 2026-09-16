@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("navigation-menu", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplenavigationmenu.Rtl(),
 		SourcePath: "navigationmenu/rtl.gsx",

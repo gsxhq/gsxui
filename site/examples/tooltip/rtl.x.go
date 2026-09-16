@@ -5,7 +5,7 @@ package tooltip
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -13,7 +13,7 @@ import (
 // Rtl mirrors shadcn's own tooltip-rtl demo's translated trigger/content
 // pair, wrapped in dir="rtl". shadcn's rtl demo also sweeps every
 // side ("left"/"top"/"bottom"/"right"/"inline-start"/"inline-end") across
-// six Tooltip instances; this port's ui.TooltipContent has no side prop at
+// six Tooltip instances; this port's uirtl.TooltipContent has no side prop at
 // all — its placement is fixed to top (see ui/tooltip.gsx's own doc
 // comment: "its arrow is static because placement is always top") — so
 // only the single Basic-shaped trigger/content pair is reproduced here
@@ -26,16 +26,16 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:14:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:15:3
-		_gsxgw.Node(ctx, ui.Tooltip(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Tooltip(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:4
-			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("حوم فوقي")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-gsxui-slot-tooltip-trigger", Value: _gsxrt.Toggle(true)}}))
 //line rtl.gsx:22:4
-			_gsxgw.Node(ctx, ui.TooltipContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.TooltipContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("إضافة إلى المكتبة")
 				return _gsxgw.Err()

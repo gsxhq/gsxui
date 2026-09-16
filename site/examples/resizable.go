@@ -23,6 +23,7 @@ func init() {
 	})
 	Register("resizable", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleresizable.Rtl(),
 		SourcePath: "resizable/rtl.gsx",

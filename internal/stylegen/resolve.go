@@ -17,6 +17,7 @@ import (
 	gsxparser "github.com/gsxhq/gsx/parser"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/srcedit"
 	"github.com/gsxhq/gsxui/registry/canonical/shapes"
 )
 
@@ -27,12 +28,6 @@ type Call struct {
 	Component string
 	Slot      string
 	Dimension string
-}
-
-type literalEdit struct {
-	start int
-	end   int
-	value string
 }
 
 type inspectionMode uint8
@@ -63,7 +58,7 @@ type resolver struct {
 	shape     recipe.Shape
 	used      map[string]struct{}
 	calls     []Call
-	edits     []literalEdit
+	edits     []srcedit.Edit
 	err       error
 }
 
@@ -89,7 +84,7 @@ func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, err
 		return nil, err
 	}
 
-	edited, err := applyLiteralEdits(src, r.edits)
+	edited, err := srcedit.Apply(src, r.edits)
 	if err != nil {
 		return nil, fmt.Errorf("%s: apply recipe edits: %w", filename, err)
 	}
@@ -509,7 +504,7 @@ func (r *resolver) recordPartEdit(exprPos token.Pos, part *gsxast.ComposedPart, 
 		r.err = r.positionedError(exprPos, "recipe accessor call span is outside source")
 		return
 	}
-	r.edits = append(r.edits, literalEdit{start: start, end: end, value: value})
+	r.edits = append(r.edits, srcedit.Edit{Start: start, End: end, Value: value})
 }
 
 // dimensionSwitch generates the class switch for one dimension. Every declared
@@ -946,30 +941,6 @@ func expressionUsesConcatenation(expr goast.Expr) bool {
 		return !found
 	})
 	return found
-}
-
-func applyLiteralEdits(src []byte, edits []literalEdit) ([]byte, error) {
-	sort.Slice(edits, func(i, j int) bool {
-		return edits[i].start > edits[j].start
-	})
-	resolved := append([]byte(nil), src...)
-	lastStart := len(src)
-	for _, edit := range edits {
-		if edit.start < 0 || edit.end < edit.start || edit.end > len(src) {
-			return nil, fmt.Errorf("invalid literal span [%d:%d]", edit.start, edit.end)
-		}
-		if edit.end > lastStart {
-			return nil, fmt.Errorf("overlapping literal span [%d:%d]", edit.start, edit.end)
-		}
-		var next bytes.Buffer
-		next.Grow(len(resolved) - (edit.end - edit.start) + len(edit.value))
-		next.Write(resolved[:edit.start])
-		next.WriteString(edit.value)
-		next.Write(resolved[edit.end:])
-		resolved = next.Bytes()
-		lastStart = edit.start
-	}
-	return resolved, nil
 }
 
 func isHTMLASCIIWhitespace(char byte) bool {

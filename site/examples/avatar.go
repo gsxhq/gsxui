@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("avatar", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleavatar.Rtl(),
 		SourcePath: "avatar/rtl.gsx",

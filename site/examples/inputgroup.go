@@ -11,6 +11,7 @@ func init() {
 	})
 	Register("input-group", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleinputgroup.Rtl(),
 		SourcePath: "inputgroup/rtl.gsx",

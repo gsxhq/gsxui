@@ -5,7 +5,7 @@ package separator
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -27,7 +27,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:12:4
 		_gsxgw.S("<div class=\"text-muted-foreground\">الأساس لنظام التصميم الخاص بك</div></div>")
 //line rtl.gsx:14:3
-		_gsxgw.Node(ctx, ui.Separator("", nil))
+		_gsxgw.Node(ctx, uirtl.Separator("", nil))
 //line rtl.gsx:15:3
 		_gsxgw.S("<div>مجموعة من المكونات المصممة بشكل جميل يمكنك تخصيصها وتوسيعها والبناء عليها.</div></div>")
 		return _gsxgw.Err()

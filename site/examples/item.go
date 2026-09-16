@@ -11,6 +11,7 @@ func init() {
 	})
 	Register("item", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleitem.Rtl(),
 		SourcePath: "item/rtl.gsx",

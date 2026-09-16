@@ -362,3 +362,49 @@ func TestGenerateAllRejectsAComponentWithoutAShape(t *testing.T) {
 		t.Fatalf("GenerateAll() error = %v, want a no-shape error", err)
 	}
 }
+
+func TestGenerateAllEmitsTheSiteRTLPackage(t *testing.T) {
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+	if err := GenerateAll(root, false); err != nil {
+		t.Fatal(err)
+	}
+	ns, err := os.ReadFile(filepath.Join(root, "site", "uirtl", "native-select.gsx"))
+	if err != nil {
+		t.Fatalf("missing site/uirtl/native-select.gsx: %v", err)
+	}
+	if !strings.HasPrefix(string(ns), "package uirtl\n") {
+		t.Errorf("package clause = %q", firstLineOf(ns))
+	}
+	if strings.Contains(string(ns), "right-2.5") || !strings.Contains(string(ns), "end-2.5") {
+		t.Errorf("site/uirtl/native-select.gsx is not transformed")
+	}
+	sheet, _ := os.ReadFile(filepath.Join(root, "site", "uirtl", "sheet.gsx"))
+	if !strings.Contains(string(sheet), `"inset-y-0 left-0 h-full`) {
+		t.Errorf("sheet side arm must stay physical in site/uirtl")
+	}
+	// Drawer names the same physical-placement prop `direction`, after vaul's
+	// API; its arms stay physical for the same reason Sheet's do.
+	drawer, _ := os.ReadFile(filepath.Join(root, "site", "uirtl", "drawer.gsx"))
+	if !strings.Contains(string(drawer), `"inset-y-0 left-0 right-auto h-full`) {
+		t.Errorf("drawer direction arm must stay physical in site/uirtl")
+	}
+	// The same physical side spelled as vaul's own attribute variant, on the
+	// base class list rather than in an arm.
+	for _, class := range []string{
+		"data-[vaul-drawer-direction=left]:rounded-r-xl",
+		"data-[vaul-drawer-direction=left]:border-r",
+	} {
+		if !strings.Contains(string(drawer), class) {
+			t.Errorf("drawer variant %q must stay physical in site/uirtl", class)
+		}
+	}
+	if err := GenerateAll(root, true); err != nil {
+		t.Fatalf("GenerateAll(check) after write = %v", err)
+	}
+}
+
+func firstLineOf(b []byte) string {
+	line, _, _ := strings.Cut(string(b), "\n")
+	return line
+}

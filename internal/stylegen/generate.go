@@ -16,6 +16,7 @@ import (
 	gsxparser "github.com/gsxhq/gsx/parser"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/rtl"
 	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/registry/canonical/shapes"
 )
@@ -156,6 +157,22 @@ func resolveAll(root string) ([]generatedSource, error) {
 				outputs = append(outputs, generatedSource{
 					relativePath: filepath.Join("ui", component+".gsx"),
 					content:      generated,
+				})
+				// site/uirtl is that same output put through the RTL transform:
+				// what `gsxui add` vendors into a project with "rtl": true. The
+				// docs' RTL demos render from it, so the page shows the
+				// transform's real output rather than a hand-written imitation.
+				rtlSource, err := rtl.GSX(canonicalPath, generated)
+				if err != nil {
+					return nil, fmt.Errorf("derive %s site rtl source: %w", component, err)
+				}
+				uirtl, err := rewriteGSXPackage(canonicalPath, rtlSource, "uirtl")
+				if err != nil {
+					return nil, fmt.Errorf("derive %s site rtl package: %w", component, err)
+				}
+				outputs = append(outputs, generatedSource{
+					relativePath: filepath.Join("site", "uirtl", component+".gsx"),
+					content:      uirtl,
 				})
 				// The site's Button fallback is the default style's Button recipe
 				// restated against the slot marker, for docs markup that never goes

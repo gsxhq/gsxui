@@ -5,7 +5,7 @@ package breadcrumb
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/site/uirtl"
 	_gsxio "io"
 )
 
@@ -24,16 +24,16 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:12:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line rtl.gsx:13:3
-		_gsxgw.Node(ctx, ui.Breadcrumb(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.Breadcrumb(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:14:4
-			_gsxgw.Node(ctx, ui.BreadcrumbList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.BreadcrumbList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:15:5
-				_gsxgw.Node(ctx, ui.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:6
-					_gsxgw.Node(ctx, ui.BreadcrumbLink("/", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.BreadcrumbLink("/", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("الرئيسية")
 						return _gsxgw.Err()
@@ -41,21 +41,21 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:18:5
-				_gsxgw.Node(ctx, ui.BreadcrumbSeparator(nil, nil))
+				_gsxgw.Node(ctx, uirtl.BreadcrumbSeparator(nil, nil))
 //line rtl.gsx:19:5
-				_gsxgw.Node(ctx, ui.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:20:6
-					_gsxgw.Node(ctx, ui.BreadcrumbEllipsis(nil))
+					_gsxgw.Node(ctx, uirtl.BreadcrumbEllipsis(nil))
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:22:5
-				_gsxgw.Node(ctx, ui.BreadcrumbSeparator(nil, nil))
+				_gsxgw.Node(ctx, uirtl.BreadcrumbSeparator(nil, nil))
 //line rtl.gsx:23:5
-				_gsxgw.Node(ctx, ui.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:24:6
-					_gsxgw.Node(ctx, ui.BreadcrumbLink("/components", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.BreadcrumbLink("/components", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("المكونات")
 						return _gsxgw.Err()
@@ -63,12 +63,12 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 //line rtl.gsx:26:5
-				_gsxgw.Node(ctx, ui.BreadcrumbSeparator(nil, nil))
+				_gsxgw.Node(ctx, uirtl.BreadcrumbSeparator(nil, nil))
 //line rtl.gsx:27:5
-				_gsxgw.Node(ctx, ui.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, uirtl.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:28:6
-					_gsxgw.Node(ctx, ui.BreadcrumbPage(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.BreadcrumbPage(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("مسار التنقل")
 						return _gsxgw.Err()

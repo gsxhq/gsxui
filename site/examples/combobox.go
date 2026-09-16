@@ -35,6 +35,7 @@ func init() {
 	})
 	Register("combobox", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplecombobox.Rtl(),
 		SourcePath: "combobox/rtl.gsx",

@@ -1,6 +1,6 @@
 package breadcrumb
 
-import "github.com/gsxhq/gsxui/ui"
+import "github.com/gsxhq/gsxui/site/uirtl"
 
 // Rtl mirrors Basic's trail shape — linked root, collapsed-middle
 // ellipsis, linked mid-level page, current page — translated to Arabic
@@ -10,24 +10,24 @@ import "github.com/gsxhq/gsxui/ui"
 // keeps that shape rather than introducing dropdown-menu composition here.
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.Breadcrumb>
-			<ui.BreadcrumbList>
-				<ui.BreadcrumbItem>
-					<ui.BreadcrumbLink href="/">الرئيسية</ui.BreadcrumbLink>
-				</ui.BreadcrumbItem>
-				<ui.BreadcrumbSeparator/>
-				<ui.BreadcrumbItem>
-					<ui.BreadcrumbEllipsis/>
-				</ui.BreadcrumbItem>
-				<ui.BreadcrumbSeparator/>
-				<ui.BreadcrumbItem>
-					<ui.BreadcrumbLink href="/components">المكونات</ui.BreadcrumbLink>
-				</ui.BreadcrumbItem>
-				<ui.BreadcrumbSeparator/>
-				<ui.BreadcrumbItem>
-					<ui.BreadcrumbPage>مسار التنقل</ui.BreadcrumbPage>
-				</ui.BreadcrumbItem>
-			</ui.BreadcrumbList>
-		</ui.Breadcrumb>
+		<uirtl.Breadcrumb>
+			<uirtl.BreadcrumbList>
+				<uirtl.BreadcrumbItem>
+					<uirtl.BreadcrumbLink href="/">الرئيسية</uirtl.BreadcrumbLink>
+				</uirtl.BreadcrumbItem>
+				<uirtl.BreadcrumbSeparator/>
+				<uirtl.BreadcrumbItem>
+					<uirtl.BreadcrumbEllipsis/>
+				</uirtl.BreadcrumbItem>
+				<uirtl.BreadcrumbSeparator/>
+				<uirtl.BreadcrumbItem>
+					<uirtl.BreadcrumbLink href="/components">المكونات</uirtl.BreadcrumbLink>
+				</uirtl.BreadcrumbItem>
+				<uirtl.BreadcrumbSeparator/>
+				<uirtl.BreadcrumbItem>
+					<uirtl.BreadcrumbPage>مسار التنقل</uirtl.BreadcrumbPage>
+				</uirtl.BreadcrumbItem>
+			</uirtl.BreadcrumbList>
+		</uirtl.Breadcrumb>
 	</div>
 }

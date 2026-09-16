@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("select", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleselectbox.Rtl(),
 		SourcePath: "selectbox/rtl.gsx",
