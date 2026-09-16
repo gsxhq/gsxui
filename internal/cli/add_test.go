@@ -731,3 +731,35 @@ func TestCompanionArtifactsExcludesNonJSSameStemFiles(t *testing.T) {
 		}
 	}
 }
+
+func TestAddWithRTLVendorsLogicalClasses(t *testing.T) {
+	dir, _ := initTestModule(t)
+	if err := Run([]string{"init", "--rtl"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"add", "native-select", "table"}); err != nil {
+		t.Fatal(err)
+	}
+	ns := readFile(t, dir, "ui/native-select.gsx")
+	for _, want := range []string{"end-2.5", "pe-8"} {
+		if !strings.Contains(ns, want) {
+			t.Errorf("native-select missing %q", want)
+		}
+	}
+	for _, bad := range []string{"right-2.5", "pr-8"} {
+		if strings.Contains(ns, bad) {
+			t.Errorf("native-select still carries %q", bad)
+		}
+	}
+	if tbl := readFile(t, dir, "ui/table.gsx"); !strings.Contains(tbl, "text-start") || strings.Contains(tbl, "text-left") {
+		t.Errorf("table not transformed")
+	}
+	// The recorded hash is of the transformed content: a second add is a no-op.
+	before := readFile(t, dir, "ui/native-select.gsx")
+	if err := Run([]string{"add", "native-select"}); err != nil {
+		t.Fatal(err)
+	}
+	if readFile(t, dir, "ui/native-select.gsx") != before {
+		t.Fatal("re-adding under rtl changed the vendored file")
+	}
+}

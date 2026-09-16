@@ -12,6 +12,7 @@ import (
 	gsxui "github.com/gsxhq/gsxui"
 	"github.com/gsxhq/gsxui/internal/preset"
 	"github.com/gsxhq/gsxui/internal/registry"
+	"github.com/gsxhq/gsxui/internal/rtl"
 	"github.com/pmezard/go-difflib/difflib"
 )
 
@@ -137,6 +138,12 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 					src, err = RewriteGsx(src, module, cfg.UI)
 					if err != nil {
 						return nil, fmt.Errorf("rewrite %s/%s: %w", name, fname, err)
+					}
+				}
+				if cfg.RTL && strings.HasSuffix(fname, ".gsx") {
+					src, err = rtl.GSX(fname, src)
+					if err != nil {
+						return nil, fmt.Errorf("rtl transform %s/%s: %w", name, fname, err)
 					}
 				}
 				artifacts = append(artifacts, artifact{

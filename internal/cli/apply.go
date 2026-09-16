@@ -17,6 +17,7 @@ import (
 
 	gsxui "github.com/gsxhq/gsxui"
 	"github.com/gsxhq/gsxui/internal/preset"
+	"github.com/gsxhq/gsxui/internal/rtl"
 	"github.com/gsxhq/gsxui/internal/stylecontract"
 )
 
@@ -270,6 +271,12 @@ func selectedStyledArtifact(module string, cfg Config, name string, style preset
 	rewritten, err := RewriteGsx(source, module, cfg.UI)
 	if err != nil {
 		return artifact{}, fmt.Errorf("rewrite %s: %w", sourcePath, err)
+	}
+	if cfg.RTL {
+		rewritten, err = rtl.GSX(sourcePath, rewritten)
+		if err != nil {
+			return artifact{}, fmt.Errorf("rtl transform %s: %w", sourcePath, err)
+		}
 	}
 	return artifact{
 		RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, name+".gsx")),
