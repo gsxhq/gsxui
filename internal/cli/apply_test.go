@@ -680,3 +680,24 @@ func TestRecoverAfterGenerationInterruptionRegeneratesRestoredSources(t *testing
 	}
 	assertNoTransactionArtifacts(t, dir)
 }
+
+func TestApplyStyleSwitchKeepsRTL(t *testing.T) {
+	dir, _ := initTestModule(t)
+	if err := Run([]string{"init", "--rtl"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"add", "native-select"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"apply", "--preset", presetCode(t, preset.Default(preset.StyleMaia)), "--yes"}); err != nil {
+		t.Fatal(err)
+	}
+	ns := readFile(t, dir, "ui/native-select.gsx")
+	// Maia's own native-select.gsx spells this inset right-3.5 (every other
+	// style uses a different literal, e.g. Nova's right-2.5) — the point
+	// here is that the *style switch* still comes out logical, not that it
+	// matches Nova's number.
+	if strings.Contains(ns, "right-3.5") || !strings.Contains(ns, "end-3.5") {
+		t.Fatalf("apply re-vendored native-select physical:\n%s", ns)
+	}
+}
