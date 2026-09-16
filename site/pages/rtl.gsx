@@ -23,7 +23,7 @@ component (rt Rtl) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">RTL</h1>
 				<p class="text-muted-foreground">
-					Opt in once and the components you vendor use logical direction classes, so one build serves
+					Opt in once and the components you vendor use logical direction classes, so one build serves{ " " }
 					<code>dir="ltr"</code> and <code>dir="rtl"</code> alike.
 				</p>
 			</div>
@@ -34,7 +34,7 @@ component (rt Rtl) Page() {
 				<p>Components vendored before the flag was set are rewritten in place, keeping your edits:</p>
 				<pre><code>{ hl.Node("snippets/rtl-migrate.sh") }</code></pre>
 				<p>
-					Set <code>dir="rtl"</code> on <code>&lt;html&gt;</code>, or on any subtree, from the locale. An
+					Set <code>dir="rtl"</code> on <code>&lt;html&gt;</code>, or on any subtree, from the locale. An{ " " }
 					<code>rtl: true</code> project renders both directions; the document's <code>dir</code> decides.
 				</p>
 				<pre><code>{ `<html lang="ar" dir="rtl">
@@ -49,14 +49,14 @@ component (rt Rtl) Page() {
 				<docHeading item={rtlTOCItems[1]}/>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
-						<strong>Logical classes, at install time.</strong> With <code>"rtl": true</code> in
-						<code>gsxui.json</code>, <code>gsxui add</code> rewrites physical classes in what it vendors:
-						<code>ml-*</code> to <code>ms-*</code>, <code>left-*</code> to <code>start-*</code>,
-						<code>text-left</code> to <code>text-start</code>, and the rest of shadcn's table.
+						<strong>Logical classes, at install time.</strong> With <code>"rtl": true</code> in{ " " }
+						<code>gsxui.json</code>, <code>gsxui add</code> rewrites physical classes in what it vendors:{ " " }
+						<code>ml-*</code> to <code>ms-*</code>, <code>left-*</code> to <code>start-*</code>,{ " " }
+						<code>text-left</code> to <code>text-start</code>, and the rest of shadcn's table.{ " " }
 						<code>translate-x-*</code> and <code>space-x-*</code> gain <code>rtl:</code> companions.
 					</li>
 					<li>
-						<strong>Directional icons.</strong> Chevrons and arrows that encode a left/right meaning carry
+						<strong>Directional icons.</strong> Chevrons and arrows that encode a left/right meaning carry{ " " }
 						<code>rtl:rotate-180</code>.
 					</li>
 					<li>
@@ -68,7 +68,7 @@ component (rt Rtl) Page() {
 						roving-focus components mirror by meaning per WAI-ARIA.
 					</li>
 					<li>
-						<strong>The demos on this page</strong> render from the transformed components, the same output
+						<strong>The demos on this page</strong> render from the transformed components, the same output{ " " }
 						<code>gsxui add</code> produces with the flag set.
 					</li>
 				</ul>

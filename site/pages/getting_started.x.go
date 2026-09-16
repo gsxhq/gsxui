@@ -126,8 +126,8 @@ func (g GettingStarted) Page() _gsxrt.Node {
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[2], nil))
 //line getting_started.gsx:54:6
 			_gsxgw.S("<p>If you customized the Vite config, entry file, package manager, or gsxui paths, ")
-//line getting_started.gsx:55:87
-			_gsxgw.S("<code>gsxui init</code>stops before writing anything and prints what to wire up yourself:</p>")
+//line getting_started.gsx:56:14
+			_gsxgw.S("<code>gsxui init</code> stops before writing anything and prints what to wire up yourself:</p>")
 //line getting_started.gsx:58:6
 			_gsxgw.S("<pre>")
 //line getting_started.gsx:58:11
@@ -146,8 +146,11 @@ func (g GettingStarted) Page() _gsxrt.Node {
 			_gsxgw.S(" href=\"")
 			_gsxgw.URL(string(_gsxv2))
 			_gsxgw.S("\">npm-free</a>: ")
-//line getting_started.gsx:60:90
-			_gsxgw.S("<code>gsxui init</code>detects the missing scaffold and initializes without either.</p></div></section>")
+//line getting_started.gsx:61:9
+			_gsxgw.S("<code>gsxui init</code>")
+//line getting_started.gsx:61:32
+			_gsxgw.Text(string(" "))
+			_gsxgw.S("detects the missing scaffold and initializes without either.</p></div></section>")
 //line getting_started.gsx:65:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line getting_started.gsx:66:5
