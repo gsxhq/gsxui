@@ -62,6 +62,9 @@ unless you pass `--overwrite`. After upgrading the `gsxui` binary, re-run
 `gsxui add <name> --overwrite` to refresh components — that discards your
 local edits to those files.
 
+Building for right-to-left languages? `gsxui init --rtl` vendors logical
+direction classes; see [RTL](https://ui.gsxhq.dev/docs/rtl).
+
 Strings a component writes itself (`Close`, `Next slide`, …) are `i18n.T`
 messages; one `[renderers]` line in `gsx.toml` translates them. See
 [Internationalization](https://ui.gsxhq.dev/docs/i18n).

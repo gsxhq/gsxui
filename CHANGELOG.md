@@ -2,6 +2,17 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-09-16
+
+### Added
+
+- **rtl** — `"rtl": true` in `gsxui.json` (`gsxui init --rtl`) makes `gsxui add` and `gsxui apply` vendor components with logical direction classes, using shadcn's `transform-rtl` table; `gsxui migrate rtl` rewrites components vendored earlier in place, keeping your edits. One build then serves `dir="ltr"` and `dir="rtl"` (#32).
+- **foundation.css** — `origin-top-start`, `origin-top-end`, `origin-bottom-start`, `origin-bottom-end`, `origin-start`, `origin-end` utilities, which the transform emits.
+
+### Changed
+
+- **site** — the RTL page describes the opt-in model; its demos render from `site/uirtl`, the transform's output. The page previously stated components used logical classes by default, which was not true of the registry.
+
 ## 2026-09-14
 
 ### Added

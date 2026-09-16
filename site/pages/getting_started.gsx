@@ -34,6 +34,7 @@ component (g GettingStarted) Page() {
 				<docHeading item={gettingStartedTOCItems[1]}/>
 				<p>Create a fresh GSX app, then initialize gsxui inside it:</p>
 				<pre><code>{ hl.Node("snippets/init.sh") }</code></pre>
+				<p>Building for right-to-left languages? Pass <code>--rtl</code>; see <a href={Rtl{} |> url}>RTL</a>.</p>
 				<pre><code>{ hl.Node("snippets/init.output") }</code></pre>
 				<p>
 					For the unmodified npm/Vite scaffold produced by <code>gsx init --yes</code>, this is the complete
