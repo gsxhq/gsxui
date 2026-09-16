@@ -18,3 +18,5 @@ func SplitForTest(class string) (variant, value string) {
 }
 
 func IsSideKeyedForTest(variant string) bool { return isSideKeyed(variant) }
+
+func MentionsPlacementForTest(goExpr string) bool { return mentionsPlacement(goExpr) }

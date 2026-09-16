@@ -26,9 +26,10 @@ func runMigrate(args []string) error {
 	}
 }
 
-// runMigrateRTL applies internal/rtl to every managed .gsx under cfg.UI and
-// to the vendored style.css, through the same transaction add uses, so the
-// managed hashes move to the migrated content and rollback stays possible.
+// runMigrateRTL applies internal/rtl to every managed .gsx (the paths
+// recorded in gsxui.json) and to the vendored style.css, through the same
+// transaction add uses, so the managed hashes move to the migrated content
+// and rollback stays possible.
 func runMigrateRTL(args []string) error {
 	if len(args) != 0 {
 		return fmt.Errorf("usage: gsxui migrate rtl")
@@ -69,7 +70,7 @@ func runMigrateRTL(args []string) error {
 			if os.IsNotExist(err) {
 				continue // a managed file the consumer deleted is theirs to have deleted
 			}
-			return err
+			return fmt.Errorf("reading %s: %w", rel, err)
 		}
 		var next []byte
 		if isGSX {

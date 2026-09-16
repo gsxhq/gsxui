@@ -77,6 +77,10 @@ func classes(list string, sideKeyed bool) string {
 		}
 	}
 	for _, class := range fields {
+		// Only a leading rtl:/ltr: prefix is recognised, matching upstream:
+		// md:rtl:ml-2 would still be mapped, since the prefix sits after
+		// md:, not at the start of the class. No shipped class uses a
+		// non-leading rtl:/ltr:.
 		if strings.HasPrefix(class, "rtl:") || strings.HasPrefix(class, "ltr:") {
 			emit(class)
 			continue

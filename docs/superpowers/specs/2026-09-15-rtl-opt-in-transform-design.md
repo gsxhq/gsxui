@@ -253,3 +253,7 @@ tw-animate-css sized-slide caveat.
   common RTL layout (a `side="right"` sidebar) and is upstream's behaviour.
 - `internal/rtl` and `internal/stylegen` share one byte-offset edit
   applier, extracted to `internal/srcedit`, instead of a second copy.
+- Publishing example source beside a demo rendered from `site/uirtl` shows a
+  package consumers cannot import; the RTL page carries a one-line note.
+  `gsxui migrate` with no subcommand exits non-zero with the list,
+  consistent with the CLI's other usage errors.

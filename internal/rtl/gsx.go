@@ -59,14 +59,16 @@ func (l classList) source(value string) (string, error) {
 }
 
 // GSX rewrites every class attribute literal in one gsx source file and
-// returns the gsx-formatted result. A file with nothing to rewrite comes
-// back byte-identical. Only string literals that are class-list elements
-// or pair keys change; a literal that is a condition operand, another
-// attribute, or text is untouched.
+// returns the gsx-formatted result. A file whose class lists are already
+// logical and single-spaced comes back byte-identical; a list that only
+// needed its whitespace normalised still counts as an edit and the file is
+// reformatted. Only string literals that are class-list elements or pair
+// keys change; a literal that is a condition operand, another attribute, or
+// text is untouched.
 func GSX(filename string, src []byte) ([]byte, error) {
 	lists, err := classLists(filename, src)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s: %w", filename, err)
 	}
 	var edits []srcedit.Edit
 	for _, l := range lists {
@@ -215,7 +217,7 @@ func literalIn(fset *token.FileSet, src []byte, expr string, exprPos token.Pos, 
 	start := base + int(lit.Pos()) - 1
 	end := base + int(lit.End()) - 1
 	if start < 0 || end > len(src) || string(src[start:end]) != lit.Value {
-		return classList{}, false, fmt.Errorf("class literal span mismatch at offset %d", base)
+		return classList{}, false, fmt.Errorf("class literal span mismatch at %v", fset.Position(exprPos))
 	}
 	value, err := strconv.Unquote(lit.Value)
 	if err != nil {
