@@ -37,6 +37,7 @@ component (rt Rtl) Page() {
 					Set <code>dir="rtl"</code> on <code>&lt;html&gt;</code>, or on any subtree, from the locale. An{ " " }
 					<code>rtl: true</code> project renders both directions; the document's <code>dir</code> decides.
 				</p>
+				<p>The flag is one-way: there is no reverse migration, so opt in before you customise vendored files.</p>
 				<pre><code>{ `<html lang="ar" dir="rtl">
   ...
 </html>` }</code></pre>
@@ -75,8 +76,9 @@ component (rt Rtl) Page() {
 				<p>Not transformed:</p>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
-						Sheet, Drawer and Sidebar <code>side="left"</code>/<code>side="right"</code> stay physical, matching
-						shadcn's <code>data-side</code> contract; their interiors mirror.
+						Sheet and Sidebar <code>side="left"</code>/<code>side="right"</code> and Drawer{ " " }
+						<code>direction="left"</code>/<code>direction="right"</code> stay physical, matching shadcn's{ " " }
+						<code>data-side</code> contract; their interiors mirror.
 					</li>
 					<li><code>input-otp</code>'s digit group stays pinned <code>dir="ltr"</code>.</li>
 					<li>Behaviour JS carries no classes and is untouched.</li>
@@ -89,8 +91,9 @@ component (rt Rtl) Page() {
 			<section class="flex flex-col gap-3">
 				<docHeading item={rtlTOCItems[2]}/>
 				<p>
-					An Arabic sign-in card: unmodified <code>Card</code>, <code>Label</code>, <code>Input</code>,
-					and <code>Button</code>, wrapped in <code>dir="rtl"</code>.
+					An Arabic sign-in card: <code>Card</code>, <code>Label</code>, <code>Input</code>,{ " " }
+					<code>NativeSelect</code> and <code>Button</code>, rendered from the transformed components, wrapped
+					in <code>dir="rtl"</code>.
 				</p>
 				<div class="border rounded-lg p-8 bg-background">
 					{ loginExample.Node }
@@ -107,6 +110,10 @@ component (rt Rtl) Page() {
 						Copy
 					</button>
 				</div>
+				<p class="text-sm text-muted-foreground">
+					The source imports <code>uirtl</code>, this site's transformed copy of <code>ui</code>. In your project these
+					are <code>ui.Card</code>, <code>ui.NativeSelect</code> and so on.
+				</p>
 				<p>
 					More RTL variants live on their own component pages: <a href="/components/calendar">Calendar</a>
 					, <a href="/components/pagination">Pagination</a>, and <a href="/components/sidebar">Sidebar</a> each register

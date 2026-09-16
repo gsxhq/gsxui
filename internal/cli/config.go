@@ -17,14 +17,15 @@ var errConfigNotFound = fmt.Errorf("gsxui.json not found — run 'gsxui init' fi
 // relative to the module root. The module path itself is always read from
 // go.mod, never stored.
 type Config struct {
-	UI      string            `json:"ui"`
-	JS      string            `json:"js"`
-	CSS     string            `json:"css"`
-	Managed map[string]string `json:"managed,omitempty"`
+	UI  string `json:"ui"`
+	JS  string `json:"js"`
+	CSS string `json:"css"`
 
 	// RTL vendors components with logical direction classes (see
 	// internal/rtl). Off by default; set by `gsxui init --rtl`.
 	RTL bool `json:"rtl,omitempty"`
+
+	Managed map[string]string `json:"managed,omitempty"`
 }
 
 func DefaultConfig() Config {
