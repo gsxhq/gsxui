@@ -45,6 +45,7 @@ func init() {
 	})
 	Register("sidebar", Example{
 		Name:          "rtl",
+		Dir:           "rtl",
 		Title:         "RTL",
 		Node:          examplesidebar.Rtl(),
 		SourcePath:    "sidebar/rtl.gsx",

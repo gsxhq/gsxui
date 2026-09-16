@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("badge", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplebadge.Rtl(),
 		SourcePath: "badge/rtl.gsx",

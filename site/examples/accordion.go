@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("accordion", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       exampleaccordion.Rtl(),
 		SourcePath: "accordion/rtl.gsx",

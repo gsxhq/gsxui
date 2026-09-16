@@ -50,6 +50,10 @@ type Example struct {
 	// edge — where an RTL layout anchors its chrome — stays visible instead
 	// of the left one.
 	PreviewRTL bool
+	// Dir is the document direction the example is designed for; "rtl"
+	// makes the component page frame it with dir="rtl" and includes it in
+	// the RTL sweep test. Empty means left-to-right.
+	Dir string
 
 	// Query, when non-nil, re-renders the example per-request from the
 	// request's raw query parameters instead of using the static Node —

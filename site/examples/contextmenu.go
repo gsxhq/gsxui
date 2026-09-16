@@ -17,6 +17,7 @@ func init() {
 	})
 	Register("context-menu", Example{
 		Name:       "rtl",
+		Dir:        "rtl",
 		Title:      "RTL",
 		Node:       examplecontextmenu.Rtl(),
 		SourcePath: "contextmenu/rtl.gsx",
