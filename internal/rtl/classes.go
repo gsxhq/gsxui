@@ -49,8 +49,14 @@ var logicalSideSlides = [][3]string{
 
 // sideKeyedVariants mark a token as placed on a physical side. Upstream
 // spells it data-[side=…]; gsxui's sidebar rail spells it inside an
-// arbitrary variant as data-side=…]. Both stay physical in full.
-var sideKeyedVariants = []string{"data-[side=left]", "data-[side=right]", "data-side=left]", "data-side=right]"}
+// arbitrary variant as data-side=…]; Drawer carries the same physical side
+// as vaul's own data-[vaul-drawer-direction=…] attribute. All stay physical
+// in full. The vaul entries omit the data- prefix so the substring match
+// covers the arbitrary-variant spelling too.
+var sideKeyedVariants = []string{
+	"data-[side=left]", "data-[side=right]", "data-side=left]", "data-side=right]",
+	"vaul-drawer-direction=left]", "vaul-drawer-direction=right]",
+}
 
 // Classes rewrites one whitespace-separated class list. Companion classes
 // are appended only when absent, so the function is a fixed point after

@@ -40,6 +40,8 @@ func TestClassesMatchesUpstreamTable(t *testing.T) {
 		{"data-[side=right]:left-0", "data-[side=right]:left-0"},
 		{"data-[side=left]:border-r", "data-[side=left]:border-r"},
 		{"[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]>&]:border-r", "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]>&]:border-r"},
+		{"data-[vaul-drawer-direction=left]:rounded-r-xl", "data-[vaul-drawer-direction=left]:rounded-r-xl"},
+		{"data-[vaul-drawer-direction=right]:border-l", "data-[vaul-drawer-direction=right]:border-l"},
 		// unrelated and near-miss classes
 		{"bg-red-500", "bg-red-500"}, {"flex", "flex"}, {"mx-auto", "mx-auto"}, {"px-4", "px-4"},
 		{"border-ring", "border-ring"}, {"border-ring/50", "border-ring/50"}, {"border-lime-500", "border-lime-500"},

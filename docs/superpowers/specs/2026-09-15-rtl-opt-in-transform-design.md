@@ -237,8 +237,9 @@ tw-animate-css sized-slide caveat.
   inside a physical-side variant and still maps `border-r` to `border-e`,
   which would put a `side="left"` rail's border on the outer edge under
   RTL. gsxui therefore treats a token as side-keyed when its variant
-  contains `data-[side=left]`, `data-[side=right]`, `data-side=left]` or
-  `data-side=right]`, or when it sits in a value arm of a `switch side`
+  contains `data-[side=left]`, `data-[side=right]`, `data-side=left]`,
+  `data-side=right]`, or Drawer's `vaul-drawer-direction=left]` /
+  `=right]`, or when it sits in a value arm of a `switch side`
   or an `if side …` inside a class list (Drawer names the same parameter
   `direction`; both identifiers count), and leaves every such token
   unchanged: positioning, borders, radii and slides alike. This is the
