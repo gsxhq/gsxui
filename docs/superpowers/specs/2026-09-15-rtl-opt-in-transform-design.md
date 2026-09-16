@@ -226,3 +226,28 @@ tw-animate-css sized-slide caveat.
 - Rewriting `side` prop values to `inline-start`/`inline-end`.
 - The port drift between the committed sheets and a fresh port.
 - A reverse migration (upstream has none).
+
+## Addendum (2026-09-16, planning)
+
+- **Side-keyed classes stay physical in full, not positioning-only.** In
+  gsx, Sheet's and Drawer's side arms are `switch side { case "left": … }`
+  value arms inside the class list, and Sidebar's rail border is keyed by an
+  arbitrary variant spelled `[…[data-side=left]>&]:border-r`, not upstream's
+  `data-[side=left]:` form. Upstream skips only the positioning prefixes
+  inside a physical-side variant and still maps `border-r` to `border-e`,
+  which would put a `side="left"` rail's border on the outer edge under
+  RTL. gsxui therefore treats a token as side-keyed when its variant
+  contains `data-[side=left]`, `data-[side=right]`, `data-side=left]` or
+  `data-side=right]`, or when it sits in a value arm of a `switch side`
+  or an `if side …` inside a class list, and leaves every such token
+  unchanged: positioning, borders, radii and slides alike. This is the
+  existing ruling that Sheet, Drawer and Sidebar `side` is physical, and
+  `jstest/specs/rtl.spec.ts` already pins it.
+- **Centering needs no exception.** `left-1/2 -translate-x-1/2` maps to
+  `start-1/2 -translate-x-1/2 rtl:translate-x-1/2`, which centres under
+  both directions. Upstream's translate companion rule handles it.
+- **`SidebarInset`'s `ml-0`/`ml-2`** are keyed on `variant=inset`, not on
+  `side`, so they map to `ms-0`/`ms-2` like upstream. That is right for the
+  common RTL layout (a `side="right"` sidebar) and is upstream's behaviour.
+- `internal/rtl` and `internal/stylegen` share one byte-offset edit
+  applier, extracted to `internal/srcedit`, instead of a second copy.
