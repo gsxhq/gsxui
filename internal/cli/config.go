@@ -21,6 +21,10 @@ type Config struct {
 	JS      string            `json:"js"`
 	CSS     string            `json:"css"`
 	Managed map[string]string `json:"managed,omitempty"`
+
+	// RTL vendors components with logical direction classes (see
+	// internal/rtl). Off by default; set by `gsxui init --rtl`.
+	RTL bool `json:"rtl,omitempty"`
 }
 
 func DefaultConfig() Config {

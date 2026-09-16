@@ -1230,3 +1230,36 @@ func expectedVendoredCSS(source string) ([]byte, error) {
 	}
 	return fs.ReadFile(gsxui.Files, source)
 }
+
+func TestInitRTLFlagPersistsAndSurvivesRerun(t *testing.T) {
+	dir, _ := initTestModule(t)
+	if err := Run([]string{"init", "--rtl"}); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err := LoadConfig(dir)
+	if err != nil || !cfg.RTL {
+		t.Fatalf("init --rtl did not persist rtl: %+v %v", cfg, err)
+	}
+	// style.css is vendored logical: the default sheet carries pl-1.5/pr-1.5.
+	style := readFile(t, dir, "web/gsxui/style.css")
+	if strings.Contains(style, "@apply pl-1.5") || !strings.Contains(style, "ps-1.5") {
+		t.Fatalf("style.css was not transformed:\n%s", style)
+	}
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err = LoadConfig(dir)
+	if err != nil || !cfg.RTL {
+		t.Fatalf("a rerun without --rtl reset the flag: %+v %v", cfg, err)
+	}
+}
+
+func TestInitWithoutRTLLeavesStyleCSSPhysical(t *testing.T) {
+	dir, _ := initTestModule(t)
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(readFile(t, dir, "web/gsxui/style.css"), "@apply pl-1.5") {
+		t.Fatal("style.css changed for a project without the flag")
+	}
+}
