@@ -40,9 +40,14 @@ func buttonGroupRecipeUtilities(class string) []string {
 
 // canonicalButtonGroupClass is the class attribute ui.ButtonGroup renders for
 // one orientation, plus any caller classes, merged the way gsx merges class
-// values at runtime.
+// values at runtime. ButtonGroup carries a literal "group/button-group" marker
+// class (registry/canonical/button-group.gsx) that buttonGroupRecipeUtilities
+// cannot see, for the same reason documented on item_test.go's
+// canonicalItemClass — the sera style's button-group-text rule reaches the text
+// part through it.
 func canonicalButtonGroupClass(orientation string, caller ...string) string {
-	classes := append([]string(nil), buttonGroupRecipeUtilities("gsxui-recipe-button-group")...)
+	classes := []string{"group/button-group"}
+	classes = append(classes, buttonGroupRecipeUtilities("gsxui-recipe-button-group")...)
 	classes = append(classes, buttonGroupRecipeUtilities("gsxui-recipe-button-group-orientation-"+orientation)...)
 	classes = append(classes, caller...)
 	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`

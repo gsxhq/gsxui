@@ -2,6 +2,12 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-09-28
+
+### Fixed
+
+- **button-group** — `ButtonGroup` now carries shadcn's own `group/button-group` marker class on its root. Without it the `sera` style's `group-has-[>[data-variant=outline]]/button-group:border-border` rule on `ButtonGroupText` could never match, so a text part beside an `outline` `Button` kept `border-transparent` instead of taking `border-border`. Affects the `sera` style only; the other seven never reference the marker.
+
 ## 2026-09-16
 
 ### Added
