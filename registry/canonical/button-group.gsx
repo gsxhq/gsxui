@@ -29,12 +29,21 @@ import "github.com/gsxhq/gsx"
 // regression, not nova's actual behavior. Ported as ADD: the zero-corner
 // selectors are kept unchanged and the outer-corner restore is layered on
 // top, matching what nova really ships.
-
+//
+// group/button-group is shadcn's own marker on this element (the styled base's
+// own `cn-button-group group/button-group ...` class string,
+// registry/bases/radix/ui/button-group.tsx). The sera style's
+// `.cn-button-group-text` rule scopes its border color to it —
+// `group-has-[>[data-variant=outline]]/button-group:border-border`, the one
+// place any of the 8 styles reaches a ButtonGroup descendant through the
+// marker — so the marker has to be declared here for that selector to match,
+// the same shape Item and FieldLabel already use for group/item and
+// group/field-label.
 component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-orientation={orientation |> default("horizontal")}
-		class={ buttonGroup.Root(), buttonGroup.Orientation(orientation) }
+		class={ "group/button-group", buttonGroup.Root(), buttonGroup.Orientation(orientation) }
 		{ attrs... }
 		data-gsxui-slot-button-group
 	>

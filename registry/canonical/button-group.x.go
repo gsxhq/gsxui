@@ -39,12 +39,22 @@ import (
 // regression, not nova's actual behavior. Ported as ADD: the zero-corner
 // selectors are kept unchanged and the outer-corner restore is layered on
 // top, matching what nova really ships.
+//
+// group/button-group is shadcn's own marker on this element (the styled base's
+// own `cn-button-group group/button-group ...` class string,
+// registry/bases/radix/ui/button-group.tsx). The sera style's
+// `.cn-button-group-text` rule scopes its border color to it —
+// `group-has-[>[data-variant=outline]]/button-group:border-border`, the one
+// place any of the 8 styles reaches a ButtonGroup descendant through the
+// marker — so the marker has to be declared here for that selector to match,
+// the same shape Item and FieldLabel already use for group/item and
+// group/field-label.
 
-//line button-group.gsx:33:1
+//line button-group.gsx:42:1
 func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button-group.gsx:34:2
+//line button-group.gsx:43:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -55,30 +65,30 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(buttonGroup.Root()), _gsxrt.Class(buttonGroup.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button-group"), _gsxrt.Class(buttonGroup.Root()), _gsxrt.Class(buttonGroup.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group", true)
 		_gsxgw.S(">")
-//line button-group.gsx:41:3
+//line button-group.gsx:50:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line button-group.gsx:45:1
+//line button-group.gsx:54:1
 // ButtonGroupText's asChild tag-swap is dropped (GAP, always a <div>) — same
 // narrow gap as Button's own asChild. Note this element carries no generic
 // shadcn slot hook either (unlike every other button-group part); ported
 // as-is rather than "fixed", per the token-for-token rule.
 
-//line button-group.gsx:49:1
+//line button-group.gsx:58:1
 func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button-group.gsx:50:2
+//line button-group.gsx:59:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(buttonGroup.Text()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -86,14 +96,14 @@ func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button-group-text"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group-text", true)
 		_gsxgw.S(">")
-//line button-group.gsx:51:3
+//line button-group.gsx:60:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line button-group.gsx:55:1
+//line button-group.gsx:64:1
 // ButtonGroupSeparator wraps ui.Separator directly (flat package, no
 // re-implementation) — the button-group -> separator dependency
 // internal/registry derives and registry_test.go pins. orientation defaults
@@ -105,11 +115,11 @@ func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // the ordinary caller-class-merge position (attrs after base, see
 // docs/jsx-parity.md styling notes).
 
-//line button-group.gsx:65:1
+//line button-group.gsx:74:1
 func ButtonGroupSeparator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button-group.gsx:66:2
+//line button-group.gsx:75:2
 		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(buttonGroup.Separator()))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
