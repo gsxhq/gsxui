@@ -343,7 +343,7 @@ func TestPlanScaffoldIntegrationValidatesPackageContract(t *testing.T) {
 			name: "missing vite plugin",
 			mutate: func(t *testing.T, dir string) {
 				t.Helper()
-				writeFile(t, dir, "package.json", strings.ReplaceAll(testGSXPackageJSON, `"@gsxhq/vite-plugin-gsx": "^0.10.0",`, `"other": "1",`))
+				writeFile(t, dir, "package.json", strings.ReplaceAll(testGSXPackageJSON, `"@gsxhq/vite-plugin-gsx": "^0.11.2",`, `"other": "1",`))
 			},
 			want: "@gsxhq/vite-plugin-gsx",
 		},
@@ -630,7 +630,7 @@ const testGSXPackageJSON = `{
     "build": "vite build"
   },
   "devDependencies": {
-    "@gsxhq/vite-plugin-gsx": "^0.10.0",
+    "@gsxhq/vite-plugin-gsx": "^0.11.2",
     "vite": "^6.0.0"
   }
 }
