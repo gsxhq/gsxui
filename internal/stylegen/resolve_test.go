@@ -159,7 +159,9 @@ func TestResolveAcceptsElementValuedExpressions(t *testing.T) {
 		{
 			name: "element-valued call argument with nested class",
 			body: `{wrap(<b class={"safe"}>hi</b>)}`,
-			want: `wrap(<b class={"safe"}>hi</b>)`,
+			// want is matched against the formatted output; gsx fmt formats
+			// an element literal nested in a Go expression like any other.
+			want: `wrap(<b class={ "safe" }>hi</b>)`,
 		},
 	}
 
