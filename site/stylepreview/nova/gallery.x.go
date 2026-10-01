@@ -184,7 +184,7 @@ func _gsxrendergalleryButtonsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) er
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Buttons")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:139:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -353,7 +353,7 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Create an account")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:193:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -480,7 +480,7 @@ func _gsxrendergallerySettingsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Workspace settings")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:229:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -685,7 +685,7 @@ func _gsxrendergalleryCalendarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Schedule a review")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:295:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -749,7 +749,7 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Menus")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:335:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -982,7 +982,7 @@ func _gsxrendergalleryFeedbackCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Sync status")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:419:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -1134,7 +1134,7 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Team members")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:475:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -1348,7 +1348,7 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Recent invoices")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:544:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -1587,7 +1587,7 @@ func _gsxrendergalleryChartCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Revenue by channel")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:644:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -1678,7 +1678,7 @@ func _gsxrendergalleryTabsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp s
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Project overview")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:678:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -1808,7 +1808,7 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Navigation")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:715:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -2039,7 +2039,7 @@ func _gsxrendergalleryControlsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Editor controls")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:792:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -2302,7 +2302,7 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Overlays")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:883:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -2739,7 +2739,7 @@ func _gsxrendergalleryMediaCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Media and layout")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1050:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -2879,7 +2879,7 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Application shell")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1111:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -3075,7 +3075,7 @@ func _gsxrendergalleryPricingCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) er
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Pricing")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1197:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -3277,7 +3277,7 @@ func _gsxrendergalleryStatsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Overview")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1268:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -3368,7 +3368,7 @@ func _gsxrendergalleryChatCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp s
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Support inbox")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1314:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -3448,7 +3448,7 @@ func _gsxrendergalleryRolesCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Team roles")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1351:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -3697,7 +3697,7 @@ func _gsxrendergalleryBookingCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Book a demo")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1448:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -3860,7 +3860,7 @@ func _gsxrendergalleryActivityCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Activity")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1495:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -3947,7 +3947,7 @@ func _gsxrendergalleryUploadsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) er
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Files")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1532:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -4118,7 +4118,7 @@ func _gsxrendergalleryNotificationsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writ
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Notifications")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1590:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -4216,7 +4216,7 @@ func _gsxrendergallerySearchCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Search")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1631:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -4450,7 +4450,7 @@ func _gsxrendergalleryOnboardingCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Get started")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1717:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -4616,7 +4616,7 @@ func _gsxrendergalleryVerifyCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) err
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Verify your identity")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1783:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -4710,7 +4710,7 @@ func _gsxrendergalleryNotificationPrefsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Notification preferences")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1815:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -4818,7 +4818,7 @@ func _gsxrendergalleryBillingCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) er
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Billing")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "style", Value: "font-family: var(--font-heading)"}}))
+			}), _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("font-family: var(--font-heading)")}}))
 //line gallery.gsx:1851:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)

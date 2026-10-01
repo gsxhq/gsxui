@@ -2,6 +2,12 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-10-01
+
+### Changed
+
+- **toolchain** — gsx `v0.2.0` (from the 2026-09-30 main pin). Regenerated output: gsx now emits `style` attributes as `RawCSS` and filters interpolated values with `FilterCSS` (aspect-ratio's `aspect-ratio:` style, the style gallery's `font-family` style); rendered HTML is unchanged.
+
 ## 2026-09-28
 
 ### Fixed
