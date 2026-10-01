@@ -6,7 +6,7 @@ Notable changes to gsxui's component set, newest first.
 
 ### Changed
 
-- **toolchain** — gsx `v0.2.0` (from the 2026-09-30 main pin). Regenerated output: gsx now emits `style` attributes as `RawCSS` and filters interpolated values with `FilterCSS` (aspect-ratio's `aspect-ratio:` style, the style gallery's `font-family` style); rendered HTML is unchanged.
+- **toolchain** — gsx `v0.2.0` (from the 2026-09-30 main pin). Two rendering changes reach consumers: a `style` value keeps its authored trailing `;` (`style="aspect-ratio: 16 / 9;"`), and a `switch`-form attribute follows the spread position, so `AspectRatio` now renders `class` before `style`. Style values passed in a `gsx.Attrs` bag are CSS-filtered by the new runtime; pass trusted CSS as `gsx.RawCSS`, or a multi-declaration string renders `ZgotmplZ`. Regenerated output: aspect-ratio and the style gallery.
 
 ## 2026-09-28
 
