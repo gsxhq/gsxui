@@ -47,6 +47,7 @@ func TestE2E(t *testing.T) {
 	}
 
 	assertScaffoldPackageIntegration(t, dir)
+	assertGSXPinned(t, dir)
 	viteBefore := readFile(t, dir, "vite.config.ts")
 	mainBefore := readFile(t, dir, "web/main.js")
 	if err := Run([]string{"init", "--preset", maiaCode}); err != nil {
@@ -282,6 +283,23 @@ func assertScaffoldPackageIntegration(t *testing.T, dir string) {
 	if strings.Count(main, `import "./gsxui/index.js"`) != 1 ||
 		strings.Count(main, `import "./gsxui/index.css"`) != 1 {
 		t.Fatalf("web/main.js integration is not singular:\n%s", main)
+	}
+}
+
+// assertGSXPinned checks that init required gsx, and its tool, at the version
+// gsxui itself builds against rather than whatever is latest.
+func assertGSXPinned(t *testing.T, dir string) {
+	t.Helper()
+	want, err := gsxVersion()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := selectedModuleVersion(t, dir, gsxModule); got != want {
+		t.Fatalf("consumer selects %s %s, want gsxui's %s", gsxModule, got, want)
+	}
+	goMod := readFile(t, dir, "go.mod")
+	if !strings.Contains(goMod, "tool "+gsxModule+"/cmd/gsx") {
+		t.Fatalf("consumer go.mod does not declare the gsx tool:\n%s", goMod)
 	}
 }
 

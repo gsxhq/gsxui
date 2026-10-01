@@ -120,11 +120,15 @@ func TestInitWritesEverything(t *testing.T) {
 	for _, c := range *commands {
 		joined += strings.Join(c, " ") + "\n"
 	}
+	pinnedGSX, err := gsxVersion()
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, want := range []string{
 		"npm install --save-dev tailwindcss@^4.3.3 @tailwindcss/vite@^4.3.3 tw-animate-css@^1.4.0",
-		"go get github.com/gsxhq/gsx@latest",
+		"go get github.com/gsxhq/gsx@" + pinnedGSX + "\n",
 		"go get github.com/jackielii/tailwind-merge-go@latest",
-		"go get -tool github.com/gsxhq/gsx/cmd/gsx@latest",
+		"go get -tool github.com/gsxhq/gsx/cmd/gsx@" + pinnedGSX + "\n",
 		"go tool gsx generate",
 	} {
 		if !strings.Contains(joined, want) {
@@ -189,8 +193,15 @@ func TestInitNonViteVendorsWithoutNPM(t *testing.T) {
 		}
 	}
 	// go tooling still installed, and generation still runs.
+	pinnedGSX, err := gsxVersion()
+	if err != nil {
+		t.Fatal(err)
+	}
 	joined := fmt.Sprint(*commands)
-	for _, want := range []string{"go get github.com/gsxhq/gsx@latest", "go get -tool github.com/gsxhq/gsx/cmd/gsx@latest"} {
+	for _, want := range []string{
+		"[go get github.com/gsxhq/gsx@" + pinnedGSX + "]",
+		"[go get -tool github.com/gsxhq/gsx/cmd/gsx@" + pinnedGSX + "]",
+	} {
 		if !strings.Contains(joined, want) {
 			t.Errorf("missing command %q in %v", want, *commands)
 		}

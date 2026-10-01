@@ -145,10 +145,14 @@ func runInit(args []string) error {
 		"@tailwindcss/vite@^4.3.3",
 		"tw-animate-css@^1.4.0",
 	}
+	pinnedGSX, err := gsxVersion()
+	if err != nil {
+		return err
+	}
 	commands := [][]string{
-		{"go", "get", "github.com/gsxhq/gsx@latest"},
+		{"go", "get", gsxModule + "@" + pinnedGSX},
 		{"go", "get", "github.com/jackielii/tailwind-merge-go@latest"},
-		{"go", "get", "-tool", "github.com/gsxhq/gsx/cmd/gsx@latest"},
+		{"go", "get", "-tool", gsxModule + "/cmd/gsx@" + pinnedGSX},
 	}
 	if err := executeArtifactTransaction(
 		dir,

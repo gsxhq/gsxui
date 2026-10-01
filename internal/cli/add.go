@@ -92,7 +92,11 @@ func runAdd(args []string) error {
 
 func generateProject(dir string) error {
 	if err := runCommand(dir, "go", "tool", "gsx", "generate"); err != nil {
-		return fmt.Errorf("gsx generate: %w — if the gsx tool is missing, run 'gsxui init' (or 'go get -tool github.com/gsxhq/gsx/cmd/gsx@latest')", err)
+		hint := "run 'gsxui init'"
+		if pinnedGSX, versionErr := gsxVersion(); versionErr == nil {
+			hint += fmt.Sprintf(" (or 'go get -tool %s/cmd/gsx@%s')", gsxModule, pinnedGSX)
+		}
+		return fmt.Errorf("gsx generate: %w — if the gsx tool is missing, %s", err, hint)
 	}
 	return nil
 }
