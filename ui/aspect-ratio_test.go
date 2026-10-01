@@ -55,7 +55,7 @@ func TestAspectRatioDefault(t *testing.T) {
 	got := render(t, ui.AspectRatio("16 / 9", gsx.Raw(`<img src="x.png"/>`), nil))
 	for _, want := range []string{
 		`data-gsxui-slot-aspect-ratio`,
-		`style="aspect-ratio: 16 / 9"`,
+		`style="aspect-ratio: 16 / 9;"`,
 		`<img src="x.png"/>`,
 	} {
 		if !strings.Contains(got, want) {
@@ -67,7 +67,7 @@ func TestAspectRatioDefault(t *testing.T) {
 func TestAspectRatioNumericRatio(t *testing.T) {
 	// aspect-ratio also accepts a bare number, not only the "w / h" form.
 	got := render(t, ui.AspectRatio("1.5", nil, nil))
-	if !strings.Contains(got, `style="aspect-ratio: 1.5"`) {
+	if !strings.Contains(got, `style="aspect-ratio: 1.5;"`) {
 		t.Errorf("missing numeric ratio style\nin: %s", got)
 	}
 }
@@ -96,7 +96,7 @@ func TestAspectRatioGrammarForms(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			got := render(t, ui.AspectRatio(tt.ratio, nil, nil))
-			if want := `style="aspect-ratio: ` + tt.want + `"`; !strings.Contains(got, want) {
+			if want := `style="aspect-ratio: ` + tt.want + `;"`; !strings.Contains(got, want) {
 				t.Errorf("missing %q\nin: %s", want, got)
 			}
 		})
@@ -125,7 +125,7 @@ func TestAspectRatioHostileRatioIsInert(t *testing.T) {
 	} {
 		t.Run(ratio, func(t *testing.T) {
 			got := render(t, ui.AspectRatio(ratio, nil, nil))
-			if !strings.Contains(got, `style="aspect-ratio: ZgotmplZ"`) {
+			if !strings.Contains(got, `style="aspect-ratio: ZgotmplZ;"`) {
 				t.Errorf("hostile ratio was not neutralised\nin: %s", got)
 			}
 		})
@@ -150,13 +150,11 @@ func TestAspectRatioPinned(t *testing.T) {
 	// CSS aspect-ratio property directly on a single div (ADAPT, see
 	// docs/jsx-parity.md).
 	got := render(t, ui.AspectRatio("16 / 9", gsx.Raw(`<img src="x.png"/>`), nil))
-	// The style group is written in source order, ahead of class: a
-	// { switch } in attribute position emits where it is written, unlike the
-	// { if } chain it replaced, which gsx hoisted class ahead of. The
-	// declaration carries no trailing semicolon — a part's trailing ";" is
-	// trimmed when style declarations are joined, so writing one in the css
-	// literal (which tree-sitter needs to parse it as CSS) costs nothing here.
-	want := `<div style="aspect-ratio: 16 / 9" ` + canonicalAspectRatioClass() + ` data-gsxui-slot-aspect-ratio><img src="x.png"/></div>`
+	// gsx v0.2.0: a { switch } in attribute position follows the spread
+	// position (gsx #220), so the style group lands after class here, and the
+	// css literal's authored trailing ";" is kept in the rendered value (style
+	// values are CSS-filtered and emitted as RawCSS, gsx #221).
+	want := `<div ` + canonicalAspectRatioClass() + ` style="aspect-ratio: 16 / 9;" data-gsxui-slot-aspect-ratio><img src="x.png"/></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
