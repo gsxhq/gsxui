@@ -38,11 +38,17 @@ func _gsxrendersiteHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string
 	_gsxgw.Text(string(title))
 	_gsxgw.S(" · gsxui</title>")
 //line document.gsx:16:3
-	_gsxgw.S("<link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\">")
+	_gsxgw.S("<link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\"")
+	_gsxgw.Nonce(ctx)
+	_gsxgw.S(">")
 //line document.gsx:17:3
-	_gsxgw.S("<link rel=\"icon\" href=\"/favicon-32.png\" sizes=\"32x32\" type=\"image/png\">")
+	_gsxgw.S("<link rel=\"icon\" href=\"/favicon-32.png\" sizes=\"32x32\" type=\"image/png\"")
+	_gsxgw.Nonce(ctx)
+	_gsxgw.S(">")
 //line document.gsx:18:3
-	_gsxgw.S("<link rel=\"apple-touch-icon\" href=\"/apple-touch-icon.png\">")
+	_gsxgw.S("<link rel=\"apple-touch-icon\" href=\"/apple-touch-icon.png\"")
+	_gsxgw.Nonce(ctx)
+	_gsxgw.S(">")
 //line document.gsx:19:3
 	_gsxgw.S("<script")
 	_gsxgw.Nonce(ctx)
@@ -67,14 +73,18 @@ func _gsxrendersiteHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string
 //line document.gsx:67:4
 		_gsxgw.S("<link rel=\"stylesheet\" href=\"")
 		_gsxgw.URL(string(href))
-		_gsxgw.S("\">")
+		_gsxgw.S("\"")
+		_gsxgw.Nonce(ctx)
+		_gsxgw.S(">")
 	}
 //line document.gsx:69:3
 	for _, src := range assets.Preloads {
 //line document.gsx:70:4
 		_gsxgw.S("<link rel=\"modulepreload\" href=\"")
 		_gsxgw.URL(string(src))
-		_gsxgw.S("\">")
+		_gsxgw.S("\"")
+		_gsxgw.Nonce(ctx)
+		_gsxgw.S(">")
 	}
 //line document.gsx:72:3
 	for _, src := range assets.JS {

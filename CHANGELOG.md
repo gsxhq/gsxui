@@ -2,6 +2,12 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-10-02
+
+### Changed
+
+- **toolchain** — gsx `v0.3.0`. Regenerated output: the site document's `<link>` tags now carry the CSP nonce under `gsx.WithNonce`, like `<script>` and `<style>`; output without a context nonce is unchanged. No gsxui component puts a Go value on an event-handler attribute, so v0.3.0's JS encoding of `on*` attributes changes nothing here; a consumer writing `onclick={expr}` should read gsx's release notes.
+
 ## 2026-10-01
 
 ### Changed
