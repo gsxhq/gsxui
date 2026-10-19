@@ -600,7 +600,7 @@ var slotOverrides = map[string]map[string]slotOverride{
 			"md:[[data-gsxui-slot-sidebar-menu-item]:hover>&[data-show-on-hover]]:opacity-100",
 			"md:[[data-gsxui-slot-sidebar-menu-item]:focus-within>&[data-show-on-hover]]:opacity-100",
 			"md:[&[data-show-on-hover][data-state=open]]:opacity-100",
-			"[[data-gsxui-slot-sidebar-menu-button][data-active]~&[data-show-on-hover]]:text-sidebar-primary-foreground",
+			"[[data-gsxui-slot-sidebar-menu-button][data-active]~&[data-show-on-hover]]:text-sidebar-accent-foreground",
 		}},
 	},
 	// FieldSeparator composes three gsxui slots from upstream's two classes

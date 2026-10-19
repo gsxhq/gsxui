@@ -35,6 +35,21 @@ checkout.
   file's bytes are unchanged, so the header bump across all 440 records a
   verified-clean pin rather than a re-port. `apps/v4/registry/new-york-v4/ui/`
   — the structural reference — has no diff at all between the two commits.
+- VERIFIED (2026-10-19, pin `ac60ef5c` vs upstream HEAD `daaf156e`): re-ran
+  the drift diff above. `apps/v4/registry/styles/` is purely additive across
+  the range (618 insertions, 0 deletions — so no existing `.cn-*` rule
+  changed in any of the 8 sheets), and every added rule belongs to one of two
+  brand-new upstream MARK sections, `Trace` and `Code Block`, for components
+  gsxui does not ship. `apps/v4/registry/new-york-v4/ui/` changed in 57 files
+  and all of it is one import move (`@/lib/utils` -> `cn`); the only
+  non-import edit is `message-scroller.tsx` gaining
+  `data-pending-scroll:invisible`, also not a gsxui component. `stylegen port
+  --style all --dry-run` against HEAD still reports `unmapped=0`, so the
+  mapping table needs no new entries. The pin is therefore still accurate and
+  is deliberately NOT advanced here — nothing gsxui ports moved. One real
+  drift predating the pin was found and fixed (see `## sidebar`'s 2026-10-19
+  FIX); `Trace`/`Code Block` are new upstream components, out of scope for a
+  parity pass, and are not yet listed in `port.ignoredSections`.
 - NOTE (do not re-port to fix drift): `stylegen port` is a bootstrapping tool,
   not an idempotent regenerator. Its carry policy works at whole-rule
   granularity, so re-running it over today's tree silently drops the
@@ -1955,6 +1970,28 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   upstream's expanded default. Accepted as-is — renaming now would cost
   more (desyncing the two already-matched params) than the divergence it
   fixes; not ledgered until this round.
+- FIX (2026-10-19 parity audit, all 8 styles): the active-menu-button
+  sibling colour on `sidebar-menu-badge` and on `sidebar-menu-action`'s
+  show-on-hover reveal was `text-sidebar-primary-foreground`; upstream's is
+  `text-sidebar-accent-foreground`. Both upstream trees agree —
+  `apps/v4/registry/styles/style-<style>.css`'s `.cn-sidebar-menu-badge`
+  (`peer-data-active/menu-button:text-sidebar-accent-foreground`, identical
+  in all 8 styles), `apps/v4/registry/bases/radix/ui/sidebar.tsx`'s
+  `SidebarMenuAction` showOnHover branch (same utility), and
+  `apps/v4/registry/new-york-v4/ui/sidebar.tsx`'s `SidebarMenuBadge`
+  (`peer-data-[active=true]/menu-button:text-sidebar-accent-foreground`).
+  It rendered wrong, not merely off-token: an active menu button paints
+  `bg-sidebar-accent`, so in light mode the badge drew
+  `--sidebar-primary-foreground` (oklch 0.985) on `--sidebar-accent`
+  (oklch 0.97) — near-invisible, where upstream's
+  `--sidebar-accent-foreground` is oklch 0.205. Dark mode was unaffected
+  (both tokens are 0.985 there), which is why it survived review. The same
+  wrong token was also hardcoded in `port.slotOverrides`' `cn-sidebar-menu-
+  action` `extra` list (`internal/stylegen/port/mapping.go`), copied
+  "verbatim" out of nova's sheet — fixed there too, so a re-port cannot
+  reintroduce it. The sibling `:hover~&` variant in the same two rules
+  already used `accent-foreground`; only the `[data-active]~&` variants
+  were wrong.
 
 ## chart
 - ADAPT (engine substitution, credited, pinned SHA): shadcn's `chart.tsx` is
