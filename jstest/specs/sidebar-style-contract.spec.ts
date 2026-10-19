@@ -236,8 +236,16 @@ test("menu item relations reserve action space and align action/badge by button 
   expect(await button.evaluate((element) => getComputedStyle(element).paddingRight)).toBe("32px");
   expect(await action.evaluate((element) => getComputedStyle(element).top)).toBe("4px");
   expect(await badge.evaluate((element) => getComputedStyle(element).top)).toBe("4px");
+  // action-item's button is isActive, so SidebarMenuAction's showOnHover
+  // reveal resolves its `[data-active]~&[data-show-on-hover]` variant here.
+  // That variant now carries text-sidebar-accent-foreground (light-mode
+  // oklch 0.205), matching upstream's own
+  // peer-data-active/menu-button:text-sidebar-accent-foreground; it used to
+  // carry text-sidebar-primary-foreground (oklch 0.985), which drew
+  // near-white on the active row's bg-sidebar-accent. See
+  // docs/jsx-parity.md's `## sidebar` 2026-10-19 FIX.
   expect(await action.evaluate((element) => getComputedStyle(element).color)).toBe(
-    "oklch(0.985 0 0)",
+    "oklch(0.205 0 0)",
   );
   await expect(action).toHaveCSS("opacity", "0");
   await actionItem.hover();
@@ -267,16 +275,29 @@ test("menu item relations reserve action space and align action/badge by button 
 // Sidebar, verified 2026-08-11) keys data-active off the SAME
 // --sidebar-accent/-foreground pair as :hover (`data-active:bg-sidebar-accent
 // data-active:text-sidebar-accent-foreground`), so the button's own
-// background/color now match hover's, not primary's. --sidebar-primary's
-// background half has no live consumer left in sidebar.css at all (verified:
-// no `bg-sidebar-primary` occurrence remains); only
-// --sidebar-primary-foreground survives, on SidebarMenuBadge's
-// `[[data-gsxui-slot-sidebar-menu-button][data-active]~&]:text-sidebar-primary-foreground`
-// rule — a badge sitting on an active row keeps readable text without the
-// badge itself painting a primary background. The fixture gained a badge in
-// the "active" item so this test can still cover both halves of that pair
-// under its real, current consumer.
-test("all eight sidebar theme tokens feed live component declarations", async ({ page }) => {
+// background/color now match hover's, not primary's.
+//
+// The --sidebar-primary PAIR therefore has no live consumer in sidebar.css at
+// all, both halves (verified: no `bg-sidebar-primary` and no
+// `text-sidebar-primary-foreground` occurrence remains). Upstream is the same
+// — nothing in its own Sidebar consumes that pair; it is a theme token for
+// CONSUMER code, which is exactly how site/examples/sidebar/variants.gsx's
+// brand mark uses it (`bg-sidebar-primary text-sidebar-primary-foreground`).
+// So this test covers the six tokens the component itself declares, and the
+// primary pair is deliberately out of its scope rather than wired to a
+// component rule to keep a count up.
+//
+// An earlier revision did wire it: SidebarMenuBadge's
+// `[[...sidebar-menu-button][data-active]~&]` variant was given
+// text-sidebar-primary-foreground so this test could still assert both halves
+// of the pair. That was a parity bug, not just an off-token choice — upstream
+// uses text-sidebar-accent-foreground there in all 8 styles, and since an
+// active menu button paints bg-sidebar-accent, the primary token rendered
+// oklch 0.985 text on an oklch 0.97 background in light mode (invisible).
+// See docs/jsx-parity.md's `## sidebar` 2026-10-19 FIX. The badge now asserts
+// against --sidebar-accent-foreground, the same token the button's own active
+// state and the badge's `:hover~&` variant already used.
+test("sidebar theme tokens feed live component declarations", async ({ page }) => {
   await openFixture(page, "tokens");
   const tree = page.locator(slot("sidebar-desktop"));
 
@@ -294,7 +315,7 @@ test("all eight sidebar theme tokens feed live component declarations", async ({
     "rgb(4, 5, 6)",
   );
   expect(await activeBadge.evaluate((element) => getComputedStyle(element).color)).toBe(
-    "rgb(10, 11, 12)",
+    "rgb(16, 17, 18)",
   );
   expect(
     await active.evaluate((element) => {
