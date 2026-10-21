@@ -434,8 +434,14 @@ func rangeFlags(mode string, d, from, to time.Time) (start, middle, end bool) {
 	if !to.IsZero() && sameDay(d, to) {
 		end = true
 	}
-	if !from.IsZero() && !to.IsZero() && dayOnly(d).After(dayOnly(from)) && dayOnly(d).Before(dayOnly(to)) {
-		middle = true
+	// A caller's reversed pair still spans the days between, as calendar.js's
+	// own lo/hi sort and react-day-picker's rangeIncludesDate both read it.
+	if !from.IsZero() && !to.IsZero() {
+		lo, hi := dayOnly(from), dayOnly(to)
+		if hi.Before(lo) {
+			lo, hi = hi, lo
+		}
+		middle = dayOnly(d).After(lo) && dayOnly(d).Before(hi)
 	}
 	return
 }
@@ -691,6 +697,15 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //     role="grid" suppresses a `<table>`'s implicit naming, so without it
 //     the grid is announced unnamed on entry. calendar.js's repaint rewrites
 //     it on every navigation, so the name follows the displayed month.
+//
+// Day labels carry upstream's labelDayButton decorations, "Today, {date}"
+// and then "{date}, selected" (react-day-picker 9.8.1), where {date} is
+// CalendarLocale's DayLabel. Each pattern is one whole i18n.T message on the
+// root (data-gsxui-calendar-label-today/-selected), so a translator can
+// reorder around the date, and calendar.js applies them: today is the
+// client's date, and selection changes without a server round trip. The
+// server writes the plain DayLabel, so first paint without JS has no
+// decoration.
 component Calendar(mode string, month time.Time, selected []time.Time, from time.Time, to time.Time, weekStartsOn time.Weekday, showOutsideDays bool, captionLayout string, fromYear int, toYear int, disabledBefore time.Time, disabledAfter time.Time, disabledDates []time.Time, disabledWeekdays []time.Weekday, name string, locale CalendarLocale, attrs gsx.Attrs) {
 	{{
 		// Every string this component composes itself — caption, day
@@ -822,6 +837,8 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 		data-gsxui-calendar-show-outside-days={boolStr(showOutsideDays)}
 		data-caption-layout={captionLayout}
 		data-gsxui-calendar-locale={loc.clientJSON()}
+		data-gsxui-calendar-label-today={i18n.T("Today, {date}")}
+		data-gsxui-calendar-label-selected={i18n.T("{date}, selected")}
 		{ if selectedISO != "" {
 			data-gsxui-calendar-selected={selectedISO}
 		} }

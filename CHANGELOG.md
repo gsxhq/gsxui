@@ -6,11 +6,17 @@ Notable changes to gsxui's component set, newest first.
 
 ### Added
 
+- **calendar** — day buttons' `aria-label` now says `Today, …` for the client's today and `…, selected` for selected days (every day of a committed range), as upstream's react-day-picker does. Both patterns are `i18n.T` messages (`Today, {date}`, `{date}, selected`), so a translator can reorder them around the date. `calendar.js` applies them; the server-rendered label stays plain until it runs.
+
 - **calendar** — `CalendarLocale.MonthsFormat`, the month names day labels use inside a date, where a language's stand-alone caption form differs (Russian caption `июнь 2026`, day label `понедельник, 29 июня 2026 г.`). Unset, day labels keep using `Months`, so existing locales render unchanged. Example: `/components/calendar` "Russian" (#43).
 
 ### Changed
 
 - **i18n** — the defaults a caller can override through `attrs` are now `i18n.T` messages too: `Spinner`'s `Loading`, the `breadcrumb` and `pagination` nav labels, `Go to previous page`/`Go to next page`, `SidebarRail`'s `Toggle Sidebar` (`aria-label` and `title`), and `Carousel`/`CarouselItem`'s `carousel`/`slide` `aria-roledescription`. English output is unchanged; a registered translator now sees them, and a caller's attribute still replaces them. `spinner` now vendors `ui/i18n` (#44).
+
+### Fixed
+
+- **calendar** — a range passed with `from` after `to` now marks the days between as selected (`data-range-middle`, `aria-selected`) on the server render, as react-day-picker and `calendar.js` already did; before, they stayed unselected until the first client repaint.
 
 ## 2026-10-02
 

@@ -59,6 +59,8 @@ func TestCalendarZeroLocaleIsEnglish(t *testing.T) {
 		`>2026<`,
 		`aria-label="Previous month"`, `aria-label="Next month"`,
 		`aria-label="Month"`, `aria-label="Year"`,
+		`data-gsxui-calendar-label-today="Today, {date}"`,
+		`data-gsxui-calendar-label-selected="{date}, selected"`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("zero locale missing %s", want)
