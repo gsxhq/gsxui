@@ -36,7 +36,7 @@ import (
 component Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="region"
-		aria-roledescription="carousel"
+		aria-roledescription={i18n.T("carousel")}
 		data-orientation={orientation |> default("horizontal")}
 		class={ "relative" }
 		{ attrs... }
@@ -100,7 +100,7 @@ component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs
 component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
-		aria-roledescription="slide"
+		aria-roledescription={i18n.T("slide")}
 		data-orientation={orientation |> default("horizontal")}
 		class={ switch orientation { case "vertical": "pt-4 -scroll-mt-4" default: "ps-4 -scroll-ms-4" } }
 		{ attrs... }

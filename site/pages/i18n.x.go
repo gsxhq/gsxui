@@ -191,38 +191,21 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:110:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[3], nil))
 //line i18n.gsx:111:5
-			_gsxgw.S("<p>Register a translator that wraps every message in markers, render each page, and search the output for English outside the markers. Anything found is text a caller passed in, one of the overridable defaults below, or a gsxui bug worth an issue.</p></section>")
-//line i18n.gsx:117:4
+			_gsxgw.S("<p>Register a translator that wraps every message in markers, render each page, and search the output for English outside the markers. Anything found is text a caller passed in, or a gsxui bug worth an issue.</p></section>")
+//line i18n.gsx:116:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:118:5
+//line i18n.gsx:117:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[4], nil))
-//line i18n.gsx:119:5
-			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
-//line i18n.gsx:120:6
-			_gsxgw.S("<li>Defaults a caller can already override by passing the same attribute stay English: ")
-//line i18n.gsx:122:16
-			_gsxgw.S("<code>aria-label</code>")
-//line i18n.gsx:122:39
-			_gsxgw.Text(string(" "))
-			_gsxgw.S("on Spinner, Breadcrumb, Pagination and its Previous/Next links, SidebarRail's ")
-//line i18n.gsx:123:21
-			_gsxgw.S("<code>aria-label</code> and")
-//line i18n.gsx:123:48
-			_gsxgw.Text(string(" "))
-//line i18n.gsx:124:7
-			_gsxgw.S("<code>title</code>, and Carousel's ")
-//line i18n.gsx:124:42
-			_gsxgw.S("<code>aria-roledescription</code>. Pass a translated value in your markup.</li>")
-//line i18n.gsx:127:6
-			_gsxgw.S("<li>When no ")
-//line i18n.gsx:128:15
+//line i18n.gsx:118:5
+			_gsxgw.S("<p>When no ")
+//line i18n.gsx:119:14
 			_gsxgw.S("<code>ui.Toaster</code> is mounted, ")
-//line i18n.gsx:128:51
+//line i18n.gsx:119:50
 			_gsxgw.S("<code>toaster.js</code> creates its own region with an English ")
-//line i18n.gsx:129:15
+//line i18n.gsx:120:14
 			_gsxgw.S("<code>aria-label</code>. Mount ")
-//line i18n.gsx:129:46
-			_gsxgw.S("<code>ui.Toaster</code> and the landmark is a message like the rest.</li></ul></section></div>")
+//line i18n.gsx:120:45
+			_gsxgw.S("<code>ui.Toaster</code> and the landmark is a message like the rest.</p></section></div>")
 			return _gsxgw.Err()
 		})))
 		return _gsxgw.Err()

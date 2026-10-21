@@ -150,9 +150,9 @@ component SidebarRail(attrs gsx.Attrs) {
 	<button
 		class={ sidebar.Rail() }
 		type="button"
-		aria-label="Toggle Sidebar"
+		aria-label={i18n.T("Toggle Sidebar")}
 		tabindex="-1"
-		title="Toggle Sidebar"
+		title={i18n.T("Toggle Sidebar")}
 		{ attrs... }
 		data-gsxui-slot-sidebar-rail
 	></button>

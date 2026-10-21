@@ -32,7 +32,9 @@ func Pagination(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" role=\"navigation\"")
 		}
 		if !attrs.Has("aria-label") {
-			_gsxgw.S(" aria-label=\"pagination\"")
+			_gsxgw.S(" aria-label=\"")
+			_gsxgw.AttrValue(string(i18n.T("pagination")))
+			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(pagination.Root()), _gsxrt.Class(attrs.Class()))
@@ -178,7 +180,7 @@ func PaginationPrevious(href string, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.Text(string(i18n.T("Previous")))
 			_gsxgw.S("</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to previous page"}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-previous", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: i18n.T("Go to previous page")}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-previous", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -202,7 +204,7 @@ func PaginationNext(href string, attrs gsx.Attrs) _gsxrt.Node {
 //line pagination.gsx:100:3
 			_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to next page"}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-next", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: i18n.T("Go to next page")}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-next", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

@@ -18,7 +18,7 @@ import (
 // breadcrumb -> icon dependency internal/registry derives and
 // internal/registry/registry_test.go pins.
 component Breadcrumb(children gsx.Node, attrs gsx.Attrs) {
-	<nav aria-label="breadcrumb" { attrs... } data-gsxui-slot-breadcrumb>{ children }</nav>
+	<nav aria-label={i18n.T("breadcrumb")} { attrs... } data-gsxui-slot-breadcrumb>{ children }</nav>
 }
 
 component BreadcrumbList(children gsx.Node, attrs gsx.Attrs) {
