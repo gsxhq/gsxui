@@ -4,6 +4,10 @@ Notable changes to gsxui's component set, newest first.
 
 ## 2026-10-21
 
+### Added
+
+- **calendar** — `CalendarLocale.MonthsFormat`, the month names day labels use inside a date, where a language's stand-alone caption form differs (Russian caption `июнь 2026`, day label `понедельник, 29 июня 2026 г.`). Unset, day labels keep using `Months`, so existing locales render unchanged. Example: `/components/calendar` "Russian" (#43).
+
 ### Changed
 
 - **i18n** — the defaults a caller can override through `attrs` are now `i18n.T` messages too: `Spinner`'s `Loading`, the `breadcrumb` and `pagination` nav labels, `Go to previous page`/`Go to next page`, `SidebarRail`'s `Toggle Sidebar` (`aria-label` and `title`), and `Carousel`/`CarouselItem`'s `carousel`/`slide` `aria-roledescription`. English output is unchanged; a registered translator now sees them, and a caller's attribute still replaces them. `spinner` now vendors `ui/i18n` (#44).

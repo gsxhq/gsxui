@@ -163,48 +163,58 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:88:7
 			_gsxgw.S("<code>Digits</code> is ten runes replacing 0-9 in visible text. Form values and data attributes stay ASCII.</li>")
 //line i18n.gsx:90:6
-			_gsxgw.S("<li>Fill every field. An empty field renders empty; only the all-zero value means English.</li>")
-//line i18n.gsx:91:6
-			_gsxgw.S("<li>The client reads the same values from the root, so navigation writes the same text the server did.</li></ul>")
-//line i18n.gsx:93:5
-			_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
+			_gsxgw.S("<li>")
+//line i18n.gsx:91:7
+			_gsxgw.S("<code>MonthsFormat</code> is the month inside a date, for day labels: Russian ")
+//line i18n.gsx:91:85
+			_gsxgw.S("<code>29 июня</code>, caption")
+//line i18n.gsx:92:14
+			_gsxgw.Text(string(" "))
+//line i18n.gsx:92:21
+			_gsxgw.S("<code>июнь</code>. Leave it unset where both forms match.</li>")
 //line i18n.gsx:94:6
+			_gsxgw.S("<li>Fill every other field. An empty field renders empty; only the all-zero value means English.</li>")
+//line i18n.gsx:95:6
+			_gsxgw.S("<li>The client reads the same values from the root, so navigation writes the same text the server did.</li></ul>")
+//line i18n.gsx:97:5
+			_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
+//line i18n.gsx:98:6
 			_gsxgw.Node(ctx, localized.Node)
 			_gsxgw.S("</div>")
-//line i18n.gsx:96:5
+//line i18n.gsx:100:5
 			_gsxgw.S("<div class=\"relative\"")
 			_gsxgw.BoolAttr("data-site-example", true)
 			_gsxgw.S(">")
-//line i18n.gsx:97:6
+//line i18n.gsx:101:6
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm\">")
-//line i18n.gsx:99:7
+//line i18n.gsx:103:7
 			_gsxgw.S("<code>")
-//line i18n.gsx:99:13
+//line i18n.gsx:103:13
 			_gsxgw.Node(ctx, hl.Node(localized.SourcePath))
 			_gsxgw.S("</code></pre>")
-//line i18n.gsx:100:6
+//line i18n.gsx:104:6
 			_gsxgw.S("<button type=\"button\"")
 			_gsxgw.BoolAttr("data-site-copy", true)
 			_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div></section>")
-//line i18n.gsx:109:4
+//line i18n.gsx:113:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:110:5
+//line i18n.gsx:114:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[3], nil))
-//line i18n.gsx:111:5
+//line i18n.gsx:115:5
 			_gsxgw.S("<p>Register a translator that wraps every message in markers, render each page, and search the output for English outside the markers. Anything found is text a caller passed in, or a gsxui bug worth an issue.</p></section>")
-//line i18n.gsx:116:4
+//line i18n.gsx:120:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:117:5
+//line i18n.gsx:121:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[4], nil))
-//line i18n.gsx:118:5
+//line i18n.gsx:122:5
 			_gsxgw.S("<p>When no ")
-//line i18n.gsx:119:14
+//line i18n.gsx:123:14
 			_gsxgw.S("<code>ui.Toaster</code> is mounted, ")
-//line i18n.gsx:119:50
+//line i18n.gsx:123:50
 			_gsxgw.S("<code>toaster.js</code> creates its own region with an English ")
-//line i18n.gsx:120:14
+//line i18n.gsx:124:14
 			_gsxgw.S("<code>aria-label</code>. Mount ")
-//line i18n.gsx:120:45
+//line i18n.gsx:124:45
 			_gsxgw.S("<code>ui.Toaster</code> and the landmark is a message like the rest.</p></section></div>")
 			return _gsxgw.Err()
 		})))

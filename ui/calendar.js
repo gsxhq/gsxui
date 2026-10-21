@@ -111,7 +111,7 @@ function fillPattern(loc, pattern, parts) {
 function ariaLabel(loc, date) {
   return fillPattern(loc, loc.dayLabel, {
     weekday: loc.weekdays[date.getUTCDay()],
-    month: loc.months[date.getUTCMonth()],
+    month: loc.monthsFormat[date.getUTCMonth()],
     day: String(date.getUTCDate()),
     year: String(date.getUTCFullYear()).padStart(4, "0"),
   });

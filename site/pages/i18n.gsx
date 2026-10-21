@@ -87,7 +87,11 @@ component (p I18n) Page() {
 					<li>
 						<code>Digits</code> is ten runes replacing 0-9 in visible text. Form values and data attributes stay ASCII.
 					</li>
-					<li>Fill every field. An empty field renders empty; only the all-zero value means English.</li>
+					<li>
+						<code>MonthsFormat</code> is the month inside a date, for day labels: Russian <code>29 июня</code>,
+						caption{ " " }<code>июнь</code>. Leave it unset where both forms match.
+					</li>
+					<li>Fill every other field. An empty field renders empty; only the all-zero value means English.</li>
 					<li>The client reads the same values from the root, so navigation writes the same text the server did.</li>
 				</ul>
 				<div class="border rounded-lg p-8 bg-background">

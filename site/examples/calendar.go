@@ -186,4 +186,21 @@ func init() {
 			return examplecalendar.Localized(month)
 		},
 	})
+	Register("calendar", Example{
+		Name:       "russian",
+		Title:      "Russian",
+		Node:       examplecalendar.LocalizedRussian(examplecalendar.RussianDefaultMonth),
+		SourcePath: "calendar/russian.gsx",
+		// Query answers ?month= like localized's hook: the agreement diff
+		// covers a locale whose day labels use MonthsFormat, not Months.
+		Query: func(q url.Values) gsx.Node {
+			month := examplecalendar.RussianDefaultMonth
+			if v := q.Get("month"); v != "" {
+				if t, err := time.Parse("2006-01", v); err == nil {
+					month = t
+				}
+			}
+			return examplecalendar.LocalizedRussian(month)
+		},
+	})
 }
