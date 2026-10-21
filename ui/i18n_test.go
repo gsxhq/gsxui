@@ -101,10 +101,12 @@ func TestOverridableMessagesPrecedeAttrs(t *testing.T) {
 				continue
 			}
 			found = true
-			// The spread may sit on the literal's own line (a one-line tag)
-			// or on a later line of the same element.
-			ok := strings.Contains(line, "{ attrs... }")
-			for j := i + 1; j < len(lines) && !ok; j++ {
+			// The spread may sit after the message on its own line (a
+			// one-line tag) or on a later line of the same element. A spread
+			// earlier on the same line wins over the message.
+			spread := strings.Index(line, "{ attrs... }")
+			ok := spread > strings.Index(line, l.text)
+			for j := i + 1; j < len(lines) && !ok && spread < 0; j++ {
 				trimmed := strings.TrimSpace(lines[j])
 				if strings.Contains(trimmed, "{ attrs... }") {
 					ok = true
