@@ -2,6 +2,7 @@ package ui
 
 import (
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -69,6 +70,9 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 // input is the palette's single focus target: command.js filters on input,
 // moves selection on ArrowUp/ArrowDown, and activates on Enter, all while
 // focus stays here (aria-activedescendant tracks the selected option).
+// aria-controls is stamped by command.js at init, pointing at CommandList's
+// id (cmdk's own wiring; the two are separate components, so neither can
+// name the other's id on the server).
 component CommandInput(placeholder string, attrs gsx.Attrs) {
 	<div
 		class={
@@ -92,9 +96,12 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 	</div>
 }
 
+// CommandList's aria-label is cmdk's own List default ("Suggestions"),
+// translated and overridable through attrs.
 component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="listbox"
+		aria-label={i18n.T("Suggestions")}
 		class={
 			"overflow-x-hidden overflow-y-auto",
 			"[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-72 scroll-py-1 outline-none"
@@ -135,8 +142,12 @@ component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
 	</div>
 }
 
+// CommandSeparator is decorative (aria-hidden), not cmdk's role="separator":
+// a listbox may own only options and groups, so a separator role inside
+// CommandList fails aria-required-children (issue #47). Same ruling as
+// ComboboxSeparator.
 component CommandSeparator(attrs gsx.Attrs) {
-	<div role="separator" class={ "bg-border/50 my-1 h-px" } { attrs... } data-gsxui-slot-command-separator></div>
+	<div aria-hidden="true" class={ "bg-border/50 my-1 h-px" } { attrs... } data-gsxui-slot-command-separator></div>
 }
 
 // CommandItem is a role="option" div (cmdk's own role), NOT focusable —

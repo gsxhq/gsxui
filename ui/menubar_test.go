@@ -13,6 +13,7 @@ func TestMenubarTriggerRovingAndAria(t *testing.T) {
 	for _, want := range []string{
 		`data-gsxui-slot-menubar-trigger`,
 		`type="button"`,
+		`role="menuitem"`,
 		`aria-haspopup="menu"`,
 		`aria-expanded="false"`,
 		`data-state="closed"`,

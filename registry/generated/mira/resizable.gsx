@@ -104,9 +104,13 @@ import (
 // have no port here — no docs demo in scope
 // (resizable-demo/-demo-with-handle/-handle/-vertical) exercises either,
 // same accepted-gap shape as `## carousel`'s own `loop`/`align` GAPs.
+// FIX (issue #47): the group's orientation is data-orientation, not
+// shadcn's aria-orientation. A plain div has no role that allows
+// aria-orientation (aria-allowed-attr); the handles' role="separator"
+// still carries theirs.
 component ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		aria-orientation={orientation |> default("horizontal")}
+		data-orientation={orientation |> default("horizontal")}
 		{ attrs... }
 		data-gsxui-slot-resizable-panel-group
 	>

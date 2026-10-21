@@ -10,7 +10,7 @@ import (
 
 func TestResizablePanelGroupPinned(t *testing.T) {
 	got := render(t, ui.ResizablePanelGroup("", gsx.Raw("x"), nil))
-	want := `<div aria-orientation="horizontal" data-gsxui-slot-resizable-panel-group>x</div>`
+	want := `<div data-orientation="horizontal" data-gsxui-slot-resizable-panel-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -18,7 +18,7 @@ func TestResizablePanelGroupPinned(t *testing.T) {
 
 func TestResizablePanelGroupVertical(t *testing.T) {
 	got := render(t, ui.ResizablePanelGroup("vertical", gsx.Raw("x"), nil))
-	if !strings.Contains(got, `aria-orientation="vertical"`) {
+	if !strings.Contains(got, `data-orientation="vertical"`) {
 		t.Errorf("want vertical group orientation\nin: %s", got)
 	}
 }

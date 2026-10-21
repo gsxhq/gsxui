@@ -196,3 +196,21 @@ func TestComboboxNameEmptyOmitsFormBridge(t *testing.T) {
 		t.Errorf("want data-gsxui-slot-combobox\nin: %s", got)
 	}
 }
+
+// TestComboboxIconButtonsAreNamed: the trigger and clear buttons render only
+// an icon, so each carries a label. Issue #47.
+func TestComboboxIconButtonsAreNamed(t *testing.T) {
+	input := render(t, ui.ComboboxInput("", true, true, false, gsx.Raw(""), nil))
+	for _, want := range []string{`aria-label="Open popup"`, `aria-label="Clear selection"`} {
+		if !strings.Contains(input, want) {
+			t.Errorf("missing %s\nin: %s", want, input)
+		}
+	}
+	if got := render(t, ui.ComboboxTrigger(nil)); !strings.Contains(got, `aria-label="Open popup"`) {
+		t.Errorf("standalone trigger needs a label\nin: %s", got)
+	}
+	clear := render(t, ui.ComboboxClear(gsx.Attrs{{Key: "aria-label", Value: "Reset"}}))
+	if strings.Contains(clear, "Clear selection") || !strings.Contains(clear, `aria-label="Reset"`) {
+		t.Errorf("a caller's aria-label must replace the default\nin: %s", clear)
+	}
+}

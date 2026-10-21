@@ -4,6 +4,15 @@ Notable changes to gsxui's component set, newest first.
 
 ## 2026-10-21
 
+### Fixed
+
+- **a11y** — Lighthouse/axe failures inside components (#47):
+  - **item** — an `Item` inside an `ItemGroup` is `role="listitem"`; standalone Items are unchanged.
+  - **menubar** — `MenubarTrigger` is `role="menuitem"`, as in Radix.
+  - **command** — `CommandInput` gets `aria-controls` pointing at `CommandList` (set by `command.js`); `CommandList` is labelled `Suggestions` (cmdk's default, an `i18n.T` message); `CommandSeparator` is `aria-hidden` instead of `role="separator"`, which a listbox may not own.
+  - **combobox** — the icon-only trigger and clear buttons are labelled `Open popup` and `Clear selection` (`i18n.T` messages); `combobox` now vendors `ui/i18n`.
+  - **resizable** — `ResizablePanelGroup` carries `data-orientation` instead of `aria-orientation`, which a plain `<div>` may not have. CSS that targeted the group's `aria-orientation` must switch; the handles keep theirs.
+
 ### Added
 
 - **calendar** — day buttons' `aria-label` now says `Today, …` for the client's today and `…, selected` for selected days (every day of a committed range), as upstream's react-day-picker does. Both patterns are `i18n.T` messages (`Today, {date}`, `{date}, selected`), so a translator can reorder them around the date. `calendar.js` applies them; the server-rendered label stays plain until it runs.

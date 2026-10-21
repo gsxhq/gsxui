@@ -258,6 +258,10 @@ on(
 // initRoot exists to carry the shared init-registration convention; filter
 // stays the domain name for the rank/hide/reorder pass it runs.
 //
+// Wires the input's aria-controls to the list (cmdk's own; the server can't,
+// since CommandInput and CommandList are separate components). A caller's
+// own list id is kept.
+//
 // Initial state: rank/selection for palettes rendered without a query
 // (server renders every item visible; this stamps the first selection).
 // Self-healing via init(): current matches, later-added matches, and any
@@ -265,6 +269,12 @@ on(
 // pure reflection off the input's current value and each item's own DOM
 // state (score/hide/reorder), so re-running it is safe/idempotent.
 function initRoot(root) {
+  const input = root.querySelector("[data-gsxui-slot-command-input]");
+  const list = root.querySelector("[data-gsxui-slot-command-list]");
+  if (input && list) {
+    if (!list.id) list.id = uid("gsxui-command-list");
+    input.setAttribute("aria-controls", list.id);
+  }
   filter(root);
 }
 

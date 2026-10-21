@@ -49,7 +49,7 @@ function neighboursOf(handle) {
 }
 
 function isVertical(root) {
-  return root.getAttribute("aria-orientation") === "vertical";
+  return root.getAttribute("data-orientation") === "vertical";
 }
 
 function panelsOf(root) {

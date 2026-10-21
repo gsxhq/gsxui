@@ -72,3 +72,14 @@ test("the separator hides while a query filters and restores when it clears", as
   await input.fill("");
   await expect(separator).toBeVisible();
 });
+
+// cmdk wires the input to the list it controls; the two are separate
+// components, so command.js stamps it at init (issue #47).
+test("the input's aria-controls names the list", async ({ page }) => {
+  await page.goto("/x/command/basic");
+  const input = page.locator("[data-gsxui-slot-command-input]").first();
+  const list = page.locator("[data-gsxui-slot-command-list]").first();
+  const id = await list.getAttribute("id");
+  expect(id).toBeTruthy();
+  await expect(input).toHaveAttribute("aria-controls", id!);
+});
