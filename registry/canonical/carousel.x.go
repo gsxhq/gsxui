@@ -52,7 +52,9 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 			_gsxgw.S(" role=\"region\"")
 		}
 		if !attrs.Has("aria-roledescription") {
-			_gsxgw.S(" aria-roledescription=\"carousel\"")
+			_gsxgw.S(" aria-roledescription=\"")
+			_gsxgw.AttrValue(string(i18n.T("carousel")))
+			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
@@ -154,7 +156,9 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 			_gsxgw.S(" role=\"group\"")
 		}
 		if !attrs.Has("aria-roledescription") {
-			_gsxgw.S(" aria-roledescription=\"slide\"")
+			_gsxgw.S(" aria-roledescription=\"")
+			_gsxgw.AttrValue(string(i18n.T("slide")))
+			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")

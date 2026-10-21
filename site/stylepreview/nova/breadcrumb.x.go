@@ -40,14 +40,16 @@ func _gsxrenderBreadcrumb(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 //line breadcrumb.gsx:21:2
 	_gsxgw.S("<nav")
 	if !attrs.Has("aria-label") {
-		_gsxgw.S(" aria-label=\"breadcrumb\"")
+		_gsxgw.S(" aria-label=\"")
+		_gsxgw.AttrValue(string(i18n.T("breadcrumb")))
+		_gsxgw.S("\"")
 	}
 	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "nav", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb"})
 	_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb", true)
 	_gsxgw.S(">")
-//line breadcrumb.gsx:21:71
+//line breadcrumb.gsx:21:81
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</nav>")
 	return _gsxgw.Err()

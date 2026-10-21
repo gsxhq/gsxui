@@ -7,9 +7,10 @@ import (
 	"testing"
 )
 
-// sweptMessages is every English string a component writes itself and a
-// caller cannot reach through children, props or attrs. Each must appear in
-// the canonical source only as the argument of i18n.T(...). Issue #31.
+// sweptMessages is every English string a component writes itself,
+// including defaults a caller can override through attrs. Each must appear
+// in the canonical source only as the argument of i18n.T(...). Issues #31
+// and #44.
 var sweptMessages = []struct {
 	file string
 	text string
@@ -18,6 +19,13 @@ var sweptMessages = []struct {
 	{"sheet", "Close"},
 	{"toast", "Close"},
 	{"toaster", "Notifications"},
+	{"spinner", "Loading"},
+	{"breadcrumb", "breadcrumb"},
+	{"pagination", "pagination"},
+	{"pagination", "Go to previous page"},
+	{"pagination", "Go to next page"},
+	{"carousel", "carousel"},
+	{"carousel", "slide"},
 	{"carousel", "Previous slide"},
 	{"carousel", "Next slide"},
 	{"sidebar", "Sidebar"},
@@ -33,23 +41,23 @@ var sweptMessages = []struct {
 	{"calendar", "Year"},
 }
 
-// overridableLiterals are English literals that precede `{ attrs... }` in
-// their element, so a caller's attribute of the same name replaces them.
-// They stay plain strings. The test pins the ordering so a reorder cannot
-// silently make one unreachable.
-var overridableLiterals = []struct {
+// overridableMessages are swept messages that precede `{ attrs... }` in
+// their element, so a caller's attribute of the same name replaces the
+// translated default. The test pins the ordering so a reorder cannot
+// silently make one unreachable. Issue #44.
+var overridableMessages = []struct {
 	file string
 	text string
 }{
-	{"spinner", `aria-label="Loading"`},
-	{"breadcrumb", `aria-label="breadcrumb"`},
-	{"pagination", `aria-label="pagination"`},
-	{"pagination", `aria-label="Go to previous page"`},
-	{"pagination", `aria-label="Go to next page"`},
-	{"sidebar", `aria-label="Toggle Sidebar"`},
-	{"sidebar", `title="Toggle Sidebar"`},
-	{"carousel", `aria-roledescription="carousel"`},
-	{"carousel", `aria-roledescription="slide"`},
+	{"spinner", `aria-label={i18n.T("Loading")}`},
+	{"breadcrumb", `aria-label={i18n.T("breadcrumb")}`},
+	{"pagination", `aria-label={i18n.T("pagination")}`},
+	{"pagination", `aria-label={i18n.T("Go to previous page")}`},
+	{"pagination", `aria-label={i18n.T("Go to next page")}`},
+	{"sidebar", `aria-label={i18n.T("Toggle Sidebar")}`},
+	{"sidebar", `title={i18n.T("Toggle Sidebar")}`},
+	{"carousel", `aria-roledescription={i18n.T("carousel")}`},
+	{"carousel", `aria-roledescription={i18n.T("slide")}`},
 }
 
 func canonicalSource(t *testing.T, name string) []string {
@@ -76,9 +84,6 @@ func TestSweptMessagesOnlyAppearInsideT(t *testing.T) {
 			if strings.Contains(line, asText) || strings.TrimSpace(line) == m.text {
 				t.Errorf("%s.gsx:%d writes %q as bare text", m.file, i+1, m.text)
 			}
-			if isOverridableLine(m.file, line) {
-				continue
-			}
 			bare += strings.Count(line, quoted) - strings.Count(line, wrapped)
 		}
 		if bare != 0 {
@@ -87,17 +92,8 @@ func TestSweptMessagesOnlyAppearInsideT(t *testing.T) {
 	}
 }
 
-func isOverridableLine(file, line string) bool {
-	for _, l := range overridableLiterals {
-		if l.file == file && strings.Contains(line, l.text) {
-			return true
-		}
-	}
-	return false
-}
-
-func TestOverridableLiteralsPrecedeAttrs(t *testing.T) {
-	for _, l := range overridableLiterals {
+func TestOverridableMessagesPrecedeAttrs(t *testing.T) {
+	for _, l := range overridableMessages {
 		lines := canonicalSource(t, l.file)
 		found := false
 		for i, line := range lines {
@@ -105,10 +101,12 @@ func TestOverridableLiteralsPrecedeAttrs(t *testing.T) {
 				continue
 			}
 			found = true
-			// The spread may sit on the literal's own line (a one-line tag)
-			// or on a later line of the same element.
-			ok := strings.Contains(line, "{ attrs... }")
-			for j := i + 1; j < len(lines) && !ok; j++ {
+			// The spread may sit after the message on its own line (a
+			// one-line tag) or on a later line of the same element. A spread
+			// earlier on the same line wins over the message.
+			spread := strings.Index(line, "{ attrs... }")
+			ok := spread > strings.Index(line, l.text)
+			for j := i + 1; j < len(lines) && !ok && spread < 0; j++ {
 				trimmed := strings.TrimSpace(lines[j])
 				if strings.Contains(trimmed, "{ attrs... }") {
 					ok = true
@@ -119,11 +117,11 @@ func TestOverridableLiteralsPrecedeAttrs(t *testing.T) {
 				}
 			}
 			if !ok {
-				t.Errorf("%s.gsx:%d: %s is no longer followed by { attrs... } in its element; a caller cannot override it — move it before the spread or add it to sweptMessages", l.file, i+1, l.text)
+				t.Errorf("%s.gsx:%d: %s is no longer followed by { attrs... } in its element; a caller cannot override it — move it before the spread", l.file, i+1, l.text)
 			}
 		}
 		if !found {
-			t.Errorf("%s.gsx: %s not found; update overridableLiterals", l.file, l.text)
+			t.Errorf("%s.gsx: %s not found; update overridableMessages", l.file, l.text)
 		}
 	}
 }

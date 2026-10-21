@@ -362,7 +362,7 @@ func Translate(_ context.Context, m T) string {
 		t.Fatal(err)
 	}
 
-	if err := Run([]string{"add", "dialog", "sheet", "toast", "toaster", "carousel", "sidebar", "breadcrumb", "pagination", "calendar"}); err != nil {
+	if err := Run([]string{"add", "dialog", "sheet", "toast", "toaster", "carousel", "sidebar", "breadcrumb", "pagination", "calendar", "spinner"}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -384,6 +384,8 @@ var swept = []string{
 	"Close", "Notifications", "Previous slide", "Next slide", "Sidebar",
 	"Displays the mobile sidebar.", "Toggle Sidebar", "More", "Previous",
 	"Next", "More pages", "Previous month", "Next month", "Month", "Year",
+	"Loading", "breadcrumb", "pagination", "Go to previous page",
+	"Go to next page", "carousel", "slide",
 }
 
 func renderAll(t *testing.T) string {
@@ -396,10 +398,15 @@ func renderAll(t *testing.T) string {
 		ui.Toaster(nil),
 		ui.CarouselPrevious("horizontal", nil),
 		ui.CarouselNext("horizontal", nil),
+		ui.Carousel("horizontal", gsx.Text(""), nil),
+		ui.CarouselItem("horizontal", gsx.Text(""), nil),
 		ui.Sidebar(true, "left", "sidebar", "offcanvas", gsx.Text(""), nil),
-		// SidebarRail is omitted on purpose: its Toggle Sidebar aria-label/title are overridable defaults, not swept, and would trip the bare-string check.
+		ui.SidebarRail(nil),
 		ui.SidebarTrigger(nil),
+		ui.Spinner(nil),
+		ui.Breadcrumb(gsx.Text(""), nil),
 		ui.BreadcrumbEllipsis(nil),
+		ui.Pagination(gsx.Text(""), nil),
 		ui.PaginationPrevious("#", nil),
 		ui.PaginationNext("#", nil),
 		ui.PaginationEllipsis(nil),

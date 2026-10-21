@@ -74,8 +74,8 @@ function formatMonth(year, month) {
 }
 
 // localeOf reads the locale calendar.gsx serialised on the root
-// (CalendarLocale.clientJSON): wide month and weekday names, the caption
-// and day-label patterns, and the digit set. Always present, so there is
+// (CalendarLocale.clientJSON): wide month names (stand-alone and in-date),
+// wide weekday names, the caption and day-label patterns, and the digit set. Always present, so there is
 // no English fallback here — the server is the single authority. It parses
 // the attribute fresh on every call, no caching: a repaint is a handful of
 // JSON.parse calls on a small object, cheap next to the DOM writes it
@@ -111,7 +111,7 @@ function fillPattern(loc, pattern, parts) {
 function ariaLabel(loc, date) {
   return fillPattern(loc, loc.dayLabel, {
     weekday: loc.weekdays[date.getUTCDay()],
-    month: loc.months[date.getUTCMonth()],
+    month: loc.monthsFormat[date.getUTCMonth()],
     day: String(date.getUTCDate()),
     year: String(date.getUTCFullYear()).padStart(4, "0"),
   });

@@ -3,6 +3,7 @@ package ui_test
 import (
 	"encoding/json"
 	"html"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -99,6 +100,48 @@ func TestCalendarArabicLocale(t *testing.T) {
 	loc := rootLocale(t, got)
 	if loc["digits"] != "٠١٢٣٤٥٦٧٨٩" || loc["dayLabel"] != "{weekday}، {day} {month} {year}" {
 		t.Errorf("arabic locale JSON = %v", loc)
+	}
+}
+
+// Issue #43: the caption takes the stand-alone month, each day's label the
+// month inside a date, as upstream's "LLLL y" and "PPPP" do.
+func TestCalendarMonthsFormatInDayLabels(t *testing.T) {
+	loc := ui.CalendarLocale{
+		Months:        [12]string{"январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"},
+		MonthsFormat:  [12]string{"января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"},
+		MonthsShort:   [12]string{"янв.", "февр.", "март", "апр.", "май", "июнь", "июль", "авг.", "сент.", "окт.", "нояб.", "дек."},
+		Weekdays:      [7]string{"воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"},
+		WeekdaysShort: [7]string{"вс", "пн", "вт", "ср", "чт", "пт", "сб"},
+		Caption:       "{month} {year}",
+		DayLabel:      "{weekday}, {day} {month} {year} г.",
+	}
+	got := renderCalendar(t, jan2026, "label", loc)
+	for _, want := range []string{
+		`>январь 2026<`,
+		`aria-label="январь 2026"`,
+		`aria-label="четверг, 15 января 2026 г."`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("months format missing %s", want)
+		}
+	}
+	if strings.Contains(got, "15 январь") {
+		t.Errorf("a day label used the stand-alone month")
+	}
+	months := rootLocale(t, got)["monthsFormat"].([]any)
+	if len(months) != 12 || months[0] != "января" {
+		t.Errorf("monthsFormat = %v", months)
+	}
+}
+
+// An unset MonthsFormat means Months, resolved on the server so calendar.js
+// never needs a fallback of its own.
+func TestCalendarMonthsFormatDefaultsToMonths(t *testing.T) {
+	for name, loc := range map[string]ui.CalendarLocale{"english": {}, "arabic": arabic} {
+		got := rootLocale(t, renderCalendar(t, jan2026, "label", loc))
+		if !reflect.DeepEqual(got["monthsFormat"], got["months"]) {
+			t.Errorf("%s: monthsFormat = %v, want months %v", name, got["monthsFormat"], got["months"])
+		}
 	}
 }
 

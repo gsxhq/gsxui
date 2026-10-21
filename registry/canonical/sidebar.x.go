@@ -258,13 +258,17 @@ func SidebarRail(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" type=\"button\"")
 		}
 		if !attrs.Has("aria-label") {
-			_gsxgw.S(" aria-label=\"Toggle Sidebar\"")
+			_gsxgw.S(" aria-label=\"")
+			_gsxgw.AttrValue(string(i18n.T("Toggle Sidebar")))
+			_gsxgw.S("\"")
 		}
 		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		if !attrs.Has("title") {
-			_gsxgw.S(" title=\"Toggle Sidebar\"")
+			_gsxgw.S(" title=\"")
+			_gsxgw.AttrValue(string(i18n.T("Toggle Sidebar")))
+			_gsxgw.S("\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-rail"})

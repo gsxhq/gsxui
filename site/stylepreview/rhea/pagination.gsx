@@ -17,7 +17,7 @@ import (
 component Pagination(children gsx.Node, attrs gsx.Attrs) {
 	<nav
 		role="navigation"
-		aria-label="pagination"
+		aria-label={i18n.T("pagination")}
 		class={ "mx-auto flex w-full justify-center" }
 		{ attrs... }
 		data-gsxui-slot-pagination
@@ -79,7 +79,7 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 	<PaginationLink
 		href={href}
 		size="default"
-		aria-label="Go to previous page"
+		aria-label={i18n.T("Go to previous page")}
 		{ attrs... }
 		data-gsxui-slot-pagination-previous
 	>
@@ -92,7 +92,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 	<PaginationLink
 		href={href}
 		size="default"
-		aria-label="Go to next page"
+		aria-label={i18n.T("Go to next page")}
 		{ attrs... }
 		data-gsxui-slot-pagination-next
 	>

@@ -11,6 +11,7 @@ const FORM = "/x/calendar/form";
 // site/examples/calendar/outside.gsx.
 const HIDDEN_OUTSIDE = "/x/calendar/hiddenoutside";
 const LOCALIZED = "/x/calendar/localized";
+const RUSSIAN = "/x/calendar/russian";
 
 // The grid's 42 data-date values, in DOM order.
 async function gridDates(page: import("@playwright/test").Page) {
@@ -1091,6 +1092,28 @@ test("Go and JS agree on a localized 2026-02 (Arabic names, digits, day-first la
   expect(clientCells.every((c) => c.text === "" || /^[٠-٩]+$/.test(c.text ?? ""))).toBe(true);
 
   await page.goto(`${LOCALIZED}?month=2026-02`);
+  const serverCells = await gridCells(page);
+  const serverCaption = await captionState(page);
+
+  expect(clientCells).toEqual(serverCells);
+  expect(clientCaption).toEqual(serverCaption);
+});
+
+// Issue #43: the caption keeps the stand-alone month while each day's label
+// takes the month inside a date, on the client as on the server.
+test("Go and JS agree on a Russian 2026-02 (stand-alone caption, in-date day labels)", async ({ page }) => {
+  await page.goto(RUSSIAN);
+  await page.click("[data-gsxui-slot-calendar-next]");
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute("data-gsxui-calendar-month", "2026-02");
+
+  const clientCells = await gridCells(page);
+  const clientCaption = await captionState(page);
+  // Not vacuous: the two forms really differ in the client-written text.
+  expect(clientCaption.gridLabel).toBe("февраль 2026");
+  expect(clientCells.some((c) => c.ariaLabel === "воскресенье, 15 февраля 2026 г.")).toBe(true);
+  expect(clientCells.some((c) => c.ariaLabel?.includes("февраль "))).toBe(false);
+
+  await page.goto(`${RUSSIAN}?month=2026-02`);
   const serverCells = await gridCells(page);
   const serverCaption = await captionState(page);
 

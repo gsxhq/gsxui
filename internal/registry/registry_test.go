@@ -80,13 +80,14 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("native-select deps = %v, want [icon]", deps)
 	}
 
-	// spinner.gsx imports ui/icon (icon.LoaderCircle).
+	// spinner.gsx imports ui/icon (icon.LoaderCircle) and ui/i18n (its
+	// "Loading" aria-label).
 	deps, err = registry.Deps("spinner")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"icon"}) {
-		t.Fatalf("spinner deps = %v, want [icon]", deps)
+	if !reflect.DeepEqual(deps, []string{"i18n", "icon"}) {
+		t.Fatalf("spinner deps = %v, want [i18n icon]", deps)
 	}
 
 	// breadcrumb.gsx imports ui/icon (BreadcrumbSeparator's default
