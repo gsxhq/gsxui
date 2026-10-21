@@ -478,6 +478,27 @@ func TestCalendarRangeMarksStartMiddleEnd(t *testing.T) {
 	}
 }
 
+// A caller's reversed from/to still selects the days between, as
+// react-day-picker's rangeIncludesDate swaps an inverted range and
+// calendar.js's repaint sorts it — otherwise the middle days render
+// aria-selected="false" until the first repaint.
+func TestCalendarReversedRangeSelectsTheDaysBetween(t *testing.T) {
+	got := render(t, ui.Calendar("range", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil,
+		time.Date(2026, 1, 8, 0, 0, 0, 0, time.UTC),
+		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
+		time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil))
+	for _, date := range []string{"2026-01-06", "2026-01-07"} {
+		if cell := cellFor(t, got, date); !strings.Contains(cell, `data-range-middle="true"`) || !strings.Contains(cell, `aria-selected="true"`) {
+			t.Errorf("%s: reversed range middle not selected\nin: %s", date, cell)
+		}
+	}
+	if n := strings.Count(got, `aria-selected="true"`); n != 4 {
+		t.Errorf("got %d aria-selected=true cells, want 4", n)
+	}
+}
+
 // TestCalendarRangeWrappingARowMarksBothRowEdgesSelected exercises
 // calendarDayClass's three [data-selected=true]-gated row-wrap rounding
 // selectors ([&:last-child…]/[&:first-child…]/today+selected), which only

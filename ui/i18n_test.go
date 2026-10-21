@@ -39,6 +39,8 @@ var sweptMessages = []struct {
 	{"calendar", "Next month"},
 	{"calendar", "Month"},
 	{"calendar", "Year"},
+	{"calendar", "Today, {date}"},
+	{"calendar", "{date}, selected"},
 }
 
 // overridableMessages are swept messages that precede `{ attrs... }` in

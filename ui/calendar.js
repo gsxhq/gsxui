@@ -117,6 +117,58 @@ function ariaLabel(loc, date) {
   });
 }
 
+// labelSelected is react-day-picker's modifiers.selected, which its
+// labelDayButton reads: the committed selection only, so a range's hover
+// preview (repaint's rangeMiddle while `to` is unset) is not "selected" yet.
+// A range covers from through to inclusive, in either order.
+function labelSelected(mode, { selected, from, to }, date) {
+  if (mode === "range") {
+    if (from === null) return to !== null && sameUTCDay(to, date);
+    if (to === null) return sameUTCDay(from, date);
+    const lo = from < to ? from : to;
+    const hi = from < to ? to : from;
+    return date >= lo && date <= hi;
+  }
+  return (mode === "single" || mode === "multiple") && selected.some((s) => sameUTCDay(s, date));
+}
+
+// decoratedLabel is labelDayButton's decoration of a plain day label:
+// "Today, {date}" first, then "{date}, selected", each the root's own
+// translated i18n.T pattern (calendar.gsx), so the server stays the source
+// of every word.
+function decoratedLabel(root, label, isToday, isSelected) {
+  let out = label;
+  if (isToday) out = root.dataset.gsxuiCalendarLabelToday.replaceAll("{date}", () => out);
+  if (isSelected) out = root.dataset.gsxuiCalendarLabelSelected.replaceAll("{date}", () => out);
+  return out;
+}
+
+// plainLabel is the button's undecorated label: the kept copy while the
+// current aria-label is still one of its four decorations, else the
+// current aria-label itself — a morph that replaced aria-label with fresh
+// server text but kept the old data-gsxui-calendar-day-label must not
+// resurrect the old date.
+function plainLabel(root, button) {
+  const current = button.getAttribute("aria-label");
+  const kept = button.dataset.gsxuiCalendarDayLabel;
+  if (kept === undefined) return current;
+  for (const isToday of [false, true]) {
+    for (const isSelected of [false, true]) {
+      if (decoratedLabel(root, kept, isToday, isSelected) === current) return kept;
+    }
+  }
+  return current;
+}
+
+// setDayLabel keeps the plain label on the button as
+// data-gsxui-calendar-day-label and decorates aria-label from it, so
+// decorating again (init re-runs after every mutation inside the root)
+// never wraps an already-wrapped label.
+function setDayLabel(root, button, plain, isToday, isSelected) {
+  button.dataset.gsxuiCalendarDayLabel = plain;
+  button.setAttribute("aria-label", decoratedLabel(root, plain, isToday, isSelected));
+}
+
 // captionText is the twin of CalendarLocale.caption.
 function captionText(loc, year, month) {
   return fillPattern(loc, loc.caption, {
@@ -285,7 +337,8 @@ function repaint(root, year, month) {
   const loc = localeOf(root);
   const grid = monthGrid(year, month, weekStartsOn);
   const rules = disabledRules(root);
-  const { selected, from, to, hover } = selection(root);
+  const sel = selection(root);
+  const { selected, from, to, hover } = sel;
 
   const today = clientToday();
   const focusedISO = currentFocusedDate(root);
@@ -390,7 +443,7 @@ function repaint(root, year, month) {
     // deliberately stay in the roving sequence — nothing to tab onto either.
     // An invisible focusable button is a screen-reader trap.
     button.textContent = hidden ? "" : localizeDigits(loc, String(date.getUTCDate()));
-    button.setAttribute("aria-label", ariaLabel(loc, date));
+    setDayLabel(root, button, ariaLabel(loc, date), isToday, labelSelected(mode, sel, date));
     if (hidden) button.setAttribute("aria-hidden", "true");
     else button.removeAttribute("aria-hidden");
     const isRovingStop = i === focusIdx && !hidden;
@@ -1058,18 +1111,26 @@ on("reset", "form:has([data-gsxui-slot-calendar])", (_event, form) => {
 // circular for the same reason: that test's own "untouched server render"
 // baseline was itself already repainted by this loop.)
 //
-// reconcileToday fixes this by touching ONLY data-today, on the 42 cells
-// of whatever month a root already has server-rendered, leaving every
-// other field (outside/selected/range/disabled/tabindex) exactly as the
-// server wrote it — genuinely untouched, so the agreement tests stay real
-// diffs against a real server render.
+// reconcileToday fixes this by touching ONLY data-today and the day
+// labels' today/selected decoration, on the 42 cells of whatever month a
+// root already has server-rendered, leaving every other field
+// (outside/selected/range/disabled/tabindex) exactly as the server wrote
+// it — genuinely untouched, so the agreement tests stay real diffs against
+// a real server render. The decoration wraps the server's own plain label
+// (kept on first sight as data-gsxui-calendar-day-label), never a label
+// this file recomputed, for the same reason.
 function reconcileToday(root, year, month) {
   const weekStartsOn = Number(root.dataset.gsxuiCalendarWeekStart ?? "0");
+  const mode = root.dataset.gsxuiCalendarMode || "single";
   const grid = monthGrid(year, month, weekStartsOn);
+  const sel = selection(root);
   const today = clientToday();
   const cells = root.querySelectorAll('td[role="gridcell"]');
+  const buttons = root.querySelectorAll("[data-gsxui-slot-calendar-day-button]");
   for (let i = 0; i < 42; i++) {
-    toggleAttr(cells[i], "data-today", sameUTCDay(grid[i], today));
+    const isToday = sameUTCDay(grid[i], today);
+    toggleAttr(cells[i], "data-today", isToday);
+    setDayLabel(root, buttons[i], plainLabel(root, buttons[i]), isToday, labelSelected(mode, sel, grid[i]));
   }
 }
 
@@ -1082,8 +1143,9 @@ function reconcileToday(root, year, month) {
 // stay the root's ORIGINAL pristine state, not whatever a later morph
 // produced; unchanged from this module's pre-existing "first call wins"
 // contract, which the day-click handler above already relied on for a
-// late-added root). reconcileToday() is pure reflection (only data-today,
-// recomputed from the client's own clock) — safe to re-run every time.
+// late-added root). reconcileToday() is pure reflection (data-today from
+// the client's own clock, and day labels decorated from their kept plain
+// form) — safe to re-run every time.
 function initRoot(root) {
   captureDefaults(root);
   const { year, month } = currentMonth(root);

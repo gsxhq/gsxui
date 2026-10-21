@@ -1120,3 +1120,101 @@ test("Go and JS agree on a Russian 2026-02 (stand-alone caption, in-date day lab
   expect(clientCells).toEqual(serverCells);
   expect(clientCaption).toEqual(serverCaption);
 });
+
+// --- day label decoration (upstream labelDayButton) -------------------------
+//
+// "Today, {date}" then "{date}, selected", each the root's translated i18n.T
+// pattern, applied by calendar.js over the plain DayLabel.
+
+test("a server-selected day's label says selected once the page loads", async ({ page }) => {
+  await page.goto(LOADED);
+  await expect(dayFor(page, "2026-01-08")).toHaveAttribute("aria-label", "Thursday, January 8, 2026, selected");
+  await expect(dayFor(page, "2026-01-09")).toHaveAttribute("aria-label", "Friday, January 9, 2026");
+});
+
+test("today's label leads with Today, from the client's clock", async ({ page }) => {
+  await page.clock.setFixedTime(new Date(2026, 0, 15, 12));
+  await page.goto(BASIC);
+  await expect(dayFor(page, "2026-01-15")).toHaveAttribute("aria-label", "Today, Thursday, January 15, 2026");
+
+  // Both decorations nest as upstream's do, and re-running init after the
+  // click's own mutations never wraps a label twice.
+  await dayFor(page, "2026-01-15").click();
+  await expect(dayFor(page, "2026-01-15")).toHaveAttribute(
+    "aria-label",
+    "Today, Thursday, January 15, 2026, selected",
+  );
+  await dayFor(page, "2026-01-16").click();
+  await expect(dayFor(page, "2026-01-15")).toHaveAttribute("aria-label", "Today, Thursday, January 15, 2026");
+  await expect(dayFor(page, "2026-01-16")).toHaveAttribute("aria-label", "Friday, January 16, 2026, selected");
+});
+
+test("every day of a committed range says selected; a hover preview does not", async ({ page }) => {
+  await page.goto(LOADED_RANGE);
+  for (const day of ["09", "11", "14"]) {
+    await expect(dayFor(page, `2026-01-${day}`)).toHaveAttribute("aria-label", /, selected$/);
+  }
+  for (const day of ["08", "15"]) {
+    await expect(dayFor(page, `2026-01-${day}`)).not.toHaveAttribute("aria-label", /selected/);
+  }
+
+  await page.goto(RANGE);
+  await dayFor(page, "2026-01-10").click();
+  await dayFor(page, "2026-01-14").hover();
+  await expect(dayFor(page, "2026-01-12")).toHaveAttribute("data-range-middle", "true");
+  await expect(dayFor(page, "2026-01-10")).toHaveAttribute("aria-label", "Saturday, January 10, 2026, selected");
+  await expect(dayFor(page, "2026-01-12")).toHaveAttribute("aria-label", "Monday, January 12, 2026");
+});
+
+test("the label patterns come from the root, so a translation can reorder them", async ({ page }) => {
+  await page.goto(BASIC);
+  await page.locator("[data-gsxui-slot-calendar]").evaluate((root) => {
+    root.setAttribute("data-gsxui-calendar-label-selected", "Выбрано: {date}");
+  });
+  await dayFor(page, "2026-01-15").click();
+  await expect(dayFor(page, "2026-01-15")).toHaveAttribute("aria-label", "Выбрано: Thursday, January 15, 2026");
+});
+
+// The label and the cell's aria-selected describe one selection.
+async function expectLabelsMatchAriaSelected(page: import("@playwright/test").Page) {
+  const mismatches = await page.$$eval("[data-gsxui-slot-calendar-day-button]", (buttons) =>
+    buttons
+      .filter((b) => b.getAttribute("aria-hidden") !== "true")
+      .filter(
+        (b) =>
+          (b.getAttribute("aria-label") ?? "").endsWith(", selected") !==
+          (b.closest("td")!.getAttribute("aria-selected") === "true"),
+      )
+      .map((b) => b.getAttribute("data-date")),
+  );
+  expect(mismatches).toEqual([]);
+}
+
+test("a day says selected exactly when its cell is aria-selected, in every mode", async ({ page }) => {
+  for (const url of [LOADED, LOADED_RANGE]) {
+    await page.goto(url);
+    await expectLabelsMatchAriaSelected(page);
+  }
+
+  await page.goto(MULTIPLE);
+  await dayFor(page, "2026-01-06").click();
+  await dayFor(page, "2026-01-21").click();
+  await expectLabelsMatchAriaSelected(page);
+  await page.click("[data-gsxui-slot-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-previous]");
+  await expectLabelsMatchAriaSelected(page);
+
+  await page.goto(RANGE);
+  await dayFor(page, "2026-01-20").click();
+  await dayFor(page, "2026-01-10").click();
+  await page.mouse.move(0, 0);
+  await expectLabelsMatchAriaSelected(page);
+});
+
+test("a replaced aria-label is the new plain label, not the kept one", async ({ page }) => {
+  await page.goto(LOADED);
+  // What a morph to fresh server text that kept the JS-written
+  // data-gsxui-calendar-day-label would leave behind.
+  await dayFor(page, "2026-01-08").evaluate((b) => b.setAttribute("aria-label", "Fresh server label"));
+  await expect(dayFor(page, "2026-01-08")).toHaveAttribute("aria-label", "Fresh server label, selected");
+});

@@ -385,7 +385,7 @@ var swept = []string{
 	"Displays the mobile sidebar.", "Toggle Sidebar", "More", "Previous",
 	"Next", "More pages", "Previous month", "Next month", "Month", "Year",
 	"Loading", "breadcrumb", "pagination", "Go to previous page",
-	"Go to next page", "carousel", "slide",
+	"Go to next page", "carousel", "slide", "Today, {date}", "{date}, selected",
 }
 
 func renderAll(t *testing.T) string {
