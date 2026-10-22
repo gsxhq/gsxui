@@ -2,6 +2,7 @@ package ui
 
 import (
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -142,6 +143,11 @@ component Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs
 // counterpart JS stamps once at init (also permanent — see combobox.js's
 // own init()), pointing at ComboboxList's id.
 //
+// The trigger and clear buttons are icon-only, so each carries a translated
+// aria-label: "Open popup" and "Clear selection", Base UI's own demo labels
+// (shadcn passes none). ComboboxTrigger's and ComboboxClear's are
+// overridable through attrs. Issue #47.
+//
 // ADAPT (attrs split class vs. everything else, matching source's own
 // `{className, ...props}` destructure): the source sends `className` into
 // `cn("w-auto", className)` on InputGroup, and spreads every OTHER extra
@@ -174,6 +180,7 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 					size="icon-xs"
 					variant="ghost"
 					disabled={disabled}
+					aria-label={i18n.T("Open popup")}
 					class={
 						"[[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_&]:hidden [&_svg:not([class*='size-'])]:size-4"
 					}
@@ -199,6 +206,7 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 component ComboboxTrigger(attrs gsx.Attrs) {
 	<button
 		type="button"
+		aria-label={i18n.T("Open popup")}
 		class={
 			"[[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_&]:hidden [&_svg:not([class*='size-'])]:size-4"
 		}
@@ -232,6 +240,7 @@ component ComboboxClear(attrs gsx.Attrs) {
 	<InputGroupButton
 		variant="ghost"
 		size="icon-xs"
+		aria-label={i18n.T("Clear selection")}
 		class={ "[&>svg]:pointer-events-none" }
 		{ attrs... }
 		data-gsxui-slot-combobox-clear

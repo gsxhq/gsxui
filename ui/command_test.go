@@ -162,3 +162,21 @@ func TestCommandCallerClassMerges(t *testing.T) {
 		t.Errorf("caller radius must replace the recipe's own\nin: %s", got)
 	}
 }
+
+// TestCommandListboxOwnsOnlyOptionsAndGroups: the list is named (cmdk's
+// "Suggestions") and its separator is decorative, since a listbox may own
+// only options and groups. Issue #47.
+func TestCommandListboxOwnsOnlyOptionsAndGroups(t *testing.T) {
+	list := render(t, ui.CommandList(gsx.Raw("x"), nil))
+	if !strings.Contains(list, `role="listbox" aria-label="Suggestions"`) {
+		t.Errorf("want a named listbox\nin: %s", list)
+	}
+	named := render(t, ui.CommandList(gsx.Raw("x"), gsx.Attrs{{Key: "aria-label", Value: "Commands"}}))
+	if strings.Contains(named, "Suggestions") || !strings.Contains(named, `aria-label="Commands"`) {
+		t.Errorf("a caller's aria-label must replace the default\nin: %s", named)
+	}
+	sep := render(t, ui.CommandSeparator(nil))
+	if strings.Contains(sep, `role=`) || !strings.Contains(sep, `aria-hidden="true"`) {
+		t.Errorf("want a decorative separator\nin: %s", sep)
+	}
+}

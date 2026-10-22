@@ -112,7 +112,7 @@
     height: 100%;
   }
   :where(
-      [data-gsxui-slot-resizable-panel-group][aria-orientation="vertical"]
+      [data-gsxui-slot-resizable-panel-group][data-orientation="vertical"]
     ) {
     flex-direction: column;
   }

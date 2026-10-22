@@ -7,9 +7,23 @@
 // `## item` for the drop list (asChild) and mechanisms.
 package canonical
 
-import "github.com/gsxhq/gsx"
+import (
+	"context"
 
+	"github.com/gsxhq/gsx"
+)
+
+// ItemGroup is shadcn's role="list". Its Items need role="listitem" or the
+// list owns their buttons and links directly (aria-required-children,
+// issue #47), but an Item outside a group must not claim it
+// (aria-required-parent). shadcn's Item takes no role at all; here
+// ItemGroup marks ctx and each Item reads it. A caller's role other than
+// "list" leaves its Items unmarked.
 component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
+	{{
+		role, overridden := attrs.Get("role")
+		ctx = context.WithValue(ctx, itemGroupCtxKey{}, !overridden || role == "list")
+	}}
 	<div class={ item.Group() } role="list" { attrs... } data-gsxui-slot-item-group>
 		{ children }
 	</div>
@@ -42,8 +56,19 @@ component ItemSeparator(orientation string, attrs gsx.Attrs) {
 //
 // asChild tag-swapping is dropped — always renders a <div> — the same
 // narrow gap as button's own asChild (see docs/jsx-parity.md ## button).
+//
+// role="listitem" only inside an ItemGroup (see ItemGroup); the mark is
+// cleared for this Item's own children, so an Item nested in another
+// Item's content is not a listitem of the outer group.
 component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) {
+	{{
+		inGroup, _ := ctx.Value(itemGroupCtxKey{}).(bool)
+		ctx = context.WithValue(ctx, itemGroupCtxKey{}, false)
+	}}
 	<div
+		{ if inGroup {
+			role="listitem"
+		} }
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		class={ "group/item", item.Root(), item.Variant(variant), item.Size(size) }
@@ -113,3 +138,6 @@ component ItemFooter(children gsx.Node, attrs gsx.Attrs) {
 		{ children }
 	</div>
 }
+
+// itemGroupCtxKey marks ctx inside an ItemGroup (see ItemGroup).
+type itemGroupCtxKey struct{}

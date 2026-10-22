@@ -466,14 +466,14 @@ func TestDeps(t *testing.T) {
 	// ChevronDown, ComboboxClear's X) and composes ui.InputGroup/
 	// InputGroupInput/InputGroupAddon/InputGroupButton directly (flat
 	// package intra-package edges, same declIndex-resolved shape as
-	// input-group's own button/input/textarea deps above) — Deps sorts its
-	// result, so icon < input-group alphabetically.
+	// input-group's own button/input/textarea deps above), plus ui/i18n for
+	// the trigger/clear labels (issue #47) — Deps sorts its result.
 	deps, err = registry.Deps("combobox")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"icon", "input-group"}) {
-		t.Fatalf("combobox deps = %v, want [icon input-group]", deps)
+	if !reflect.DeepEqual(deps, []string{"i18n", "icon", "input-group"}) {
+		t.Fatalf("combobox deps = %v, want [i18n icon input-group]", deps)
 	}
 
 	// sidebar.gsx imports ui/icon (SidebarTrigger's PanelLeft) and composes
@@ -811,13 +811,13 @@ func TestResolveTransitive(t *testing.T) {
 	}
 
 	// combobox resolves transitively through input-group to button/input/
-	// textarea, plus its own direct icon dep — the same transitive-closure
+	// textarea, plus its own direct i18n and icon deps — the same transitive-closure
 	// shape as alert-dialog/sheet/drawer's own dialog chains above.
 	got, err = registry.Resolve([]string{"combobox"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"button", "combobox", "icon", "input", "input-group", "textarea"}
+	want = []string{"button", "combobox", "i18n", "icon", "input", "input-group", "textarea"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

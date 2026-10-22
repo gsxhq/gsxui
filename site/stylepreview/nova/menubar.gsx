@@ -202,7 +202,9 @@ component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
 // data-state (nova's rounded-sm/px-1.5/py-[2px] metrics, NOT bumped to
 // rounded-md — nova's own .cn-menubar-trigger literally keeps rounded-sm,
 // unlike every item-shaped part in this file), unlike DropdownMenuTrigger,
-// which has no such selector to key at all.
+// which has no such selector to key at all. role="menuitem" is Radix's own
+// on Menubar.Trigger: a menubar owns menuitems, so the trigger trades its
+// native button role for that one (issue #47).
 component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
 		class={
@@ -210,6 +212,7 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 			"hover:bg-muted aria-expanded:bg-muted rounded-sm px-1.5 py-[2px] text-sm font-medium flex"
 		}
 		type="button"
+		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
 		data-state="closed"

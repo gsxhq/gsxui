@@ -10,7 +10,7 @@ import (
 // sweptMessages is every English string a component writes itself,
 // including defaults a caller can override through attrs. Each must appear
 // in the canonical source only as the argument of i18n.T(...). Issues #31
-// and #44.
+// and #44, #47.
 var sweptMessages = []struct {
 	file string
 	text string
@@ -41,6 +41,9 @@ var sweptMessages = []struct {
 	{"calendar", "Year"},
 	{"calendar", "Today, {date}"},
 	{"calendar", "{date}, selected"},
+	{"combobox", "Open popup"},
+	{"combobox", "Clear selection"},
+	{"command", "Suggestions"},
 }
 
 // overridableMessages are swept messages that precede `{ attrs... }` in
@@ -60,6 +63,8 @@ var overridableMessages = []struct {
 	{"sidebar", `title={i18n.T("Toggle Sidebar")}`},
 	{"carousel", `aria-roledescription={i18n.T("carousel")}`},
 	{"carousel", `aria-roledescription={i18n.T("slide")}`},
+	{"combobox", `aria-label={i18n.T("Clear selection")}`},
+	{"command", `aria-label={i18n.T("Suggestions")}`},
 }
 
 func canonicalSource(t *testing.T, name string) []string {

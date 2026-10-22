@@ -362,7 +362,7 @@ func Translate(_ context.Context, m T) string {
 		t.Fatal(err)
 	}
 
-	if err := Run([]string{"add", "dialog", "sheet", "toast", "toaster", "carousel", "sidebar", "breadcrumb", "pagination", "calendar", "spinner"}); err != nil {
+	if err := Run([]string{"add", "dialog", "sheet", "toast", "toaster", "carousel", "sidebar", "breadcrumb", "pagination", "calendar", "spinner", "combobox", "command"}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -386,6 +386,7 @@ var swept = []string{
 	"Next", "More pages", "Previous month", "Next month", "Month", "Year",
 	"Loading", "breadcrumb", "pagination", "Go to previous page",
 	"Go to next page", "carousel", "slide", "Today, {date}", "{date}, selected",
+	"Open popup", "Clear selection", "Suggestions",
 }
 
 func renderAll(t *testing.T) string {
@@ -410,6 +411,9 @@ func renderAll(t *testing.T) string {
 		ui.PaginationPrevious("#", nil),
 		ui.PaginationNext("#", nil),
 		ui.PaginationEllipsis(nil),
+		ui.ComboboxInput("", true, true, false, gsx.Text(""), nil),
+		ui.ComboboxTrigger(nil),
+		ui.CommandList(gsx.Text(""), nil),
 		ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC), nil, time.Time{}, time.Time{},
 			time.Sunday, true, "dropdown", 0, 0, time.Time{}, time.Time{}, nil, nil, "", ui.CalendarLocale{}, nil),
 	}

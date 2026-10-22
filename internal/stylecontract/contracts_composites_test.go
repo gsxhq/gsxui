@@ -82,7 +82,7 @@ func TestCompositeContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 			Name:         "Resizable",
 			RegistryName: "resizable",
 			Slots: []Slot{
-				{Name: "resizable-panel-group", Axes: []Axis{{Attribute: "aria-orientation", Values: []string{"horizontal", "vertical"}}}},
+				{Name: "resizable-panel-group", Axes: []Axis{{Attribute: "data-orientation", Values: []string{"horizontal", "vertical"}}}},
 				{Name: "resizable-panel"},
 				{Name: "resizable-handle", Axes: []Axis{{Attribute: "aria-orientation", Values: []string{"horizontal", "vertical"}}}},
 				{Name: "resizable-handle-grip"},

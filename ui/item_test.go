@@ -433,3 +433,28 @@ func TestItemGroupWithSeparatorComposition(t *testing.T) {
 		}
 	}
 }
+
+// TestItemIsListitemOnlyInsideGroup: ItemGroup is role="list", so its Items
+// are listitems; a standalone Item, or one nested in a grouped Item's
+// content, is not (aria-required-parent). Issue #47.
+func TestItemIsListitemOnlyInsideGroup(t *testing.T) {
+	alone := render(t, ui.Item("", "", gsx.Raw("x"), nil))
+	if strings.Contains(alone, `role=`) {
+		t.Errorf("standalone Item must carry no role\nin: %s", alone)
+	}
+	grouped := render(t, ui.ItemGroup(ui.Item("", "", ui.Item("", "", gsx.Raw("inner"), nil), nil), nil))
+	if n := strings.Count(grouped, `role="listitem"`); n != 1 {
+		t.Errorf("want exactly the outer Item as listitem, got %d\nin: %s", n, grouped)
+	}
+	if !strings.Contains(grouped, `<div role="listitem" data-variant`) {
+		t.Errorf("want the grouped Item to be the listitem\nin: %s", grouped)
+	}
+	notList := render(t, ui.ItemGroup(ui.Item("", "", gsx.Raw("x"), nil), gsx.Attrs{{Key: "role", Value: "none"}}))
+	if strings.Contains(notList, `role="listitem"`) {
+		t.Errorf("a group that is not a list must not mark its Items\nin: %s", notList)
+	}
+	custom := render(t, ui.ItemGroup(ui.Item("", "", gsx.Raw("x"), gsx.Attrs{{Key: "role", Value: "none"}}), nil))
+	if strings.Contains(custom, `role="listitem"`) || !strings.Contains(custom, `role="none"`) {
+		t.Errorf("a caller's role must replace listitem\nin: %s", custom)
+	}
+}
