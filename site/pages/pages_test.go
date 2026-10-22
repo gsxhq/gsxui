@@ -215,6 +215,7 @@ func TestDocsTableOfContents(t *testing.T) {
 				{id: "get-started", title: "Get started"},
 				{id: "how-it-works", title: "How it works"},
 				{id: "calendar", title: "Calendar"},
+				{id: "calendar-from-cldr", title: "Filling the locale from CLDR"},
 				{id: "leftover-english", title: "Finding leftover English"},
 				{id: "not-translated", title: "Not translated"},
 			},
