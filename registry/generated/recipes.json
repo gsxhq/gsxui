@@ -4637,7 +4637,11 @@
               "data-[size=sm]:h-8",
               "outline-none",
               "disabled:pointer-events-none",
-              "disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed",
+              "[\u0026_option]:bg-[Canvas]",
+              "[\u0026_option]:text-[CanvasText]",
+              "[\u0026_optgroup]:bg-[Canvas]",
+              "[\u0026_optgroup]:text-[CanvasText]"
             ],
             "dimensions": {}
           },
@@ -9379,7 +9383,11 @@
               "data-[size=sm]:py-0.5",
               "outline-none",
               "disabled:pointer-events-none",
-              "disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed",
+              "[\u0026_option]:bg-[Canvas]",
+              "[\u0026_option]:text-[CanvasText]",
+              "[\u0026_optgroup]:bg-[Canvas]",
+              "[\u0026_optgroup]:text-[CanvasText]"
             ],
             "dimensions": {}
           },
@@ -14132,7 +14140,11 @@
               "data-[size=sm]:h-8",
               "outline-none",
               "disabled:pointer-events-none",
-              "disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed",
+              "[\u0026_option]:bg-[Canvas]",
+              "[\u0026_option]:text-[CanvasText]",
+              "[\u0026_optgroup]:bg-[Canvas]",
+              "[\u0026_optgroup]:text-[CanvasText]"
             ],
             "dimensions": {}
           },
@@ -18904,7 +18916,11 @@
               "data-[size=sm]:text-[0.625rem]",
               "outline-none",
               "disabled:pointer-events-none",
-              "disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed",
+              "[\u0026_option]:bg-[Canvas]",
+              "[\u0026_option]:text-[CanvasText]",
+              "[\u0026_optgroup]:bg-[Canvas]",
+              "[\u0026_optgroup]:text-[CanvasText]"
             ],
             "dimensions": {}
           },
@@ -23686,7 +23702,11 @@
               "data-[size=sm]:py-0.5",
               "outline-none",
               "disabled:pointer-events-none",
-              "disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed",
+              "[\u0026_option]:bg-[Canvas]",
+              "[\u0026_option]:text-[CanvasText]",
+              "[\u0026_optgroup]:bg-[Canvas]",
+              "[\u0026_optgroup]:text-[CanvasText]"
             ],
             "dimensions": {}
           },
@@ -28474,7 +28494,11 @@
               "data-[size=sm]:h-7",
               "outline-none",
               "disabled:pointer-events-none",
-              "disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed",
+              "[\u0026_option]:bg-[Canvas]",
+              "[\u0026_option]:text-[CanvasText]",
+              "[\u0026_optgroup]:bg-[Canvas]",
+              "[\u0026_optgroup]:text-[CanvasText]"
             ],
             "dimensions": {}
           },
@@ -33302,7 +33326,11 @@
               "data-[size=sm]:h-9",
               "outline-none",
               "disabled:pointer-events-none",
-              "disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed",
+              "[\u0026_option]:bg-[Canvas]",
+              "[\u0026_option]:text-[CanvasText]",
+              "[\u0026_optgroup]:bg-[Canvas]",
+              "[\u0026_optgroup]:text-[CanvasText]"
             ],
             "dimensions": {}
           },
@@ -38057,7 +38085,11 @@
               "data-[size=sm]:h-8",
               "outline-none",
               "disabled:pointer-events-none",
-              "disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed",
+              "[\u0026_option]:bg-[Canvas]",
+              "[\u0026_option]:text-[CanvasText]",
+              "[\u0026_optgroup]:bg-[Canvas]",
+              "[\u0026_optgroup]:text-[CanvasText]"
             ],
             "dimensions": {}
           },

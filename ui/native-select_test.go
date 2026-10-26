@@ -4,6 +4,7 @@ import (
 	"html"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -203,5 +204,41 @@ func TestNativeSelectPinned(t *testing.T) {
 	want := `<div ` + canonicalNativeSelectWrapperClass() + ` data-gsxui-slot-native-select-wrapper><select ` + canonicalNativeSelectClass() + ` data-gsxui-slot-native-select><option value="us">United States</option></select><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
+// TestNativeSelectOptionsUseSystemColors guards the four tokens that paint a
+// native <select>'s own popup list with the UA's system colors. Upstream's
+// NativeSelectOption/NativeSelectOptGroup put `bg-[Canvas] text-[CanvasText]`
+// on the <option>/<optgroup> elements themselves (both
+// registry/new-york-v4/ui/native-select.tsx and registry/bases/*/ui/
+// native-select.tsx, since upstream's own
+// "fix(native-select): use system colors for option and optgroup"); gsxui's
+// NativeSelectOption renders a bare <option> carrying no class at all —
+// TestNativeSelectOptionDefault pins that — so the same paint has to arrive
+// as a relational rule on the <select>'s own recipe, the same mechanism the
+// chevron's `[&>svg]:` rules already use from the wrapper slot (see
+// registry/canonical/shapes/native-select.go).
+//
+// TestNativeSelectPinned cannot catch a regression here: it builds its want
+// from the same recipe CSS, so dropping the tokens moves both sides of that
+// comparison together. Asserted on the rendered output so it also covers the
+// canonical -> generated -> ui/ propagation.
+//
+// Without these the popup list inherits the themed page colors instead of the
+// UA's, which in a dark theme renders dark-on-dark in Chrome.
+func TestNativeSelectOptionsUseSystemColors(t *testing.T) {
+	got := render(t, ui.NativeSelect(gsx.Raw(`<option value="us">United States</option>`), nil))
+	sel := openingTagContaining(t, got, "<select")
+	tokens := strings.Fields(classAttr(t, sel))
+	for _, want := range []string{
+		"[&_option]:bg-[Canvas]",
+		"[&_option]:text-[CanvasText]",
+		"[&_optgroup]:bg-[Canvas]",
+		"[&_optgroup]:text-[CanvasText]",
+	} {
+		if !slices.Contains(tokens, want) {
+			t.Errorf("NativeSelect must carry %q (upstream native-select.tsx option/optgroup base)\nin: %s", want, sel)
+		}
 	}
 }

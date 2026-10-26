@@ -50,6 +50,31 @@ checkout.
   drift predating the pin was found and fixed (see `## sidebar`'s 2026-10-19
   FIX); `Trace`/`Code Block` are new upstream components, out of scope for a
   parity pass, and are not yet listed in `port.ignoredSections`.
+- VERIFIED (2026-10-26, pin `ac60ef5c` vs upstream HEAD `481d5233`): re-ran the drift diff.
+  `apps/v4/registry/styles/` and `apps/v4/registry/new-york-v4/` are BOTH byte-unchanged across
+  `daaf156e..481d5233` (`git diff --stat` empty for each) — all 25 commits in the range are
+  dependency bumps and community-registry additions. The pin therefore still holds and is
+  again deliberately NOT advanced. Independently of the diff, the whole recipe tree was
+  re-audited token-by-token against a fresh `stylegen port --style all` run over HEAD
+  (all 440 sheets, 2976 rules; 1648 carry-only rules carry no upstream signal and were
+  excluded): 66 token-level differences remain, and every one resolves to a ledgered ADAPT or
+  one of this port's standing translations (`data-checked:` -> `:checked`,
+  `has-data-checked:` -> `has-[input:checked]:`, `right-*` -> `end-*`, sidebar's
+  `peer-data-[variant=*]`/`group-data-[variant=*]` -> explicit sibling/descendant selectors,
+  `has-data-[icon=inline-*]` -> `has-[>svg]:px-*` per `## button`'s own ADAPT,
+  `var(--available-height)` -> `var(--gsxui-available-height,9999px)`, and the
+  conditionally-mounted indicators' `flex` -> `hidden` + a `data-[state=checked]:` reveal).
+  The structural half was swept too — every `bases/radix/ui/*.tsx` inline (non-`cn-*`) class
+  token checked for presence somewhere in `registry/canonical/`, `registry/styles/`, `ui/` or
+  `assets/css/` — which is what surfaced `## native-select`'s FIX below. Two further
+  bases-vs-new-york-v4 disagreements were found and deliberately left alone, since the two
+  upstream trees contradict each other and this port already matches one of them exactly:
+  `ItemTitle`'s `line-clamp-1` (present in all three `bases/*`, absent from
+  `new-york-v4/ui/item.tsx`, and affirmatively pinned OUT by
+  `TestItemTitleIsFlexAndUnclamped`'s own 2026-08-31 audit) and `ButtonGroupSeparator`'s
+  `data-horizontal:mx-px`/`data-vertical:my-px` inset (`bases/radix`) vs the `m-0!` this port
+  carries from `new-york-v4/ui/button-group.tsx`. Both are maintainer calls on an upstream
+  inconsistency, not drift.
 - NOTE (do not re-port to fix drift): `stylegen port` is a bootstrapping tool,
   not an idempotent regenerator. Its carry policy works at whole-rule
   granularity, so re-running it over today's tree silently drops the
@@ -635,6 +660,30 @@ The Base UI (`@base-ui/react`) filtered listbox (`registry/new-york-v4/ui/combob
 - FINDING (2026-07-23, user report "style is wrong and very different than shadcn's"): the wrapper originally shipped as bare `class="relative"` (full-width block) with `w-fit` on the `<select>` — so the absolutely-anchored chevron pinned to the *wrapper's* far right edge, visually detached from the select box by the whole container width. shadcn never hits this because its chevron is a flex child *inside* the Trigger. Fix: the **wrapper** carries `w-fit` plus the caller's merged class (width intent like `w-full`/`w-[180px]` — where shadcn callers put it on Trigger — must size the box the chevron anchors to), and the `<select>` fills it with `w-full`; non-class attrs still land on the `<select>` (name/id/aria/disabled are form-control concerns). Same class-split idiom as AccordionContent. Render-string tests could never catch the detachment — found only by looking at the page next to shadcn's.
 - MECHANISM: shadcn's separate `SelectGroup` (wrapper) + `SelectLabel` (child text with its own class string) collapse onto the one native `<optgroup label="...">` element — `<optgroup>` has no equivalent of an arbitrary styled label child, only a `label` attribute, so there is no class string of SelectLabel's to port; the attribute carries the text instead.
 - WIN: `selected`/`disabled` on `NativeSelectOption` are HTML boolean attributes (`gsx.IsBooleanAttr` classifies both) — the Go `bool` params render bare/absent exactly like checkbox's `checked`, no `data-state` plumbing needed, unlike Radix's `SelectItem` (`data-[disabled]`, `ItemIndicator` mount-gating).
+- FIX (option/optgroup system colors, 2026-10-26 — a real drift, not a ledgered divergence): upstream's
+  `NativeSelectOption`/`NativeSelectOptGroup` put `bg-[Canvas] text-[CanvasText]` on the
+  `<option>`/`<optgroup>` elements themselves — in `registry/new-york-v4/ui/native-select.tsx`
+  AND in all three `registry/bases/*/ui/native-select.tsx`, since upstream's own
+  `a7c3300d7` "fix(native-select): use system colors for option and optgroup" (2026-03-31,
+  pre-dating the `ac60ef5c` pin). This port had neither token, in any of the 8 styles and
+  nowhere in `assets/css/` either, so a native select's own popup list inherited the themed
+  page colors instead of the UA's — dark-on-dark in Chrome under a dark theme. The porter
+  could never have caught it: both tokens are the base component's STRUCTURAL class, not part
+  of the per-style `.cn-native-select*` subset `apps/v4/registry/styles/style-<name>.css`
+  carries — the same blind spot `## progress`'s own 2026-09-14 FIX names.
+  Ported as a relational rule on the SELECT slot's recipe —
+  `[&_option]:bg-[Canvas] [&_option]:text-[CanvasText] [&_optgroup]:bg-[Canvas]
+  [&_optgroup]:text-[CanvasText]` — not as two new shape slots. `NativeSelectOption` renders a
+  bare `<option>` carrying no class and no marker (`TestNativeSelectOptionDefault` pins that
+  exact string), and `<option>`/`<optgroup>` are the `<select>`'s own children, so the
+  shape-declared relational form is the mechanism already proved here by the chevron's
+  `[&>svg]:` rules on the wrapper slot (see `registry/canonical/shapes/native-select.go`) —
+  no slot added, no marker stamped, no shape change. Verified in compiled Tailwind output:
+  all four utilities emit, resolving to `background-color: Canvas` / `color: CanvasText` on
+  `option`/`optgroup` descendants. `TestNativeSelectOptionsUseSystemColors` pins them on the
+  rendered output rather than the recipe, so it also covers the canonical -> generated -> `ui/`
+  propagation — `TestNativeSelectPinned` cannot, since it builds its want from the same recipe
+  CSS and a dropped token would move both sides of that comparison together.
 
 ## select
 The custom Radix listbox (distinct from `## native-select`, which ships the styled native `<select>`; shadcn keeps both permanently, and so does gsxui). Parts: `Select`/`SelectTrigger`/`SelectValue`/`SelectContent`/`SelectGroup`/`SelectLabel`/`SelectItem`/`SelectSeparator`. Built on `ui/select.js`, which reuses `ui/dropdown-menu.js`'s popover machinery and layers a value model, typeahead, and a form bridge on top.

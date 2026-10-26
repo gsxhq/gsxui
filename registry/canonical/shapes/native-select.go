@@ -25,6 +25,13 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 // chevron rule keyed on the wrapper's `> svg` child is a relational form of
 // the shape Select's trigger already proved ([&>svg]:), not a slot of its
 // own: the chevron is icon.ChevronDown and carries no native-select marker.
+//
+// The option/optgroup system-colour rule keyed on the root slot's `_option`/
+// `_optgroup` descendants is the same relational form, for the same reason:
+// NativeSelectOption renders a bare <option> with no class and no marker
+// (ui/native-select_test.go's TestNativeSelectOptionDefault pins that exact
+// string), and both elements are the <select>'s own children. See
+// docs/jsx-parity.md `## native-select`'s 2026-10-26 FIX.
 var NativeSelect = recipe.Shape{
 	Component: "native-select",
 	Slots: []recipe.Slot{
