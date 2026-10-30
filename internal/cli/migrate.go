@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -14,11 +15,16 @@ import (
 // runMigrate dispatches `gsxui migrate <name>`. Migrations rewrite files a
 // consumer already owns, in place and preserving their edits, which `add
 // --overwrite` cannot do.
+const migrateUsage = "usage: gsxui migrate <rtl>\n\n  rtl  rewrite vendored components to logical direction classes (requires \"rtl\": true in gsxui.json)"
+
 func runMigrate(args []string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("usage: gsxui migrate <rtl>\n\n  rtl  rewrite vendored components to logical direction classes (requires \"rtl\": true in gsxui.json)")
+		return errors.New(migrateUsage)
 	}
 	switch args[0] {
+	case "-h", "-help", "--help":
+		fmt.Fprintln(commandStdout, migrateUsage)
+		return nil
 	case "rtl":
 		return runMigrateRTL(args[1:])
 	default:

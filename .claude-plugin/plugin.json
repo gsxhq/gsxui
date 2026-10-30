@@ -1,0 +1,12 @@
+{
+  "name": "gsxui",
+  "description": "Skill for designing with gsxui: composing shadcn-style gsx components, styling with semantic tokens, theming with presets, and the gsxui CLI",
+  "version": "0.1.0",
+  "author": {
+    "name": "Jackie Li"
+  },
+  "homepage": "https://ui.gsxhq.dev",
+  "repository": "https://github.com/gsxhq/gsxui",
+  "license": "MIT",
+  "keywords": ["gsxui", "gsx", "go", "shadcn", "tailwind", "design"]
+}
