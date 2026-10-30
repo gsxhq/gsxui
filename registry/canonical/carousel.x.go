@@ -53,23 +53,23 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 		}
 		if !attrs.Has("aria-roledescription") {
 			_gsxgw.S(" aria-roledescription=\"")
-			_gsxgw.AttrValue(string(i18n.T("carousel")))
+			_gsxgw.AttrValue(string( /*line carousel.gsx:39:25*/ i18n.T("carousel")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.AttrValue(string( /*line carousel.gsx:40:36*/ _gsxstd.Default(( /*line carousel.gsx:40:21*/ orientation) /*line carousel.gsx:40:44*/, "horizontal")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(carousel.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line carousel.gsx:41:11*/ carousel.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel", true)
 		_gsxgw.S(">")
 //line carousel.gsx:45:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line carousel.gsx:45:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -97,9 +97,9 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:64:2
 		_gsxgw.S("<div data-orientation=\"")
-		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+		_gsxgw.AttrValue(string( /*line carousel.gsx:65:36*/ _gsxstd.Default(( /*line carousel.gsx:65:21*/ orientation) /*line carousel.gsx:65:44*/, "horizontal")))
 		_gsxgw.S("\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(carousel.Content()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line carousel.gsx:66:11*/ carousel.Content()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel-content", true)
 		_gsxgw.S(">")
@@ -107,18 +107,18 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.S("<div")
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.AttrValue(string( /*line carousel.gsx:70:37*/ _gsxstd.Default(( /*line carousel.gsx:70:22*/ orientation) /*line carousel.gsx:70:45*/, "horizontal")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(carousel.TrackOrientation(orientation)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line carousel.gsx:71:12*/ carousel.TrackOrientation(orientation)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-track"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel-track", true)
 		_gsxgw.S(">")
 //line carousel.gsx:75:4
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line carousel.gsx:75:6*/, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()
 	})
@@ -157,23 +157,23 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		}
 		if !attrs.Has("aria-roledescription") {
 			_gsxgw.S(" aria-roledescription=\"")
-			_gsxgw.AttrValue(string(i18n.T("slide")))
+			_gsxgw.AttrValue(string( /*line carousel.gsx:103:25*/ i18n.T("slide")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.AttrValue(string( /*line carousel.gsx:104:36*/ _gsxstd.Default(( /*line carousel.gsx:104:21*/ orientation) /*line carousel.gsx:104:44*/, "horizontal")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(carousel.ItemOrientation(orientation)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line carousel.gsx:105:11*/ carousel.ItemOrientation(orientation)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel-item", true)
 		_gsxgw.S(">")
 //line carousel.gsx:109:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line carousel.gsx:109:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -214,15 +214,15 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:142:2
-		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "" /*line carousel.gsx:146:13*/, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:151:3
 			var _gsxv0 string
-			switch orientation {
-			case "vertical":
-				_gsxv0 = ""
+			switch /*line carousel.gsx:152:19*/ orientation {
+			case /*line carousel.gsx:152:38*/ "vertical":
+				_gsxv0 = /*line carousel.gsx:152:50*/ ""
 			default:
-				_gsxv0 = "rtl:rotate-180"
+				_gsxv0 = /*line carousel.gsx:152:62*/ "rtl:rotate-180"
 			}
 			_gsxgw.Node(ctx, icon.ArrowLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv0))}}...))
 //line carousel.gsx:154:3
@@ -230,10 +230,10 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">")
 //line carousel.gsx:154:48
-			_gsxgw.Text(string(i18n.T("Previous slide")))
+			_gsxgw.Text(string( /*line carousel.gsx:154:50*/ i18n.T("Previous slide")))
 			_gsxgw.S("</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(carousel.Previous()), _gsxrt.Class(carousel.PreviousOrientation(orientation)))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-previous", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-orientation", Value: /*line carousel.gsx:143:36*/ _gsxstd.Default(( /*line carousel.gsx:143:21*/ orientation) /*line carousel.gsx:143:44*/, "horizontal")}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line carousel.gsx:147:11*/ carousel.Previous()), _gsxrt.Class( /*line carousel.gsx:147:32*/ carousel.PreviousOrientation(orientation)))}} /*line carousel.gsx:148:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-previous", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -247,11 +247,11 @@ func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:167:3
 			var _gsxv1 string
-			switch orientation {
-			case "vertical":
-				_gsxv1 = ""
+			switch /*line carousel.gsx:168:19*/ orientation {
+			case /*line carousel.gsx:168:38*/ "vertical":
+				_gsxv1 = /*line carousel.gsx:168:50*/ ""
 			default:
-				_gsxv1 = "rtl:rotate-180"
+				_gsxv1 = /*line carousel.gsx:168:62*/ "rtl:rotate-180"
 			}
 			_gsxgw.Node(ctx, icon.ArrowRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv1))}}...))
 //line carousel.gsx:170:3
@@ -259,10 +259,10 @@ func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">")
 //line carousel.gsx:170:48
-			_gsxgw.Text(string(i18n.T("Next slide")))
+			_gsxgw.Text(string( /*line carousel.gsx:170:50*/ i18n.T("Next slide")))
 			_gsxgw.S("</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(carousel.Next()), _gsxrt.Class(carousel.NextOrientation(orientation)))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-orientation", Value: /*line carousel.gsx:160:36*/ _gsxstd.Default(( /*line carousel.gsx:160:21*/ orientation) /*line carousel.gsx:160:44*/, "horizontal")}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line carousel.gsx:163:11*/ carousel.Next()), _gsxrt.Class( /*line carousel.gsx:163:28*/ carousel.NextOrientation(orientation)))}} /*line carousel.gsx:164:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

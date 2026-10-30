@@ -35,8 +35,8 @@ component (t Theming) Page() {
 					</li>
 					<li>
 						<code>theme.css</code> owns semantic light/dark variables, including sidebar, status, overlay, contrast,
-						chart, and radius tokens, plus the mode-independent <code>--font-sans</code>/<code>--font-heading</code>
-						typography pair.
+						chart, and radius tokens, plus the mode-independent typography pair{ " " }
+						<code>--font-sans</code> and <code>--font-heading</code>.
 					</li>
 					<li>
 						<code>style.css</code> owns the default style's component presentation rules: density, borders, shadows,
@@ -60,9 +60,9 @@ component (t Theming) Page() {
 			<section class="flex flex-col gap-3">
 				<docHeading item={themingTOCItems[2]}/>
 				<p>
-					To restyle a part from your own CSS, target its marker: every semantic part carries one bare
+					To restyle a part from your own CSS, target its marker: every semantic part carries one bare{ " " }
 					<code>data-gsxui-slot-&lt;name&gt;</code> attribute. A composed part carries every role it plays —
-					AlertDialog's action renders a Button whose element has both <code>data-gsxui-slot-button</code>
+					AlertDialog's action renders a Button whose element has both <code>data-gsxui-slot-button</code>{ " " }
 					and <code>data-gsxui-slot-alert-dialog-action</code> — so each role stays targetable:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-slot.css") }</code></pre>

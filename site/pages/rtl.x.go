@@ -31,7 +31,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:20:2
 		loginExample := examples.For("rtl")[0]
 //line rtl.gsx:21:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "RTL", "rtl", layoutDocs, rtlTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "RTL", "rtl" /*line rtl.gsx:21:45*/, layoutDocs /*line rtl.gsx:21:62*/, rtlTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:22:3
 			_gsxgw.S("<div data-doc=\"rtl\" class=\"flex max-w-3xl flex-col gap-10 py-10\">")
@@ -42,7 +42,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:25:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">Opt in once and the components you vendor use logical direction classes, so one build serves")
 //line rtl.gsx:26:98
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:26:100*/ " "))
 //line rtl.gsx:27:6
 			_gsxgw.S("<code>dir=\"ltr\"</code> and ")
 //line rtl.gsx:27:33
@@ -50,7 +50,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:30:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line rtl.gsx:31:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[0], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line rtl.gsx:31:23*/, rtlTOCItems[0], nil))
 //line rtl.gsx:32:5
 			_gsxgw.S("<p>Set the flag when you initialise, then add components as usual:</p>")
 //line rtl.gsx:33:5
@@ -58,7 +58,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:33:10
 			_gsxgw.S("<code>")
 //line rtl.gsx:33:16
-			_gsxgw.Node(ctx, hl.Node("snippets/rtl-init.sh"))
+			_gsxgw.Node(ctx /*line rtl.gsx:33:18*/, hl.Node("snippets/rtl-init.sh"))
 			_gsxgw.S("</code></pre>")
 //line rtl.gsx:34:5
 			_gsxgw.S("<p>Components vendored before the flag was set are rewritten in place, keeping your edits:</p>")
@@ -67,7 +67,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:35:10
 			_gsxgw.S("<code>")
 //line rtl.gsx:35:16
-			_gsxgw.Node(ctx, hl.Node("snippets/rtl-migrate.sh"))
+			_gsxgw.Node(ctx /*line rtl.gsx:35:18*/, hl.Node("snippets/rtl-migrate.sh"))
 			_gsxgw.S("</code></pre>")
 //line rtl.gsx:36:5
 			_gsxgw.S("<p>Set ")
@@ -76,7 +76,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:37:36
 			_gsxgw.S("<code>&lt;html&gt;</code>, or on any subtree, from the locale. An")
 //line rtl.gsx:37:101
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:37:103*/ " "))
 //line rtl.gsx:38:6
 			_gsxgw.S("<code>rtl: true</code> project renders both directions; the document's ")
 //line rtl.gsx:38:77
@@ -88,7 +88,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:41:10
 			_gsxgw.S("<code>")
 //line rtl.gsx:41:16
-			_gsxgw.Text(string(`<html lang="ar" dir="rtl">
+			_gsxgw.Text(string( /*line rtl.gsx:41:18*/ `<html lang="ar" dir="rtl">
   ...
 </html>`))
 			_gsxgw.S("</code></pre>")
@@ -96,7 +96,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S("<p>Translating the strings components write themselves is covered on ")
 //line rtl.gsx:46:9
 			_gsxgw.S("<a")
-			_gsxv0, _gsxerr := _gsxf0.URLFor(ctx, (I18n{}))
+			_gsxv0, _gsxerr := /*line rtl.gsx:46:28*/ _gsxf0.URLFor(ctx, ( /*line rtl.gsx:46:18*/ I18n{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
@@ -106,7 +106,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:49:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line rtl.gsx:50:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[1], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line rtl.gsx:50:23*/, rtlTOCItems[1], nil))
 //line rtl.gsx:51:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
 //line rtl.gsx:52:6
@@ -116,13 +116,13 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:53:63
 			_gsxgw.S("<code>\"rtl\": true</code> in")
 //line rtl.gsx:53:90
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:53:92*/ " "))
 //line rtl.gsx:54:7
 			_gsxgw.S("<code>gsxui.json</code>, ")
 //line rtl.gsx:54:32
 			_gsxgw.S("<code>gsxui add</code> rewrites physical classes in what it vendors:")
 //line rtl.gsx:54:100
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:54:102*/ " "))
 //line rtl.gsx:55:7
 			_gsxgw.S("<code>ml-*</code> to ")
 //line rtl.gsx:55:28
@@ -132,13 +132,13 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:55:70
 			_gsxgw.S("<code>start-*</code>,")
 //line rtl.gsx:55:91
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:55:93*/ " "))
 //line rtl.gsx:56:7
 			_gsxgw.S("<code>text-left</code> to ")
 //line rtl.gsx:56:33
 			_gsxgw.S("<code>text-start</code>, and the rest of shadcn's table.")
 //line rtl.gsx:56:89
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:56:91*/ " "))
 //line rtl.gsx:57:7
 			_gsxgw.S("<code>translate-x-*</code> and ")
 //line rtl.gsx:57:38
@@ -150,7 +150,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:60:7
 			_gsxgw.S("<strong>Directional icons.</strong> Chevrons and arrows that encode a left/right meaning carry")
 //line rtl.gsx:60:101
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:60:103*/ " "))
 //line rtl.gsx:61:7
 			_gsxgw.S("<code>rtl:rotate-180</code>.</li>")
 //line rtl.gsx:63:6
@@ -166,7 +166,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:72:7
 			_gsxgw.S("<strong>The demos on this page</strong> render from the transformed components, the same output")
 //line rtl.gsx:72:102
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:72:104*/ " "))
 //line rtl.gsx:73:7
 			_gsxgw.S("<code>gsxui add</code> produces with the flag set.</li></ul>")
 //line rtl.gsx:76:5
@@ -180,13 +180,13 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:79:50
 			_gsxgw.S("<code>side=\"right\"</code> and Drawer")
 //line rtl.gsx:79:86
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:79:88*/ " "))
 //line rtl.gsx:80:7
 			_gsxgw.S("<code>direction=\"left\"</code>/")
 //line rtl.gsx:80:37
 			_gsxgw.S("<code>direction=\"right\"</code> stay physical, matching shadcn's")
 //line rtl.gsx:80:100
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:80:102*/ " "))
 //line rtl.gsx:81:7
 			_gsxgw.S("<code>data-side</code> contract; their interiors mirror.</li>")
 //line rtl.gsx:83:6
@@ -206,7 +206,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:91:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line rtl.gsx:92:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[2], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line rtl.gsx:92:23*/, rtlTOCItems[2], nil))
 //line rtl.gsx:93:5
 			_gsxgw.S("<p>An Arabic sign-in card: ")
 //line rtl.gsx:94:30
@@ -216,7 +216,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:94:69
 			_gsxgw.S("<code>Input</code>,")
 //line rtl.gsx:94:88
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line rtl.gsx:94:90*/ " "))
 //line rtl.gsx:95:6
 			_gsxgw.S("<code>NativeSelect</code> and ")
 //line rtl.gsx:95:36
@@ -226,7 +226,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:98:5
 			_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
 //line rtl.gsx:99:6
-			_gsxgw.Node(ctx, loginExample.Node)
+			_gsxgw.Node(ctx /*line rtl.gsx:99:8*/, loginExample.Node)
 			_gsxgw.S("</div>")
 //line rtl.gsx:101:5
 			_gsxgw.S("<div class=\"relative\"")
@@ -237,7 +237,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:104:7
 			_gsxgw.S("<code>")
 //line rtl.gsx:104:13
-			_gsxgw.Node(ctx, hl.Node(loginExample.SourcePath))
+			_gsxgw.Node(ctx /*line rtl.gsx:104:15*/, hl.Node(loginExample.SourcePath))
 			_gsxgw.S("</code></pre>")
 //line rtl.gsx:105:6
 			_gsxgw.S("<button type=\"button\"")
@@ -264,7 +264,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:123:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line rtl.gsx:124:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[3], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line rtl.gsx:124:23*/, rtlTOCItems[3], nil))
 //line rtl.gsx:125:5
 			_gsxgw.S("<p>The site's own Latin type is Geist. For Arabic content, pair it with ")
 //line rtl.gsx:127:11

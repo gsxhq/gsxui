@@ -81,7 +81,7 @@ func LocalizedRussian(month time.Time) _gsxrt.Node {
 //line russian.gsx:69:2
 		_gsxgw.S("<div lang=\"ru\">")
 //line russian.gsx:70:3
-		_gsxgw.Node(ctx, ui.Calendar("single", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Monday, true, "dropdown", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", Russian, nil))
+		_gsxgw.Node(ctx, ui.Calendar("single" /*line russian.gsx:72:11*/, month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line russian.gsx:73:18*/, time.Monday /*line russian.gsx:74:21*/, true, "dropdown", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "" /*line russian.gsx:76:12*/, Russian, nil))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

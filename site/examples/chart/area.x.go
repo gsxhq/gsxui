@@ -60,15 +60,15 @@ func Area() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line area.gsx:36:4
-				_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.Chart( /*line area.gsx:36:22*/ cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line area.gsx:37:5
-					_gsxgw.Node(ctx, ui.AreaChart(data, 0, 12, 0, 12, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.AreaChart( /*line area.gsx:37:25*/ data, 0 /*line area.gsx:37:60*/, 12, 0 /*line area.gsx:37:43*/, 12, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line area.gsx:38:6
 						_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, false))
 //line area.gsx:39:6
-						_gsxgw.Node(ctx, ui.ChartXAxis("month", false, false, false, 8, 0))
+						_gsxgw.Node(ctx, ui.ChartXAxis("month", false, false, false /*line area.gsx:39:45*/, 8, 0))
 //line area.gsx:40:6
 						_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
 //line area.gsx:41:6
@@ -95,9 +95,9 @@ func Area() _gsxrt.Node {
 							return _gsxgw.Err()
 						})))
 //line area.gsx:51:6
-						_gsxgw.Node(ctx, ui.ChartArea("mobile", "natural", "url(#fillMobile)", "var(--color-mobile)", "a", 0.4))
+						_gsxgw.Node(ctx, ui.ChartArea("mobile", "natural", "url(#fillMobile)", "var(--color-mobile)", "a" /*line area.gsx:55:20*/, 0.4))
 //line area.gsx:59:6
-						_gsxgw.Node(ctx, ui.ChartArea("desktop", "natural", "url(#fillDesktop)", "var(--color-desktop)", "a", 0.4))
+						_gsxgw.Node(ctx, ui.ChartArea("desktop", "natural", "url(#fillDesktop)", "var(--color-desktop)", "a" /*line area.gsx:63:20*/, 0.4))
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()

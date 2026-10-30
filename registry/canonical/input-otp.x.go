@@ -118,7 +118,7 @@ func InputOTP(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-otp.gsx:108:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputOtp.Root()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:109:11*/ inputOtp.Root()))
 		_gsxgw.S("\" dir=\"ltr\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp", true)
 		_gsxgw.S(">")
@@ -131,14 +131,14 @@ func InputOTP(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" autocomplete=\"one-time-code\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputOtp.Input()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:116:12*/ inputOtp.Input()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-input"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-input", true)
 		_gsxgw.S(">")
 //line input-otp.gsx:120:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line input-otp.gsx:120:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -170,7 +170,7 @@ func InputOTPGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-otp.gsx:143:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputOtp.Group()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:144:11*/ inputOtp.Group()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("dir") {
 			_gsxgw.S(" dir=\"ltr\"")
@@ -180,7 +180,7 @@ func InputOTPGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-group", true)
 		_gsxgw.S(">")
 //line input-otp.gsx:149:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line input-otp.gsx:149:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -202,7 +202,7 @@ func InputOTPSlot(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-active=\"false\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputOtp.Slot()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:160:11*/ inputOtp.Slot()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-slot"})
@@ -225,7 +225,7 @@ func InputOTPSeparator(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" role=\"separator\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputOtp.Separator()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:168:32*/ inputOtp.Separator()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-separator"})

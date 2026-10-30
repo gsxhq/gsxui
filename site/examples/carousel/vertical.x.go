@@ -27,7 +27,7 @@ func Vertical() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CarouselContent("vertical", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line vertical.gsx:13:4
-				for _, n := range verticalSlides {
+				for /*line vertical.gsx:13:10*/ _, n := range verticalSlides {
 //line vertical.gsx:14:5
 					_gsxgw.Node(ctx, ui.CarouselItem("vertical", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
@@ -43,7 +43,7 @@ func Vertical() _gsxrt.Node {
 //line vertical.gsx:18:9
 								_gsxgw.S("<span class=\"text-3xl font-semibold\">")
 //line vertical.gsx:18:46
-								_gsxgw.IntInto(_gsxnum[:], int64(n))
+								_gsxgw.IntInto(_gsxnum[:], int64( /*line vertical.gsx:18:48*/ n))
 								_gsxgw.S("</span>")
 								return _gsxgw.Err()
 							}), _gsxrt.Attrs{{Key: "class", Value: "flex items-center justify-center p-6"}}))

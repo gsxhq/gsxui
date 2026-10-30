@@ -27,25 +27,25 @@ func Select(name string, required bool, disabled bool, form string, children gsx
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:44:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line select.gsx:44:15*/ "contents"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select", true)
 		_gsxgw.S(">")
 //line select.gsx:45:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line select.gsx:45:5*/, children)
 //line select.gsx:46:3
-		if name != "" {
+		if /*line select.gsx:46:8*/ name != "" {
 //line select.gsx:47:4
 			_gsxgw.S("<select aria-hidden=\"true\" tabindex=\"-1\" name=\"")
-			_gsxgw.AttrValue(string(name))
+			_gsxgw.AttrValue(string( /*line select.gsx:50:11*/ name))
 			_gsxgw.S("\"")
-			_gsxgw.BoolAttr("required", bool(required))
-			_gsxgw.BoolAttr("disabled", bool(disabled))
-			if form != "" {
+			_gsxgw.BoolAttr("required", bool( /*line select.gsx:51:15*/ required))
+			_gsxgw.BoolAttr("disabled", bool( /*line select.gsx:52:15*/ disabled))
+			if /*line select.gsx:53:10*/ form != "" {
 				_gsxgw.S(" form=\"")
-				_gsxgw.AttrValue(string(form))
+				_gsxgw.AttrValue(string( /*line select.gsx:54:12*/ form))
 				_gsxgw.S("\"")
 			}
 			_gsxgw.BoolAttr("data-gsxui-slot-select-bridge", true)
@@ -92,20 +92,20 @@ func SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 		}
 		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.AttrValue(string( /*line select.gsx:80:22*/ _gsxstd.Default(( /*line select.gsx:80:14*/ size) /*line select.gsx:80:30*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-placeholder") {
 			_gsxgw.BoolAttr("data-placeholder", true)
 		}
-		_gsxv0 := "w-fit items-center whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"
-		_gsxv1 := "border-input data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-none border bg-transparent py-2 pr-2 pl-2.5 text-xs transition-colors select-none focus-visible:ring-1 aria-invalid:ring-1 [&_svg:not([class*='size-'])]:size-4 flex"
+		_gsxv0 := /*line select.gsx:83:4*/ "w-fit items-center whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"
+		_gsxv1 := /*line select.gsx:84:4*/ "border-input data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-none border bg-transparent py-2 pr-2 pl-2.5 text-xs transition-colors select-none focus-visible:ring-1 aria-invalid:ring-1 [&_svg:not([class*='size-'])]:size-4 flex"
 		var _gsxv2 string
-		switch size {
-		case "sm":
-			_gsxv2 = "h-7 rounded-none"
+		switch /*line select.gsx:85:11*/ size {
+		case /*line select.gsx:85:23*/ "sm":
+			_gsxv2 = /*line select.gsx:85:29*/ "h-7 rounded-none"
 		default:
-			_gsxv2 = "h-8"
+			_gsxv2 = /*line select.gsx:85:57*/ "h-8"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -115,9 +115,9 @@ func SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 		_gsxgw.BoolAttr("data-gsxui-slot-select-trigger", true)
 		_gsxgw.S(">")
 //line select.gsx:90:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line select.gsx:90:5*/, children)
 //line select.gsx:91:3
-		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("text-muted-foreground pointer-events-none"))}}...))
+		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line select.gsx:91:29*/ "text-muted-foreground pointer-events-none"))}}...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -134,14 +134,14 @@ func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:99:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("items-center line-clamp-1"), _gsxrt.Class("flex gap-1.5 flex-1 text-left"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line select.gsx:99:16*/ "items-center line-clamp-1"), _gsxrt.Class( /*line select.gsx:99:45*/ "flex gap-1.5 flex-1 text-left"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-value"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-value", true)
 		_gsxgw.S(">")
 //line select.gsx:99:121
-		_gsxgw.Text(string(placeholder))
+		_gsxgw.Text(string( /*line select.gsx:99:123*/ placeholder))
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
@@ -180,14 +180,14 @@ func SelectContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("transition-none z-50 max-h-[min(--spacing(96),var(--gsxui-available-height,9999px))] overflow-x-hidden overflow-y-auto p-1 bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-none shadow-md ring-1 duration-100"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line select.gsx:119:4*/ "transition-none z-50 max-h-[min(--spacing(96),var(--gsxui-available-height,9999px))] overflow-x-hidden overflow-y-auto p-1 bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-none shadow-md ring-1 duration-100"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-content", true)
 		_gsxgw.S(">")
 //line select.gsx:124:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line select.gsx:124:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -215,7 +215,7 @@ func SelectGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-select-group", true)
 		_gsxgw.S(">")
 //line select.gsx:134:62
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line select.gsx:134:64*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -231,14 +231,14 @@ func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:140:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground px-2 py-2 text-xs"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line select.gsx:140:15*/ "text-muted-foreground px-2 py-2 text-xs"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-label", true)
 		_gsxgw.S(">")
 //line select.gsx:140:101
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line select.gsx:140:103*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -267,10 +267,10 @@ func SelectItem(value string, selected bool, disabled bool, children gsx.Node, a
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line select.gsx:156:15*/ value))
 			_gsxgw.S("\"")
 		}
-		if selected {
+		if /*line select.gsx:157:8*/ selected {
 			if !attrs.Has("data-state") {
 				_gsxgw.S(" data-state=\"checked\"")
 			}
@@ -285,7 +285,7 @@ func SelectItem(value string, selected bool, disabled bool, children gsx.Node, a
 		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
-		if disabled {
+		if /*line select.gsx:164:8*/ disabled {
 			if !attrs.Has("data-disabled") {
 				_gsxgw.S(" data-disabled=\"true\"")
 			}
@@ -294,7 +294,7 @@ func SelectItem(value string, selected bool, disabled bool, children gsx.Node, a
 			}
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-full items-center cursor-default outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 rounded-none py-2 pr-8 pl-2 text-xs [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line select.gsx:169:4*/ "relative w-full items-center cursor-default outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class( /*line select.gsx:170:4*/ "focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 rounded-none py-2 pr-8 pl-2 text-xs [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-item"})
@@ -302,7 +302,7 @@ func SelectItem(value string, selected bool, disabled bool, children gsx.Node, a
 		_gsxgw.S(">")
 //line select.gsx:175:3
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none absolute right-2 hidden size-4 items-center justify-center"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line select.gsx:176:12*/ "pointer-events-none absolute right-2 hidden size-4 items-center justify-center"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-select-item-indicator", true)
 		_gsxgw.S(">")
@@ -311,12 +311,12 @@ func SelectItem(value string, selected bool, disabled bool, children gsx.Node, a
 		_gsxgw.S("</span>")
 //line select.gsx:181:3
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-1 gap-2 shrink-0 whitespace-nowrap"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line select.gsx:181:17*/ "flex flex-1 gap-2 shrink-0 whitespace-nowrap"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-select-item-text", true)
 		_gsxgw.S(">")
 //line select.gsx:181:99
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line select.gsx:181:101*/, children)
 		_gsxgw.S("</span></div>")
 		return _gsxgw.Err()
 	})
@@ -336,7 +336,7 @@ func SelectSeparator(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border -mx-1 h-px"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line select.gsx:188:34*/ "bg-border -mx-1 h-px"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-separator"})

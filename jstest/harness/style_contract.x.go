@@ -29,11 +29,11 @@ func _gsxrenderDirectionalDrawerFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writ
 		_gsxgw.Node(ctx, ui.DrawerTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:10:21
-			_gsxgw.Text(string("Open drawer " + name))
+			_gsxgw.Text(string( /*line style_contract.gsx:10:23*/ "Open drawer " + name))
 			return _gsxgw.Err()
 		}), nil))
 //line style_contract.gsx:11:3
-		_gsxgw.Node(ctx, ui.DrawerContent(direction, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.DrawerContent( /*line style_contract.gsx:11:32*/ direction, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:12:4
 			_gsxgw.Node(ctx, ui.DrawerHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -42,14 +42,14 @@ func _gsxrenderDirectionalDrawerFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writ
 				_gsxgw.Node(ctx, ui.DrawerTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:13:21
-					_gsxgw.Text(string("Drawer " + name))
+					_gsxgw.Text(string( /*line style_contract.gsx:13:23*/ "Drawer " + name))
 					return _gsxgw.Err()
 				}), nil))
 //line style_contract.gsx:14:5
 				_gsxgw.Node(ctx, ui.DrawerDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:14:27
-					_gsxgw.Text(string("Drawer " + name + " description"))
+					_gsxgw.Text(string( /*line style_contract.gsx:14:29*/ "Drawer " + name + " description"))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
@@ -58,11 +58,11 @@ func _gsxrenderDirectionalDrawerFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writ
 			_gsxgw.Node(ctx, ui.DrawerClose(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:16:20
-				_gsxgw.Text(string("Close drawer " + name))
+				_gsxgw.Text(string( /*line style_contract.gsx:16:22*/ "Close drawer " + name))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "drawer-" + name}}))
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: /*line style_contract.gsx:11:64*/ "drawer-" + name}}))
 		return _gsxgw.Err()
 	}), nil))
 	return _gsxgw.Err()
@@ -87,11 +87,11 @@ func _gsxrenderDirectionalSheetFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Write
 		_gsxgw.Node(ctx, ui.SheetTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:23:20
-			_gsxgw.Text(string("Open sheet " + name))
+			_gsxgw.Text(string( /*line style_contract.gsx:23:22*/ "Open sheet " + name))
 			return _gsxgw.Err()
 		}), nil))
 //line style_contract.gsx:24:3
-		_gsxgw.Node(ctx, ui.SheetContent(side, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.SheetContent( /*line style_contract.gsx:24:26*/ side /*line style_contract.gsx:24:49*/, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:25:4
 			_gsxgw.Node(ctx, ui.SheetHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -100,14 +100,14 @@ func _gsxrenderDirectionalSheetFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Write
 				_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:26:20
-					_gsxgw.Text(string("Sheet " + name))
+					_gsxgw.Text(string( /*line style_contract.gsx:26:22*/ "Sheet " + name))
 					return _gsxgw.Err()
 				}), nil))
 //line style_contract.gsx:27:5
 				_gsxgw.Node(ctx, ui.SheetDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:27:26
-					_gsxgw.Text(string("Sheet " + name + " description"))
+					_gsxgw.Text(string( /*line style_contract.gsx:27:28*/ "Sheet " + name + " description"))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
@@ -116,11 +116,11 @@ func _gsxrenderDirectionalSheetFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Write
 			_gsxgw.Node(ctx, ui.SheetClose(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:29:19
-				_gsxgw.Text(string("Close sheet " + name))
+				_gsxgw.Text(string( /*line style_contract.gsx:29:21*/ "Close sheet " + name))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "sheet-" + name}}))
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: /*line style_contract.gsx:24:76*/ "sheet-" + name}}))
 		return _gsxgw.Err()
 	}), nil))
 	return _gsxgw.Err()
@@ -731,49 +731,49 @@ func StyleContractFixture() _gsxrt.Node {
 //line style_contract.gsx:365:3
 		_gsxgw.S("<div>")
 //line style_contract.gsx:366:4
-		_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(true, "dropdown-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem( /*line style_contract.gsx:366:42*/ true, "dropdown-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Dropdown on")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dropdown-checked"}}))
 //line style_contract.gsx:369:4
-		_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(false, "dropdown-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem( /*line style_contract.gsx:369:42*/ false, "dropdown-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Dropdown off")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dropdown-unchecked"}}))
 //line style_contract.gsx:372:4
-		_gsxgw.Node(ctx, ui.ContextMenuRadioItem(true, "context-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.ContextMenuRadioItem( /*line style_contract.gsx:372:38*/ true, "context-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Context on")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "context-checked"}}))
 //line style_contract.gsx:375:4
-		_gsxgw.Node(ctx, ui.ContextMenuRadioItem(false, "context-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.ContextMenuRadioItem( /*line style_contract.gsx:375:38*/ false, "context-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Context off")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "context-unchecked"}}))
 //line style_contract.gsx:378:4
-		_gsxgw.Node(ctx, ui.MenubarCheckboxItem(true, "menubar-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.MenubarCheckboxItem( /*line style_contract.gsx:378:37*/ true, "menubar-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Menubar on")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "menubar-checked"}}))
 //line style_contract.gsx:381:4
-		_gsxgw.Node(ctx, ui.MenubarCheckboxItem(false, "menubar-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.MenubarCheckboxItem( /*line style_contract.gsx:381:37*/ false, "menubar-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Menubar off")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "menubar-unchecked"}}))
 //line style_contract.gsx:384:4
-		_gsxgw.Node(ctx, ui.ComboboxItem("combobox-on", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.ComboboxItem("combobox-on" /*line style_contract.gsx:384:51*/, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Combobox on")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "combobox-checked"}}))
 //line style_contract.gsx:387:4
-		_gsxgw.Node(ctx, ui.ComboboxItem("combobox-off", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.ComboboxItem("combobox-off" /*line style_contract.gsx:387:52*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Combobox off")
 			return _gsxgw.Err()

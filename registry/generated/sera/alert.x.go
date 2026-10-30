@@ -27,17 +27,17 @@ func Alert(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line alert.gsx:11:28*/ _gsxstd.Default(( /*line alert.gsx:11:17*/ variant) /*line alert.gsx:11:36*/, "default")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "group/alert"
-		_gsxv1 := "grid gap-1 bg-background border px-4 py-3 text-left text-sm has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4 relative after:-inset-y-px after:-left-px after:w-0.5 after:absolute w-full"
+		_gsxv0 := /*line alert.gsx:13:4*/ "group/alert"
+		_gsxv1 := /*line alert.gsx:14:4*/ "grid gap-1 bg-background border px-4 py-3 text-left text-sm has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4 relative after:-inset-y-px after:-left-px after:w-0.5 after:absolute w-full"
 		var _gsxv2 string
-		switch variant {
-		case "destructive":
-			_gsxv2 = "text-destructive bg-card [&>[data-gsxui-slot-alert-description]]:text-destructive/90 *:[svg]:text-current after:bg-destructive"
+		switch /*line alert.gsx:15:11*/ variant {
+		case /*line alert.gsx:16:9*/ "destructive":
+			_gsxv2 = /*line alert.gsx:17:5*/ "text-destructive bg-card [&>[data-gsxui-slot-alert-description]]:text-destructive/90 *:[svg]:text-current after:bg-destructive"
 		default:
-			_gsxv2 = "bg-card text-card-foreground after:bg-foreground"
+			_gsxv2 = /*line alert.gsx:19:5*/ "bg-card text-card-foreground after:bg-foreground"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -47,7 +47,7 @@ func Alert(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-alert", true)
 		_gsxgw.S(">")
 //line alert.gsx:25:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line alert.gsx:25:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -59,14 +59,14 @@ func AlertTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert.gsx:30:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("font-semibold group-has-[>svg]/alert:col-start-2 text-sm [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line alert.gsx:32:4*/ "font-semibold group-has-[>svg]/alert:col-start-2 text-sm [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-title", true)
 		_gsxgw.S(">")
 //line alert.gsx:37:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line alert.gsx:37:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -78,14 +78,14 @@ func AlertDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert.gsx:42:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground text-sm text-balance md:text-pretty [&_p:not(:last-child)]:mb-4 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line alert.gsx:44:4*/ "text-muted-foreground text-sm text-balance md:text-pretty [&_p:not(:last-child)]:mb-4 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-description", true)
 		_gsxgw.S(">")
 //line alert.gsx:49:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line alert.gsx:49:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

@@ -25,7 +25,7 @@ func (c ComponentsIndex) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line components_index.gsx:17:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Components", "", layoutDocs, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Components", "" /*line components_index.gsx:17:49*/, layoutDocs /*line components_index.gsx:17:66*/, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line components_index.gsx:18:3
 			_gsxgw.S("<section class=\"flex flex-col gap-6\">")
@@ -35,6 +35,8 @@ func (c ComponentsIndex) Page() _gsxrt.Node {
 			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">Components</h1>")
 //line components_index.gsx:21:5
 			_gsxgw.S("<p class=\"mt-2 max-w-2xl text-muted-foreground\">Every component gsxui ships. Copy any of them into your project with")
+//line components_index.gsx:22:74
+			_gsxgw.Text(string( /*line components_index.gsx:22:76*/ " "))
 //line components_index.gsx:23:6
 			_gsxgw.S("<code class=\"rounded bg-muted px-1.5 py-0.5 font-mono text-sm\">gsxui add &lt;name&gt;</code>.</p></div>")
 //line components_index.gsx:26:4
@@ -42,13 +44,13 @@ func (c ComponentsIndex) Page() _gsxrt.Node {
 //line components_index.gsx:27:4
 			_gsxgw.S("<div class=\"grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4\">")
 //line components_index.gsx:28:5
-			for _, name := range names {
+			for /*line components_index.gsx:28:11*/ _, name := range names {
 //line components_index.gsx:29:6
 				_gsxgw.S("<a href=\"")
-				_gsxgw.URL(string("/components/" + name))
+				_gsxgw.URL(string( /*line components_index.gsx:30:13*/ "/components/" + name))
 				_gsxgw.S("\" class=\"rounded-lg border border-border p-4 text-sm font-medium capitalize transition-colors hover:bg-accent hover:text-accent-foreground\">")
 //line components_index.gsx:33:7
-				_gsxgw.Text(string(name))
+				_gsxgw.Text(string( /*line components_index.gsx:33:9*/ name))
 				_gsxgw.S("</a>")
 			}
 			_gsxgw.S("</div></section>")

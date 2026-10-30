@@ -39,7 +39,7 @@ func Horizontal() _gsxrt.Node {
 //line horizontal.gsx:24:3
 			_gsxgw.S("<div class=\"flex w-max gap-4 p-4\">")
 //line horizontal.gsx:25:4
-			for _, artist := range artists {
+			for /*line horizontal.gsx:25:10*/ _, artist := range artists {
 //line horizontal.gsx:26:5
 				_gsxgw.S("<figure class=\"w-[150px] shrink-0\">")
 //line horizontal.gsx:27:6
@@ -49,7 +49,7 @@ func Horizontal() _gsxrt.Node {
 //line horizontal.gsx:31:16
 				_gsxgw.S("<span class=\"font-semibold text-foreground\">")
 //line horizontal.gsx:31:60
-				_gsxgw.Text(string(artist))
+				_gsxgw.Text(string( /*line horizontal.gsx:31:62*/ artist))
 				_gsxgw.S("</span></figcaption></figure>")
 			}
 			_gsxgw.S("</div>")

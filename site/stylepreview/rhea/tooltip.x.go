@@ -28,14 +28,14 @@ func _gsxrenderTooltip(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 	}
 //line tooltip.gsx:8:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tooltip.gsx:8:15*/ "contents"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip", true)
 	_gsxgw.S(">")
 //line tooltip.gsx:8:65
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line tooltip.gsx:8:67*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -55,7 +55,7 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-trigger", true)
 		_gsxgw.S(">")
 //line tooltip.gsx:12:69
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line tooltip.gsx:12:71*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -88,17 +88,17 @@ func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 		_gsxgw.S(" data-side=\"top\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 [&:popover-open]:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs has-[[data-gsxui-slot-kbd]]:pr-1.5 [&_[data-gsxui-slot-kbd]]:relative [&_[data-gsxui-slot-kbd]]:isolate [&_[data-gsxui-slot-kbd]]:z-50 [&_[data-gsxui-slot-kbd]]:rounded-lg bg-foreground text-background w-fit max-w-xs origin-bottom"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tooltip.gsx:22:4*/ "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 [&:popover-open]:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs has-[[data-gsxui-slot-kbd]]:pr-1.5 [&_[data-gsxui-slot-kbd]]:relative [&_[data-gsxui-slot-kbd]]:isolate [&_[data-gsxui-slot-kbd]]:z-50 [&_[data-gsxui-slot-kbd]]:rounded-lg bg-foreground text-background w-fit max-w-xs origin-bottom"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-content", true)
 	_gsxgw.S(">")
 //line tooltip.gsx:27:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line tooltip.gsx:27:5*/, children)
 //line tooltip.gsx:28:3
 	_gsxgw.S("<span class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] data-[side=left]:translate-x-[-1.5px] data-[side=right]:translate-x-[1.5px] bg-foreground top-full left-1/2 -translate-x-1/2"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tooltip.gsx:28:17*/ "size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] data-[side=left]:translate-x-[-1.5px] data-[side=right]:translate-x-[1.5px] bg-foreground top-full left-1/2 -translate-x-1/2"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-arrow", true)
 	_gsxgw.S("></span></div>")

@@ -43,19 +43,19 @@ func Radios() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.DropdownMenuRadioGroup("top", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line radios.gsx:25:5
-					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem(true, "top", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem( /*line radios.gsx:25:40*/ true, "top", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Top")
 						return _gsxgw.Err()
 					}), nil))
 //line radios.gsx:26:5
-					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem(false, "bottom", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem( /*line radios.gsx:26:40*/ false, "bottom", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Bottom")
 						return _gsxgw.Err()
 					}), nil))
 //line radios.gsx:27:5
-					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem(false, "right", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem( /*line radios.gsx:27:40*/ false, "right", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Right")
 						return _gsxgw.Err()

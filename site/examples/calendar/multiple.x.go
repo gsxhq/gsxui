@@ -34,7 +34,7 @@ func Multiple(month time.Time) _gsxrt.Node {
 //line multiple.gsx:22:2
 		_gsxgw.S("<form>")
 //line multiple.gsx:23:3
-		_gsxgw.Node(ctx, ui.Calendar("multiple", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "dates", *new(_gsxty2.CalendarLocale), nil))
+		_gsxgw.Node(ctx, ui.Calendar("multiple" /*line multiple.gsx:25:11*/, month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line multiple.gsx:27:18*/, time.Sunday /*line multiple.gsx:28:21*/, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "dates", *new(_gsxty2.CalendarLocale), nil))
 		_gsxgw.S("</form>")
 		return _gsxgw.Err()
 	})

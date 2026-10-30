@@ -40,19 +40,19 @@ func Checkboxes() _gsxrt.Node {
 //line checkboxes.gsx:23:4
 				_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
 //line checkboxes.gsx:24:4
-				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(true, "toolbar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem( /*line checkboxes.gsx:24:42*/ true, "toolbar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Show Toolbar")
 					return _gsxgw.Err()
 				}), nil))
 //line checkboxes.gsx:25:4
-				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(false, "statusbar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem( /*line checkboxes.gsx:25:42*/ false, "statusbar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Show Status Bar")
 					return _gsxgw.Err()
 				}), nil))
 //line checkboxes.gsx:26:4
-				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(false, "sidebar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem( /*line checkboxes.gsx:26:42*/ false, "sidebar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Show Sidebar")
 					return _gsxgw.Err()

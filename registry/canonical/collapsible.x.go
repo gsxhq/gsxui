@@ -21,7 +21,7 @@ func Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line collapsible.gsx:8:2
 		_gsxgw.S("<details")
 		if !attrs.Has("open") {
-			_gsxgw.BoolAttr("open", bool(open))
+			_gsxgw.BoolAttr("open", bool( /*line collapsible.gsx:8:17*/ open))
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
@@ -29,7 +29,7 @@ func Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-collapsible", true)
 		_gsxgw.S(">")
 //line collapsible.gsx:9:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line collapsible.gsx:9:5*/, children)
 		_gsxgw.S("</details>")
 		return _gsxgw.Err()
 	})
@@ -41,14 +41,14 @@ func CollapsibleTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line collapsible.gsx:14:2
 		_gsxgw.S("<summary class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(collapsible.Trigger()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line collapsible.gsx:14:19*/ collapsible.Trigger()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "summary", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-collapsible-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-collapsible-trigger", true)
 		_gsxgw.S(">")
 //line collapsible.gsx:15:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line collapsible.gsx:15:5*/, children)
 		_gsxgw.S("</summary>")
 		return _gsxgw.Err()
 	})
@@ -66,7 +66,7 @@ func CollapsibleContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-collapsible-content", true)
 		_gsxgw.S(">")
 //line collapsible.gsx:21:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line collapsible.gsx:21:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

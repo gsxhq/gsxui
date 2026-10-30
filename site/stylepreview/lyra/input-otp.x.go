@@ -126,7 +126,7 @@ func _gsxrenderInputOTP(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx
 	}
 //line input-otp.gsx:108:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex items-center has-disabled:opacity-50"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:109:11*/ "gap-2 flex items-center has-disabled:opacity-50"))
 	_gsxgw.S("\" dir=\"ltr\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-input-otp", true)
 	_gsxgw.S(">")
@@ -139,14 +139,14 @@ func _gsxrenderInputOTP(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx
 		_gsxgw.S(" autocomplete=\"one-time-code\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("cursor-text disabled:cursor-not-allowed"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:116:12*/ "cursor-text disabled:cursor-not-allowed"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-input"})
 	_gsxgw.BoolAttr("data-gsxui-slot-input-otp-input", true)
 	_gsxgw.S(">")
 //line input-otp.gsx:120:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line input-otp.gsx:120:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -185,7 +185,7 @@ func _gsxrenderInputOTPGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childre
 	}
 //line input-otp.gsx:143:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive rounded-none has-aria-invalid:ring-1 flex items-center"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:145:4*/ "has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive rounded-none has-aria-invalid:ring-1 flex items-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("dir") {
 		_gsxgw.S(" dir=\"ltr\"")
@@ -195,7 +195,7 @@ func _gsxrenderInputOTPGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childre
 	_gsxgw.BoolAttr("data-gsxui-slot-input-otp-group", true)
 	_gsxgw.S(">")
 //line input-otp.gsx:151:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line input-otp.gsx:151:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -224,7 +224,7 @@ func _gsxrenderInputOTPSlot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gs
 		_gsxgw.S(" data-active=\"false\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("dark:bg-input/30 border-input data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive size-8 border-y border-r text-xs transition-all outline-none first:rounded-none first:border-l last:rounded-none data-[active=true]:ring-1 flex relative items-center justify-center data-[active=true]:z-10"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:163:4*/ "dark:bg-input/30 border-input data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive size-8 border-y border-r text-xs transition-all outline-none first:rounded-none first:border-l last:rounded-none data-[active=true]:ring-1 flex relative items-center justify-center data-[active=true]:z-10"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-slot"})
@@ -254,7 +254,7 @@ func _gsxrenderInputOTPSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, att
 		_gsxgw.S(" role=\"separator\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[&_svg:not([class*='size-'])]:size-4 flex items-center"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-otp.gsx:174:11*/ "[&_svg:not([class*='size-'])]:size-4 flex items-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-separator"})

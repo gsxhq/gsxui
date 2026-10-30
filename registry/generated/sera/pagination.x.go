@@ -33,18 +33,18 @@ func Pagination(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		if !attrs.Has("aria-label") {
 			_gsxgw.S(" aria-label=\"")
-			_gsxgw.AttrValue(string(i18n.T("pagination")))
+			_gsxgw.AttrValue(string( /*line pagination.gsx:20:15*/ i18n.T("pagination")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mx-auto flex w-full justify-center"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line pagination.gsx:21:11*/ "mx-auto flex w-full justify-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "nav", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-pagination"})
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination", true)
 		_gsxgw.S(">")
 //line pagination.gsx:25:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line pagination.gsx:25:5*/, children)
 		_gsxgw.S("</nav>")
 		return _gsxgw.Err()
 	})
@@ -56,14 +56,14 @@ func PaginationContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:30:2
 		_gsxgw.S("<ul class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1 flex items-center"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line pagination.gsx:30:14*/ "gap-1 flex items-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-pagination-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination-content", true)
 		_gsxgw.S(">")
 //line pagination.gsx:31:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line pagination.gsx:31:5*/, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
@@ -81,7 +81,7 @@ func PaginationItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination-item", true)
 		_gsxgw.S(">")
 //line pagination.gsx:36:51
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line pagination.gsx:36:53*/, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
@@ -120,27 +120,27 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	}
 //line pagination.gsx:58:2
 	_gsxgw.S("<a")
-	if isActive {
+	if /*line pagination.gsx:59:8*/ isActive {
 		if !attrs.Has("aria-current") {
 			_gsxgw.S(" aria-current=\"page\"")
 		}
 	}
 	if !attrs.Has("data-active") {
-		_gsxgw.BoolAttr("data-active", bool(isActive))
+		_gsxgw.BoolAttr("data-active", bool( /*line pagination.gsx:62:16*/ isActive))
 	}
 	if !attrs.Has("data-variant") {
 		_gsxgw.S(" data-variant=\"")
-		_gsxgw.AttrValue(string(variant))
+		_gsxgw.AttrValue(string( /*line pagination.gsx:63:17*/ variant))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("data-size") {
 		_gsxgw.S(" data-size=\"")
-		_gsxgw.AttrValue(string(size))
+		_gsxgw.AttrValue(string( /*line pagination.gsx:64:14*/ size))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("href") {
 		_gsxgw.S(" href=\"")
-		_gsxgw.URL(string(href))
+		_gsxgw.URL(string( /*line pagination.gsx:65:9*/ href))
 		_gsxgw.S("\"")
 	}
 	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
@@ -150,7 +150,7 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 	_gsxgw.S(">")
 //line pagination.gsx:70:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line pagination.gsx:70:5*/, children)
 	_gsxgw.S("</a>")
 	return _gsxgw.Err()
 }
@@ -166,21 +166,21 @@ func PaginationPrevious(href string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:79:2
-		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw /*line pagination.gsx:80:9*/, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:86:3
-			_gsxgw.Node(ctx, icon.ChevronLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
+			_gsxgw.Node(ctx, icon.ChevronLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line pagination.gsx:86:29*/ "rtl:rotate-180"))}}...))
 //line pagination.gsx:87:3
 			_gsxgw.S("<span class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("hidden sm:block"))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line pagination.gsx:87:17*/ "hidden sm:block"))
 			_gsxgw.S("\"")
 			_gsxgw.BoolAttr("data-gsxui-slot-pagination-previous-label", true)
 			_gsxgw.S(">")
 //line pagination.gsx:87:79
-			_gsxgw.Text(string(i18n.T("Previous")))
+			_gsxgw.Text(string( /*line pagination.gsx:87:81*/ i18n.T("Previous")))
 			_gsxgw.S("</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: i18n.T("Go to previous page")}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-previous", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: /*line pagination.gsx:82:15*/ i18n.T("Go to previous page")}} /*line pagination.gsx:83:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-previous", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -190,21 +190,21 @@ func PaginationNext(href string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:92:2
-		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw /*line pagination.gsx:93:9*/, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:99:3
 			_gsxgw.S("<span class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("hidden sm:block"))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line pagination.gsx:99:17*/ "hidden sm:block"))
 			_gsxgw.S("\"")
 			_gsxgw.BoolAttr("data-gsxui-slot-pagination-next-label", true)
 			_gsxgw.S(">")
 //line pagination.gsx:99:75
-			_gsxgw.Text(string(i18n.T("Next")))
+			_gsxgw.Text(string( /*line pagination.gsx:99:77*/ i18n.T("Next")))
 			_gsxgw.S("</span>")
 //line pagination.gsx:100:3
-			_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
+			_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line pagination.gsx:100:30*/ "rtl:rotate-180"))}}...))
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: i18n.T("Go to next page")}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-next", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: /*line pagination.gsx:95:15*/ i18n.T("Go to next page")}} /*line pagination.gsx:96:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-next", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -219,7 +219,7 @@ func PaginationEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-9 items-center justify-center [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line pagination.gsx:107:11*/ "size-9 items-center justify-center [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-pagination-ellipsis"})
@@ -232,7 +232,7 @@ func PaginationEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination-ellipsis-label", true)
 		_gsxgw.S(">")
 //line pagination.gsx:112:51
-		_gsxgw.Text(string(i18n.T("More pages")))
+		_gsxgw.Text(string( /*line pagination.gsx:112:53*/ i18n.T("More pages")))
 		_gsxgw.S("</span></span>")
 		return _gsxgw.Err()
 	})

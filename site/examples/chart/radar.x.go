@@ -54,10 +54,10 @@ func Radar() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line radar.gsx:30:4
-				_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.Chart( /*line radar.gsx:30:22*/ cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line radar.gsx:31:5
-					_gsxgw.Node(ctx, ui.RadarChart(data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.RadarChart( /*line radar.gsx:31:26*/ data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line radar.gsx:32:6
 						_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
@@ -66,7 +66,7 @@ func Radar() _gsxrt.Node {
 //line radar.gsx:34:6
 						_gsxgw.Node(ctx, ui.ChartPolarGrid("", true, nil, "", 0, ""))
 //line radar.gsx:35:6
-						_gsxgw.Node(ctx, ui.ChartRadar("desktop", "var(--color-desktop)", 0.6, "", 0, false, 0, "", 0))
+						_gsxgw.Node(ctx, ui.ChartRadar("desktop", "var(--color-desktop)" /*line radar.gsx:35:76*/, 0.6, "", 0, false, 0, "", 0))
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()

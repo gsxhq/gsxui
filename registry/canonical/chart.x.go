@@ -108,7 +108,7 @@ func (c ChartConfig) styleSchemes() []chartStyleScheme {
 				}
 			}
 			if color != "" {
-				decls += _gsxrt.RawCSS("--color-" + _gsxrt.FilterCSS(string(s.Key)) + ": " + string(color) + ";") /*line chart.gsx:106:46*/
+				decls += _gsxrt.RawCSS("--color-" + _gsxrt.FilterCSS(string( /*line chart.gsx:106:28*/ s.Key)) + ": " + string( /*line chart.gsx:106:38*/ color) + ";") /*line chart.gsx:106:46*/
 			}
 		}
 		out = append(out, chartStyleScheme{prefix: scheme.Prefix, decls: decls})
@@ -124,7 +124,7 @@ func (c ChartConfig) styleSchemes() []chartStyleScheme {
 func chartStyleRules(id string, schemes []chartStyleScheme) gsx.RawCSS {
 	var out gsx.RawCSS
 	for _, sc := range schemes {
-		out += _gsxrt.RawCSS(string(gsx.RawCSS(sc.prefix)) + "[data-chart=" + string(gsx.RawCSS(id)) + "]{" + string(sc.decls) + "}") /*line chart.gsx:122:82*/
+		out += _gsxrt.RawCSS(string( /*line chart.gsx:122:16*/ gsx.RawCSS(sc.prefix)) + "[data-chart=" + string( /*line chart.gsx:122:52*/ gsx.RawCSS(id)) + "]{" + string( /*line chart.gsx:122:71*/ sc.decls) + "}") /*line chart.gsx:122:82*/
 	}
 	return out
 }
@@ -207,27 +207,27 @@ func Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<div")
 		if !attrs.Has("data-chart") {
 			_gsxgw.S(" data-chart=\"")
-			_gsxgw.AttrValue(string(id))
+			_gsxgw.AttrValue(string( /*line chart.gsx:199:15*/ id))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(chart.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line chart.gsx:200:11*/ chart.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-chart"})
 		_gsxgw.BoolAttr("data-gsxui-slot-chart", true)
 		_gsxgw.S(">")
 //line chart.gsx:204:3
-		if schemes := config.styleSchemes(); schemes != nil {
+		if /*line chart.gsx:204:8*/ schemes := config.styleSchemes(); schemes != nil {
 //line chart.gsx:205:4
 			_gsxgw.S("<style")
 			_gsxgw.Nonce(ctx)
 			_gsxgw.S(">\n")
-			_gsxgw.S(string(chartStyleRules(id, schemes)))
+			_gsxgw.S(string( /*line chart.gsx:206:8*/ chartStyleRules(id, schemes)))
 			_gsxgw.S("\n</style>")
 		}
 //line chart.gsx:209:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line chart.gsx:209:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -1503,30 +1503,30 @@ func _gsxrenderChartLegendContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, it
 	top := opts.VerticalAlign == "top"
 //line chart.gsx:1467:2
 	_gsxgw.S("<div style=\"")
-	_gsxgw.Style(_gsxrt.Style("position:absolute;left:0;right:0"), _gsxrt.StyleIf("top:5px", top), _gsxrt.StyleIf("bottom:5px", !top))
+	_gsxgw.Style(_gsxrt.Style("position:absolute;left:0;right:0"), _gsxrt.StyleIf("top:5px" /*line chart.gsx:1468:64*/, top), _gsxrt.StyleIf("bottom:5px" /*line chart.gsx:1468:86*/, !top))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-chart-legend", true)
 	_gsxgw.S(">")
 //line chart.gsx:1471:3
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(chart.Legend()), _gsxrt.ClassIf("pt-3", !top), _gsxrt.ClassIf("pb-3", top), _gsxrt.Class(opts.Class))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line chart.gsx:1471:16*/ chart.Legend()), _gsxrt.ClassIf( /*line chart.gsx:1471:32*/ "pt-3" /*line chart.gsx:1471:40*/, !top), _gsxrt.ClassIf( /*line chart.gsx:1471:46*/ "pb-3" /*line chart.gsx:1471:54*/, top), _gsxrt.Class( /*line chart.gsx:1471:59*/ opts.Class))
 	_gsxgw.S("\">")
 //line chart.gsx:1472:4
-	for _, it := range items {
+	for /*line chart.gsx:1472:10*/ _, it := range items {
 //line chart.gsx:1473:5
 		_gsxgw.S("<div class=\"flex items-center gap-1.5 [&amp;&gt;svg]:h-3 [&amp;&gt;svg]:w-3 [&amp;&gt;svg]:text-muted-foreground\">")
 //line chart.gsx:1474:6
-		if it.icon != nil && !opts.HideIcon {
+		if /*line chart.gsx:1474:11*/ it.icon != nil && !opts.HideIcon {
 //line chart.gsx:1475:7
-			_gsxgw.Node(ctx, it.icon)
+			_gsxgw.Node(ctx /*line chart.gsx:1475:9*/, it.icon)
 		} else {
 //line chart.gsx:1477:7
 			_gsxgw.S("<div class=\"h-2 w-2 shrink-0 rounded-[2px]\" style=\"background-color:")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(it.color))
+			_gsxgw.AttrValue(_gsxrt.StyleValue( /*line chart.gsx:1477:81*/ it.color))
 			_gsxgw.S("\"></div>")
 		}
 //line chart.gsx:1479:6
-		_gsxgw.Text(string(it.label))
+		_gsxgw.Text(string( /*line chart.gsx:1479:8*/ it.label))
 		_gsxgw.S("</div>")
 	}
 	_gsxgw.S("</div></div>")
@@ -1570,7 +1570,7 @@ func _gsxrenderchartRoot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, st *chartSt
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style"})
 	_gsxgw.S(">")
 //line chart.gsx:1500:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line chart.gsx:1500:5*/, children)
 //line chart.gsx:1501:3
 	m := buildChartModel(ctx, st)
 //line chart.gsx:1502:3
@@ -1578,17 +1578,17 @@ func _gsxrenderchartRoot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, st *chartSt
 	_gsxgw.BoolAttr("data-gsxui-chart-model", true)
 	_gsxgw.Nonce(ctx)
 	_gsxgw.S(">")
-	_gsxgw.JSVal(m)
+	_gsxgw.JSVal( /*line chart.gsx:1502:61*/ m)
 	_gsxgw.S("</script>")
 //line chart.gsx:1503:3
-	if st.tooltip != nil {
+	if /*line chart.gsx:1503:8*/ st.tooltip != nil {
 //line chart.gsx:1504:4
 		_gsxgw.NodeResult(_gsxrenderChartTooltipTemplate(ctx, _gsxgw))
 	}
 //line chart.gsx:1506:3
-	if st.legend != nil {
+	if /*line chart.gsx:1506:8*/ st.legend != nil {
 //line chart.gsx:1507:4
-		_gsxgw.NodeResult(_gsxrenderChartLegendContent(ctx, _gsxgw, chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend), st.legend))
+		_gsxgw.NodeResult(_gsxrenderChartLegendContent(ctx, _gsxgw /*line chart.gsx:1507:31*/, chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend) /*line chart.gsx:1507:103*/, st.legend))
 	}
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
@@ -1654,7 +1654,7 @@ func _gsxrenderChartTooltipTemplate(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) 
 	_gsxgw.S(">")
 //line chart.gsx:1554:3
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(chart.Tooltip()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line chart.gsx:1554:16*/ chart.Tooltip()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-chart-tooltip", true)
 	_gsxgw.S("></div>")
@@ -1699,12 +1699,12 @@ func BarChart(data []ChartDatum, marginTop float64, marginRight float64, marginB
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1596:2
-		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw /*line chart.gsx:1597:7*/, &chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1600:3
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line chart.gsx:1600:5*/, children)
 			return _gsxgw.Err()
-		}), attrs))
+		}), /*line chart.gsx:1598:5*/ attrs))
 		return _gsxgw.Err()
 	})
 }
@@ -1717,12 +1717,12 @@ func LineChart(data []ChartDatum, marginTop float64, marginRight float64, margin
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1606:2
-		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "line", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw /*line chart.gsx:1607:7*/, &chartState{kind: "line", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1610:3
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line chart.gsx:1610:5*/, children)
 			return _gsxgw.Err()
-		}), attrs))
+		}), /*line chart.gsx:1608:5*/ attrs))
 		return _gsxgw.Err()
 	})
 }
@@ -1736,12 +1736,12 @@ func AreaChart(data []ChartDatum, marginTop float64, marginRight float64, margin
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1617:2
-		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "area", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft), stackOffset: stackOffset}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw /*line chart.gsx:1619:4*/, &chartState{kind: "area", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft), stackOffset: stackOffset}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1623:3
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line chart.gsx:1623:5*/, children)
 			return _gsxgw.Err()
-		}), attrs))
+		}), /*line chart.gsx:1621:5*/ attrs))
 		return _gsxgw.Err()
 	})
 }
@@ -1754,12 +1754,12 @@ func RadarChart(data []ChartDatum, marginTop float64, marginRight float64, margi
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1629:2
-		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "radar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw /*line chart.gsx:1630:7*/, &chartState{kind: "radar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1633:3
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line chart.gsx:1633:5*/, children)
 			return _gsxgw.Err()
-		}), attrs))
+		}), /*line chart.gsx:1631:5*/ attrs))
 		return _gsxgw.Err()
 	})
 }
@@ -1778,7 +1778,7 @@ func RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, m
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1645:2
-		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{
+		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw /*line chart.gsx:1647:4*/, &chartState{
 			kind:        "radial",
 			data:        data,
 			margin:      chartMarginOf(marginTop, marginRight, marginBottom, marginLeft),
@@ -1789,9 +1789,9 @@ func RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, m
 		}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1659:3
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line chart.gsx:1659:5*/, children)
 			return _gsxgw.Err()
-		}), attrs))
+		}), /*line chart.gsx:1657:5*/ attrs))
 		return _gsxgw.Err()
 	})
 }
@@ -1807,12 +1807,12 @@ func PieChart(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1668:2
-		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "pie"}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw /*line chart.gsx:1668:17*/, &chartState{kind: "pie"}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1668:56
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line chart.gsx:1668:58*/, children)
 			return _gsxgw.Err()
-		}), attrs))
+		}), /*line chart.gsx:1668:45*/ attrs))
 		return _gsxgw.Err()
 	})
 }

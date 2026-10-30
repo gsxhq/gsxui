@@ -28,7 +28,7 @@ func (t Theming) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line theming.gsx:17:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Theming", "theming", layoutDocs, themingTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Theming", "theming" /*line theming.gsx:17:53*/, layoutDocs /*line theming.gsx:17:70*/, themingTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line theming.gsx:18:3
 			_gsxgw.S("<div data-doc=\"theming\" class=\"flex max-w-3xl flex-col gap-10 py-10\">")
@@ -41,7 +41,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:26:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:27:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[0], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:27:23*/, themingTOCItems[0], nil))
 //line theming.gsx:28:5
 			_gsxgw.S("<p>")
 //line theming.gsx:28:8
@@ -53,7 +53,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:29:10
 			_gsxgw.S("<code>")
 //line theming.gsx:29:16
-			_gsxgw.Node(ctx, hl.Node("snippets/theme-entry.css"))
+			_gsxgw.Node(ctx /*line theming.gsx:29:18*/, hl.Node("snippets/theme-entry.css"))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:30:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
@@ -68,11 +68,13 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:36:6
 			_gsxgw.S("<li>")
 //line theming.gsx:37:7
-			_gsxgw.S("<code>theme.css</code> owns semantic light/dark variables, including sidebar, status, overlay, contrast, chart, and radius tokens, plus the mode-independent ")
-//line theming.gsx:38:59
-			_gsxgw.S("<code>--font-sans</code>/")
-//line theming.gsx:38:84
-			_gsxgw.S("<code>--font-heading</code>typography pair.</li>")
+			_gsxgw.S("<code>theme.css</code> owns semantic light/dark variables, including sidebar, status, overlay, contrast, chart, and radius tokens, plus the mode-independent typography pair")
+//line theming.gsx:38:74
+			_gsxgw.Text(string( /*line theming.gsx:38:76*/ " "))
+//line theming.gsx:39:7
+			_gsxgw.S("<code>--font-sans</code> and ")
+//line theming.gsx:39:36
+			_gsxgw.S("<code>--font-heading</code>.</li>")
 //line theming.gsx:41:6
 			_gsxgw.S("<li>")
 //line theming.gsx:42:7
@@ -84,7 +86,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:51:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:52:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[1], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:52:23*/, themingTOCItems[1], nil))
 //line theming.gsx:53:5
 			_gsxgw.S("<p>The variables are shadcn-compatible ")
 //line theming.gsx:54:42
@@ -93,7 +95,7 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.S("<code>.dark</code> blocks — nothing else lives in the file. The ")
 //line theming.gsx:55:20
 			_gsxgw.S("<a")
-			_gsxv0, _gsxerr := _gsxf0.URLFor(ctx, (Theme{}))
+			_gsxv0, _gsxerr := /*line theming.gsx:55:40*/ _gsxf0.URLFor(ctx, ( /*line theming.gsx:55:29*/ Theme{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
@@ -105,18 +107,23 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:58:10
 			_gsxgw.S("<code>")
 //line theming.gsx:58:16
-			_gsxgw.Node(ctx, hl.Node("snippets/theme-restyle.css"))
+			_gsxgw.Node(ctx /*line theming.gsx:58:18*/, hl.Node("snippets/theme-restyle.css"))
 			_gsxgw.S("</code></pre></section>")
 //line theming.gsx:60:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:61:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[2], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:61:23*/, themingTOCItems[2], nil))
 //line theming.gsx:62:5
 			_gsxgw.S("<p>To restyle a part from your own CSS, target its marker: every semantic part carries one bare")
+//line theming.gsx:63:98
+			_gsxgw.Text(string( /*line theming.gsx:63:100*/ " "))
 //line theming.gsx:64:6
 			_gsxgw.S("<code>data-gsxui-slot-&lt;name&gt;</code> attribute. A composed part carries every role it plays — AlertDialog's action renders a Button whose element has both ")
 //line theming.gsx:65:67
-			_gsxgw.S("<code>data-gsxui-slot-button</code>and ")
+			_gsxgw.S("<code>data-gsxui-slot-button</code>")
+//line theming.gsx:65:102
+			_gsxgw.Text(string( /*line theming.gsx:65:104*/ " "))
+			_gsxgw.S("and ")
 //line theming.gsx:66:10
 			_gsxgw.S("<code>data-gsxui-slot-alert-dialog-action</code> — so each role stays targetable:</p>")
 //line theming.gsx:68:5
@@ -124,14 +131,14 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:68:10
 			_gsxgw.S("<code>")
 //line theming.gsx:68:16
-			_gsxgw.Node(ctx, hl.Node("snippets/theme-slot.css"))
+			_gsxgw.Node(ctx /*line theming.gsx:68:18*/, hl.Node("snippets/theme-slot.css"))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:69:5
 			_gsxgw.S("<p>Match on bare presence only — value and operator forms are not part of the contract.</p></section>")
 //line theming.gsx:73:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:74:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[3], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:74:23*/, themingTOCItems[3], nil))
 //line theming.gsx:75:5
 			_gsxgw.S("<p>Pass an ordinary utility class and it wins — no ")
 //line theming.gsx:76:56
@@ -141,7 +148,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:78:10
 			_gsxgw.S("<code>")
 //line theming.gsx:78:16
-			_gsxgw.Node(ctx, hl.Node("snippets/theme-merge.gsx"))
+			_gsxgw.Node(ctx /*line theming.gsx:78:18*/, hl.Node("snippets/theme-merge.gsx"))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:79:5
 			_gsxgw.S("<p>Two mechanisms make that hold:</p>")
@@ -168,7 +175,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:94:10
 			_gsxgw.S("<code>")
 //line theming.gsx:94:16
-			_gsxgw.Node(ctx, hl.Node("snippets/theme-attrs.gsx"))
+			_gsxgw.Node(ctx /*line theming.gsx:94:18*/, hl.Node("snippets/theme-attrs.gsx"))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:95:5
 			_gsxgw.S("<p>Behaviour roles are opt-in data attributes: any element becomes a dialog trigger by carrying ")
@@ -179,12 +186,12 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:100:10
 			_gsxgw.S("<code>")
 //line theming.gsx:100:16
-			_gsxgw.Node(ctx, hl.Node("snippets/theme-dataattr.gsx"))
+			_gsxgw.Node(ctx /*line theming.gsx:100:18*/, hl.Node("snippets/theme-dataattr.gsx"))
 			_gsxgw.S("</code></pre></section>")
 //line theming.gsx:102:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:103:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[4], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:103:23*/, themingTOCItems[4], nil))
 //line theming.gsx:104:5
 			_gsxgw.S("<p>Only projects from before the four-file split — a single ")
 //line theming.gsx:105:65

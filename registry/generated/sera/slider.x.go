@@ -89,31 +89,31 @@ func Slider(value float64, min float64, max float64, step float64, attrs gsx.Att
 		}
 		if !attrs.Has("min") {
 			_gsxgw.S(" min=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(min))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:76:8*/ min))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("max") {
 			_gsxgw.S(" max=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(maxV))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:77:8*/ maxV))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("step") {
 			_gsxgw.S(" step=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(stepV))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:78:9*/ stepV))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("value") {
 			_gsxgw.S(" value=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(value))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:79:10*/ value))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("style") {
 			_gsxgw.S(" style=\"--fill: ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(fill)))
+			_gsxgw.AttrValue(_gsxrt.StyleValue(string( /*line slider.gsx:80:23*/ fill)))
 			_gsxgw.S("%\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full cursor-pointer bg-transparent disabled:cursor-not-allowed disabled:opacity-50 data-vertical:min-h-40 [&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_100%)] rtl:[&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_100%)] data-horizontal:[&::-webkit-slider-runnable-track]:h-0.5 data-horizontal:[&::-webkit-slider-runnable-track]:w-full data-vertical:[&::-webkit-slider-runnable-track]:h-full data-vertical:[&::-webkit-slider-runnable-track]:w-0.5 [&::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_100%)] rtl:[&::-moz-range-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_100%)] data-horizontal:[&::-moz-range-track]:h-0.5 data-horizontal:[&::-moz-range-track]:w-full data-vertical:[&::-moz-range-track]:h-full data-vertical:[&::-moz-range-track]:w-0.5 [&::-webkit-slider-thumb]:-mt-[5px] [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:border-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:transition-colors hover:[&::-webkit-slider-thumb]:ring-2 hover:[&::-webkit-slider-thumb]:ring-ring/30 focus-visible:[&::-webkit-slider-thumb]:ring-2 focus-visible:[&::-webkit-slider-thumb]:ring-ring/30 focus-visible:[&::-webkit-slider-thumb]:outline-hidden [&::-moz-range-thumb]:size-3 [&::-moz-range-thumb]:border-none [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:transition-colors hover:[&::-moz-range-thumb]:ring-2 hover:[&::-moz-range-thumb]:ring-ring/30 focus-visible:[&::-moz-range-thumb]:ring-2 focus-visible:[&::-moz-range-thumb]:ring-ring/30 focus-visible:[&::-moz-range-thumb]:outline-hidden"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line slider.gsx:82:4*/ "w-full cursor-pointer bg-transparent disabled:cursor-not-allowed disabled:opacity-50 data-vertical:min-h-40 [&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_100%)] rtl:[&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_100%)] data-horizontal:[&::-webkit-slider-runnable-track]:h-0.5 data-horizontal:[&::-webkit-slider-runnable-track]:w-full data-vertical:[&::-webkit-slider-runnable-track]:h-full data-vertical:[&::-webkit-slider-runnable-track]:w-0.5 [&::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_100%)] rtl:[&::-moz-range-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_var(--fill,0%),color-mix(in_oklab,var(--input)_50%,transparent)_100%)] data-horizontal:[&::-moz-range-track]:h-0.5 data-horizontal:[&::-moz-range-track]:w-full data-vertical:[&::-moz-range-track]:h-full data-vertical:[&::-moz-range-track]:w-0.5 [&::-webkit-slider-thumb]:-mt-[5px] [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:border-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:transition-colors hover:[&::-webkit-slider-thumb]:ring-2 hover:[&::-webkit-slider-thumb]:ring-ring/30 focus-visible:[&::-webkit-slider-thumb]:ring-2 focus-visible:[&::-webkit-slider-thumb]:ring-ring/30 focus-visible:[&::-webkit-slider-thumb]:outline-hidden [&::-moz-range-thumb]:size-3 [&::-moz-range-thumb]:border-none [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:transition-colors hover:[&::-moz-range-thumb]:ring-2 hover:[&::-moz-range-thumb]:ring-ring/30 focus-visible:[&::-moz-range-thumb]:ring-2 focus-visible:[&::-moz-range-thumb]:ring-ring/30 focus-visible:[&::-moz-range-thumb]:outline-hidden"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-horizontal", "data-gsxui-slot-slider"})

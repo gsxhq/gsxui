@@ -26,7 +26,7 @@ func (h Home) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line home.gsx:17:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "gsxui", "", layoutMarketing, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "gsxui", "" /*line home.gsx:17:44*/, layoutMarketing /*line home.gsx:17:66*/, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line home.gsx:18:3
 			_gsxgw.S("<section class=\"flex flex-col gap-4 py-10\">")
@@ -35,13 +35,13 @@ func (h Home) Page() _gsxrt.Node {
 //line home.gsx:22:4
 			_gsxgw.S("<p class=\"max-w-2xl text-lg text-muted-foreground\">gsxui is a shadcn-style component set for")
 //line home.gsx:23:46
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line home.gsx:23:48*/ " "))
 //line home.gsx:24:5
 			_gsxgw.S("<a href=\"https://gsxhq.github.io/\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">gsx</a>: copy-in, type-checked, server-rendered. Own the code, style it with Tailwind, ship it.</p>")
 //line home.gsx:34:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-center gap-3 pt-2\">")
 //line home.gsx:35:5
-			_gsxa0, _gsxerr := _gsxf0.URLFor(ctx, (Theme{}))
+			_gsxa0, _gsxerr := /*line home.gsx:35:43*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:35:32*/ Theme{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
@@ -51,7 +51,7 @@ func (h Home) Page() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line home.gsx:36:5
-			_gsxa1, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
+			_gsxa1, _gsxerr := /*line home.gsx:36:70*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:36:50*/ GettingStarted{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
@@ -80,7 +80,7 @@ func (h Home) Page() _gsxrt.Node {
 //line home.gsx:60:5
 			_gsxgw.S("<code>")
 //line home.gsx:60:11
-			_gsxgw.Text(string(installSnippet))
+			_gsxgw.Text(string( /*line home.gsx:60:13*/ installSnippet))
 			_gsxgw.S("</code></pre></section>")
 //line home.gsx:62:3
 			_gsxgw.S("<section id=\"components\" class=\"flex flex-col gap-6 border-t border-border py-10\">")
@@ -90,7 +90,7 @@ func (h Home) Page() _gsxrt.Node {
 			_gsxgw.S("<h2 class=\"text-2xl font-semibold tracking-tight\">Built with gsxui</h2>")
 //line home.gsx:65:5
 			_gsxgw.S("<a")
-			_gsxv2, _gsxerr := _gsxf0.URLFor(ctx, (ComponentsIndex{}))
+			_gsxv2, _gsxerr := /*line home.gsx:66:33*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:66:12*/ ComponentsIndex{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}

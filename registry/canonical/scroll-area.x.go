@@ -67,18 +67,18 @@ func ScrollArea(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.N
 		_gsxgw.S("<div")
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "vertical")))
+			_gsxgw.AttrValue(string( /*line scroll-area.gsx:53:36*/ _gsxstd.Default(( /*line scroll-area.gsx:53:21*/ orientation) /*line scroll-area.gsx:53:44*/, "vertical")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(scrollArea.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line scroll-area.gsx:54:11*/ scrollArea.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-scroll-area"})
 		_gsxgw.BoolAttr("data-gsxui-slot-scroll-area", true)
 		_gsxgw.S(">")
 //line scroll-area.gsx:58:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line scroll-area.gsx:58:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

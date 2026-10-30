@@ -97,7 +97,7 @@ func OverlaysCard() _gsxrt.Node {
 									return _gsxgw.Err()
 								}), nil))
 //line overlays.gsx:41:9
-								_gsxgw.Node(ctx, ui.DialogFooter(true, nil, nil))
+								_gsxgw.Node(ctx, ui.DialogFooter( /*line overlays.gsx:41:43*/ true, nil, nil))
 								return _gsxgw.Err()
 							}), nil))
 							return _gsxgw.Err()

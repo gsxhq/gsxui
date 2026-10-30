@@ -20,14 +20,14 @@ func HoverCard(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line hover-card.gsx:8:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line hover-card.gsx:8:15*/ "contents"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-hover-card"})
 		_gsxgw.BoolAttr("data-gsxui-slot-hover-card", true)
 		_gsxgw.S(">")
 //line hover-card.gsx:8:68
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line hover-card.gsx:8:70*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -45,7 +45,7 @@ func HoverCardTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-hover-card-trigger", true)
 		_gsxgw.S(">")
 //line hover-card.gsx:12:56
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line hover-card.gsx:12:58*/, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
@@ -67,14 +67,14 @@ func HoverCardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground w-72 rounded-lg p-2.5 text-xs/relaxed shadow-md ring-1 duration-100 origin-top outline-hidden"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line hover-card.gsx:21:4*/ "transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground w-72 rounded-lg p-2.5 text-xs/relaxed shadow-md ring-1 duration-100 origin-top outline-hidden"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-hover-card-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-hover-card-content", true)
 		_gsxgw.S(">")
 //line hover-card.gsx:26:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line hover-card.gsx:26:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

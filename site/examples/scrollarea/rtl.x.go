@@ -36,13 +36,13 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:25:4
 			_gsxgw.S("<h4 class=\"mb-4 text-sm leading-none font-medium\">العلامات</h4>")
 //line rtl.gsx:26:4
-			for _, tag := range tagsRtl {
+			for /*line rtl.gsx:26:10*/ _, tag := range tagsRtl {
 //line rtl.gsx:27:5
 				_gsxgw.S("<div>")
 //line rtl.gsx:28:6
 				_gsxgw.S("<div class=\"text-sm\">")
 //line rtl.gsx:28:27
-				_gsxgw.Text(string(tag))
+				_gsxgw.Text(string( /*line rtl.gsx:28:29*/ tag))
 				_gsxgw.S("</div>")
 //line rtl.gsx:29:6
 				_gsxgw.Node(ctx, uirtl.Separator("", _gsxrt.Attrs{{Key: "class", Value: "my-2"}}))

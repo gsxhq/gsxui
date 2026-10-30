@@ -53,7 +53,7 @@ func Basic() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:28:6
-					_gsxgw.Node(ctx, ui.AvatarImage(_gsxstd.DataURL((avatarSVG), "image/svg+xml"), "@nextjs", nil))
+					_gsxgw.Node(ctx, ui.AvatarImage( /*line basic.gsx:28:40*/ _gsxstd.DataURL(( /*line basic.gsx:28:27*/ avatarSVG) /*line basic.gsx:28:48*/, "image/svg+xml"), "@nextjs", nil))
 //line basic.gsx:29:6
 					_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)

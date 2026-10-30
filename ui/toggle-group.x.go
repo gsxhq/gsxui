@@ -90,17 +90,17 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 		_gsxgw.S("<div")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:76:28*/ _gsxstd.Default(( /*line toggle-group.gsx:76:17*/ variant) /*line toggle-group.gsx:76:36*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:77:22*/ _gsxstd.Default(( /*line toggle-group.gsx:77:14*/ size) /*line toggle-group.gsx:77:30*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-spacing") {
 			_gsxgw.S(" data-spacing=\"")
-			_gsxgw.AttrValue(string(sp))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:78:17*/ sp))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-orientation") {
@@ -108,24 +108,24 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"")
-			_gsxgw.AttrValue(string(role))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:80:9*/ role))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("style") {
 			_gsxgw.S(" style=\"--gap: ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(sp)))
+			_gsxgw.AttrValue(_gsxrt.StyleValue(string( /*line toggle-group.gsx:81:22*/ sp)))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "group/toggle-group"
-		_gsxv1 := "rounded-lg flex w-fit items-center gap-[--spacing(var(--gap))]"
+		_gsxv0 := /*line toggle-group.gsx:83:4*/ "group/toggle-group"
+		_gsxv1 := /*line toggle-group.gsx:84:4*/ "rounded-lg flex w-fit items-center gap-[--spacing(var(--gap))]"
 		var _gsxv2 string
-		switch size {
-		case "sm":
-			_gsxv2 = "rounded-[min(var(--radius-md),10px)]"
-		case "lg":
-			_gsxv2 = "rounded-lg"
+		switch /*line toggle-group.gsx:85:11*/ size {
+		case /*line toggle-group.gsx:85:23*/ "sm":
+			_gsxv2 = /*line toggle-group.gsx:85:29*/ "rounded-[min(var(--radius-md),10px)]"
+		case /*line toggle-group.gsx:85:73*/ "lg":
+			_gsxv2 = /*line toggle-group.gsx:85:79*/ "rounded-lg"
 		default:
-			_gsxv2 = "rounded-lg"
+			_gsxv2 = /*line toggle-group.gsx:85:101*/ "rounded-lg"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -135,7 +135,7 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle-group", true)
 		_gsxgw.S(">")
 //line toggle-group.gsx:90:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line toggle-group.gsx:90:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -178,71 +178,71 @@ func ToggleGroupItem(groupType string, variant string, size string, spacing stri
 		}
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:122:28*/ _gsxstd.Default(( /*line toggle-group.gsx:122:17*/ variant) /*line toggle-group.gsx:122:36*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:123:22*/ _gsxstd.Default(( /*line toggle-group.gsx:123:14*/ size) /*line toggle-group.gsx:123:30*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-spacing") {
 			_gsxgw.S(" data-spacing=\"")
-			_gsxgw.AttrValue(string(sp))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:124:17*/ sp))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(orientation))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:125:21*/ orientation))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
-			_gsxgw.AttrValue(string(state))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:126:15*/ state))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line toggle-group.gsx:127:15*/ value))
 			_gsxgw.S("\"")
 		}
-		if groupType == "single" {
+		if /*line toggle-group.gsx:128:8*/ groupType == "single" {
 			if !attrs.Has("role") {
 				_gsxgw.S(" role=\"radio\"")
 			}
 			if !attrs.Has("aria-checked") {
 				_gsxgw.S(" aria-checked=\"")
-				_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
+				_gsxgw.S(_gsxsc.FormatBool(bool( /*line toggle-group.gsx:130:18*/ pressed)))
 				_gsxgw.S("\"")
 			}
 		} else {
 			if !attrs.Has("aria-pressed") {
 				_gsxgw.S(" aria-pressed=\"")
-				_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
+				_gsxgw.S(_gsxsc.FormatBool(bool( /*line toggle-group.gsx:132:18*/ pressed)))
 				_gsxgw.S("\"")
 			}
 		}
-		_gsxv3 := "hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg shrink-0 focus:z-10 focus-visible:z-10 items-center justify-center whitespace-nowrap outline-none focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0"
+		_gsxv3 := /*line toggle-group.gsx:135:4*/ "hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg shrink-0 focus:z-10 focus-visible:z-10 items-center justify-center whitespace-nowrap outline-none focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0"
 		var _gsxv4 string
-		switch size {
-		case "sm":
-			_gsxv4 = "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5 group-data-[spacing=0]/toggle-group:has-[>svg]:px-1.5"
-		case "lg":
-			_gsxv4 = "h-9 min-w-9 px-2.5 has-[>svg]:px-2 group-data-[spacing=0]/toggle-group:has-[>svg]:px-2"
+		switch /*line toggle-group.gsx:136:11*/ size {
+		case /*line toggle-group.gsx:137:9*/ "sm":
+			_gsxv4 = /*line toggle-group.gsx:138:5*/ "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5 group-data-[spacing=0]/toggle-group:has-[>svg]:px-1.5"
+		case /*line toggle-group.gsx:139:9*/ "lg":
+			_gsxv4 = /*line toggle-group.gsx:140:5*/ "h-9 min-w-9 px-2.5 has-[>svg]:px-2 group-data-[spacing=0]/toggle-group:has-[>svg]:px-2"
 		default:
-			_gsxv4 = "h-8 min-w-8 px-2.5 has-[>svg]:px-2 group-data-[spacing=0]/toggle-group:has-[>svg]:px-2"
+			_gsxv4 = /*line toggle-group.gsx:142:5*/ "h-8 min-w-8 px-2.5 has-[>svg]:px-2 group-data-[spacing=0]/toggle-group:has-[>svg]:px-2"
 		}
 		var _gsxv5 string
-		switch sp {
-		case "2":
-			_gsxv5 = "isolate"
+		switch /*line toggle-group.gsx:144:11*/ sp {
+		case /*line toggle-group.gsx:145:9*/ "2":
+			_gsxv5 = /*line toggle-group.gsx:146:5*/ "isolate"
 		default:
-			_gsxv5 = "rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s"
+			_gsxv5 = /*line toggle-group.gsx:148:5*/ "rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s"
 		}
 		var _gsxv6 string
-		switch orientation {
+		switch /*line toggle-group.gsx:150:11*/ orientation {
 		default:
-			_gsxv6 = "data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg"
+			_gsxv6 = /*line toggle-group.gsx:150:34*/ "data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6), _gsxrt.Class(attrs.Class()))
@@ -253,7 +253,7 @@ func ToggleGroupItem(groupType string, variant string, size string, spacing stri
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
 //line toggle-group.gsx:156:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line toggle-group.gsx:156:5*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})

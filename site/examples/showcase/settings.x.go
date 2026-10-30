@@ -107,7 +107,7 @@ func SettingsCard() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "home-showcase-density"}}))
 //line settings.gsx:34:5
-				_gsxgw.Node(ctx, ui.Slider(40, 0, 100, 10, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "home-showcase-density"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Density"}})))
+				_gsxgw.Node(ctx, ui.Slider( /*line settings.gsx:34:50*/ 40 /*line settings.gsx:34:59*/, 0 /*line settings.gsx:34:67*/, 100 /*line settings.gsx:34:78*/, 10, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "home-showcase-density"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Density"}})))
 				_gsxgw.S("</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex flex-col gap-4"}}))

@@ -35,7 +35,7 @@ func _gsxrendersiteHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string
 //line document.gsx:12:3
 	_gsxgw.S("<title>")
 //line document.gsx:12:10
-	_gsxgw.Text(string(title))
+	_gsxgw.Text(string( /*line document.gsx:12:12*/ title))
 	_gsxgw.S(" · gsxui</title>")
 //line document.gsx:16:3
 	_gsxgw.S("<link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\"")
@@ -56,7 +56,7 @@ func _gsxrendersiteHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string
 //line document.gsx:32:3
 	v := vite.FromContext(ctx)
 //line document.gsx:33:3
-	if v.Dev() {
+	if /*line document.gsx:33:8*/ v.Dev() {
 //line document.gsx:34:4
 		_gsxgw.S("<style")
 		_gsxgw.Nonce(ctx)
@@ -69,28 +69,28 @@ func _gsxrendersiteHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string
 //line document.gsx:65:3
 	assets := v.Entry(entry)
 //line document.gsx:66:3
-	for _, href := range assets.CSS {
+	for /*line document.gsx:66:9*/ _, href := range assets.CSS {
 //line document.gsx:67:4
 		_gsxgw.S("<link rel=\"stylesheet\" href=\"")
-		_gsxgw.URL(string(href))
+		_gsxgw.URL(string( /*line document.gsx:67:33*/ href))
 		_gsxgw.S("\"")
 		_gsxgw.Nonce(ctx)
 		_gsxgw.S(">")
 	}
 //line document.gsx:69:3
-	for _, src := range assets.Preloads {
+	for /*line document.gsx:69:9*/ _, src := range assets.Preloads {
 //line document.gsx:70:4
 		_gsxgw.S("<link rel=\"modulepreload\" href=\"")
-		_gsxgw.URL(string(src))
+		_gsxgw.URL(string( /*line document.gsx:70:36*/ src))
 		_gsxgw.S("\"")
 		_gsxgw.Nonce(ctx)
 		_gsxgw.S(">")
 	}
 //line document.gsx:72:3
-	for _, src := range assets.JS {
+	for /*line document.gsx:72:9*/ _, src := range assets.JS {
 //line document.gsx:73:4
 		_gsxgw.S("<script type=\"module\" src=\"")
-		_gsxgw.URL(string(src))
+		_gsxgw.URL(string( /*line document.gsx:73:31*/ src))
 		_gsxgw.S("\"")
 		_gsxgw.Nonce(ctx)
 		_gsxgw.S("></script>")

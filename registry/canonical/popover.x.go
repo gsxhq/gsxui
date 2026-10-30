@@ -20,14 +20,14 @@ func Popover(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line popover.gsx:8:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(popover.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line popover.gsx:8:15*/ popover.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-popover"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover", true)
 		_gsxgw.S(">")
 //line popover.gsx:8:69
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line popover.gsx:8:71*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -51,7 +51,7 @@ func PopoverTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-trigger", true)
 		_gsxgw.S(">")
 //line popover.gsx:18:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line popover.gsx:18:5*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -76,14 +76,14 @@ func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(popover.Content()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line popover.gsx:28:11*/ popover.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-popover-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-content", true)
 		_gsxgw.S(">")
 //line popover.gsx:32:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line popover.gsx:32:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

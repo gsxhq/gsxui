@@ -30,7 +30,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:17:2
 		_gsxgw.S("<div dir=\"rtl\">")
 //line rtl.gsx:18:3
-		_gsxgw.Node(ctx, uirtl.Calendar("single", RtlDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
+		_gsxgw.Node(ctx, uirtl.Calendar("single" /*line rtl.gsx:20:11*/, RtlDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line rtl.gsx:21:18*/, time.Sunday /*line rtl.gsx:22:21*/, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

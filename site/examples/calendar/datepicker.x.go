@@ -70,7 +70,7 @@ func DatePicker() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.PopoverContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line datepicker.gsx:52:5
-				_gsxgw.Node(ctx, ui.Calendar("single", DatePickerDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), _gsxrt.Attrs{{Key: "id", Value: "datepicker-calendar"}}))
+				_gsxgw.Node(ctx, ui.Calendar("single" /*line datepicker.gsx:55:13*/, DatePickerDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line datepicker.gsx:56:20*/, time.Sunday /*line datepicker.gsx:57:23*/, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), _gsxrt.Attrs{{Key: "id", Value: "datepicker-calendar"}}))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "w-auto p-0"}}))
 			return _gsxgw.Err()

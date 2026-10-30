@@ -249,13 +249,13 @@ func Full() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line full.gsx:81:5
-					_gsxgw.Node(ctx, ui.MenubarCheckboxItem(true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.MenubarCheckboxItem( /*line full.gsx:81:38*/ true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Always Show Bookmarks Bar")
 						return _gsxgw.Err()
 					}), nil))
 //line full.gsx:82:5
-					_gsxgw.Node(ctx, ui.MenubarCheckboxItem(false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.MenubarCheckboxItem( /*line full.gsx:82:38*/ false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Always Show Full URLs")
 						return _gsxgw.Err()
@@ -306,19 +306,19 @@ func Full() _gsxrt.Node {
 					_gsxgw.Node(ctx, ui.MenubarRadioGroup("benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line full.gsx:98:6
-						_gsxgw.Node(ctx, ui.MenubarRadioItem(false, "andy", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.MenubarRadioItem( /*line full.gsx:98:36*/ false, "andy", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Andy")
 							return _gsxgw.Err()
 						}), nil))
 //line full.gsx:99:6
-						_gsxgw.Node(ctx, ui.MenubarRadioItem(true, "benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.MenubarRadioItem( /*line full.gsx:99:36*/ true, "benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Benoit")
 							return _gsxgw.Err()
 						}), nil))
 //line full.gsx:100:6
-						_gsxgw.Node(ctx, ui.MenubarRadioItem(false, "luis", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.MenubarRadioItem( /*line full.gsx:100:36*/ false, "luis", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Luis")
 							return _gsxgw.Err()

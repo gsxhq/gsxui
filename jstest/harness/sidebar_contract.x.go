@@ -23,17 +23,17 @@ func _gsxrenderSidebarContractFrame(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, 
 		return _gsxerr
 	}
 //line sidebar_contract.gsx:9:2
-	_gsxgw.Node(ctx, ui.SidebarProvider(open, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+	_gsxgw.Node(ctx, ui.SidebarProvider( /*line sidebar_contract.gsx:9:28*/ open, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:10:3
-		_gsxgw.Node(ctx, ui.Sidebar(open, side, variant, collapsible, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Sidebar( /*line sidebar_contract.gsx:11:10*/ open /*line sidebar_contract.gsx:12:10*/, side /*line sidebar_contract.gsx:13:13*/, variant /*line sidebar_contract.gsx:14:17*/, collapsible, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:17:4
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line sidebar_contract.gsx:17:6*/, children)
 //line sidebar_contract.gsx:18:4
 			_gsxgw.Node(ctx, ui.SidebarRail(nil))
 			return _gsxgw.Err()
-		}), sidebarAttrs))
+		}), /*line sidebar_contract.gsx:15:6*/ sidebarAttrs))
 //line sidebar_contract.gsx:20:3
 		_gsxgw.Node(ctx, ui.SidebarInset(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
@@ -97,13 +97,13 @@ func _gsxrenderSidebarContractMenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 					_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:38:7
-						_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "sm", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.SidebarMenuButton( /*line sidebar_contract.gsx:38:49*/ true, "", "sm", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Small action")
 							return _gsxgw.Err()
 						}), nil))
 //line sidebar_contract.gsx:39:7
-						_gsxgw.Node(ctx, ui.SidebarMenuAction(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.SidebarMenuAction( /*line sidebar_contract.gsx:39:42*/ true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("…")
 							return _gsxgw.Err()
@@ -165,7 +165,7 @@ func _gsxrenderSidebarContractMenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 					_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:54:7
-						_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Tooltip link", "#tooltip-link", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.SidebarMenuButton( /*line sidebar_contract.gsx:57:18*/ true, "", "", "Tooltip link", "#tooltip-link", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Tooltip link")
 							return _gsxgw.Err()
@@ -188,7 +188,7 @@ func _gsxrenderSidebarContractMenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 							_gsxgw.Node(ctx, ui.SidebarMenuSubItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:67:9
-								_gsxgw.Node(ctx, ui.SidebarMenuSubButton("sm", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw.Node(ctx, ui.SidebarMenuSubButton("sm" /*line sidebar_contract.gsx:67:54*/, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 									_gsxgw.S("Child")
 									return _gsxgw.Err()
@@ -231,7 +231,7 @@ func _gsxrenderSidebarTokenFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 //line sidebar_contract.gsx:81:2
 	_gsxgw.S("<div style=\"--sidebar:rgb(1,2,3);--sidebar-foreground:rgb(4,5,6);--sidebar-primary:rgb(7,8,9);--sidebar-primary-foreground:rgb(10,11,12);--sidebar-accent:rgb(13,14,15);--sidebar-accent-foreground:rgb(16,17,18);--sidebar-border:rgb(19,20,21);--sidebar-ring:rgb(22,23,24)\">")
 //line sidebar_contract.gsx:84:3
-	_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+	_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:84:31*/, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:85:4
 		_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -259,7 +259,7 @@ func _gsxrenderSidebarTokenFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 					_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:93:8
-						_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.SidebarMenuButton( /*line sidebar_contract.gsx:93:40*/ true, "", "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Active")
 							return _gsxgw.Err()
@@ -308,7 +308,7 @@ func _gsxrenderSidebarCallerFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) 
 		return _gsxerr
 	}
 //line sidebar_contract.gsx:109:2
-	_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+	_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:110:9*/, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:113:3
 		_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -334,7 +334,7 @@ func _gsxrenderSidebarCallerFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) 
 			return _gsxgw.Err()
 		}), nil))
 		return _gsxgw.Err()
-	}), gsx.Attrs{{Key: "class", Value: "w-80"}}))
+	}), /*line sidebar_contract.gsx:111:17*/ gsx.Attrs{{Key: "class", Value: "w-80"}}))
 	return _gsxgw.Err()
 }
 
@@ -343,10 +343,10 @@ func SidebarContractFixture(name string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:125:2
-		switch name {
-		case "offcanvas-left":
+		switch /*line sidebar_contract.gsx:125:11*/ name {
+		case /*line sidebar_contract.gsx:126:7*/ "offcanvas-left":
 //line sidebar_contract.gsx:127:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, true, "left", "", "offcanvas", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:127:31*/, true, "left", "", "offcanvas", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:128:4
 				_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -356,9 +356,9 @@ func SidebarContractFixture(name string) _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-		case "offcanvas-right":
+		case /*line sidebar_contract.gsx:130:7*/ "offcanvas-right":
 //line sidebar_contract.gsx:131:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, false, "right", "", "offcanvas", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:131:31*/, false, "right", "", "offcanvas", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:132:4
 				_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -368,9 +368,9 @@ func SidebarContractFixture(name string) _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-		case "none":
+		case /*line sidebar_contract.gsx:134:7*/ "none":
 //line sidebar_contract.gsx:135:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, false, "right", "inset", "none", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:135:31*/, false, "right", "inset", "none", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:136:4
 				_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -380,65 +380,65 @@ func SidebarContractFixture(name string) _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-		case "icon-sidebar":
+		case /*line sidebar_contract.gsx:138:7*/ "icon-sidebar":
 //line sidebar_contract.gsx:139:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, false, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:139:31*/, false, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:140:4
 				_gsxgw.NodeResult(_gsxrenderSidebarContractMenu(ctx, _gsxgw))
 				return _gsxgw.Err()
 			}), nil))
-		case "icon-floating":
+		case /*line sidebar_contract.gsx:142:7*/ "icon-floating":
 //line sidebar_contract.gsx:143:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, false, "", "floating", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:143:31*/, false, "", "floating", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:144:4
 				_gsxgw.NodeResult(_gsxrenderSidebarContractMenu(ctx, _gsxgw))
 				return _gsxgw.Err()
 			}), nil))
-		case "inset-collapsed":
+		case /*line sidebar_contract.gsx:146:7*/ "inset-collapsed":
 //line sidebar_contract.gsx:147:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, false, "", "inset", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:147:31*/, false, "", "inset", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:148:4
 				_gsxgw.NodeResult(_gsxrenderSidebarContractMenu(ctx, _gsxgw))
 				return _gsxgw.Err()
 			}), nil))
-		case "menu-icon":
+		case /*line sidebar_contract.gsx:150:7*/ "menu-icon":
 //line sidebar_contract.gsx:151:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, false, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:151:31*/, false, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:152:4
 				_gsxgw.NodeResult(_gsxrenderSidebarContractMenu(ctx, _gsxgw))
 				return _gsxgw.Err()
 			}), nil))
-		case "menu-expanded":
+		case /*line sidebar_contract.gsx:154:7*/ "menu-expanded":
 //line sidebar_contract.gsx:155:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, true, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:155:31*/, true, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:156:4
 				_gsxgw.NodeResult(_gsxrenderSidebarContractMenu(ctx, _gsxgw))
 				return _gsxgw.Err()
 			}), nil))
-		case "tokens":
+		case /*line sidebar_contract.gsx:158:7*/ "tokens":
 //line sidebar_contract.gsx:159:3
 			_gsxgw.NodeResult(_gsxrenderSidebarTokenFixture(ctx, _gsxgw))
-		case "caller":
+		case /*line sidebar_contract.gsx:160:7*/ "caller":
 //line sidebar_contract.gsx:161:3
 			_gsxgw.NodeResult(_gsxrenderSidebarCallerFixture(ctx, _gsxgw))
-		case "mobile":
+		case /*line sidebar_contract.gsx:162:7*/ "mobile":
 //line sidebar_contract.gsx:163:3
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:163:31*/, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:164:4
 				_gsxgw.NodeResult(_gsxrenderSidebarContractMenu(ctx, _gsxgw))
 				return _gsxgw.Err()
 			}), nil))
-		case "keyboard":
+		case /*line sidebar_contract.gsx:166:7*/ "keyboard":
 //line sidebar_contract.gsx:167:3
 			_gsxgw.S("<div>")
 //line sidebar_contract.gsx:168:4
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:168:32*/, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:169:5
 				_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -449,7 +449,7 @@ func SidebarContractFixture(name string) _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line sidebar_contract.gsx:171:4
-			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.NodeResult(_gsxrenderSidebarContractFrame(ctx, _gsxgw /*line sidebar_contract.gsx:171:32*/, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar_contract.gsx:172:5
 				_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {

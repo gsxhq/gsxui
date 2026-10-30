@@ -32,62 +32,62 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		return _gsxerr
 	}
 //line button.gsx:12:2
-	if href != "" && !disabled {
+	if /*line button.gsx:12:7*/ href != "" && !disabled {
 //line button.gsx:13:3
 		_gsxgw.S("<a")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line button.gsx:14:29*/ _gsxstd.Default(( /*line button.gsx:14:18*/ variant) /*line button.gsx:14:37*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.AttrValue(string( /*line button.gsx:15:23*/ _gsxstd.Default(( /*line button.gsx:15:15*/ size) /*line button.gsx:15:31*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("href") {
 			_gsxgw.S(" href=\"")
-			_gsxgw.URL(string(href))
+			_gsxgw.URL(string( /*line button.gsx:16:10*/ href))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line button.gsx:17:12*/ "group/button"), _gsxrt.Class( /*line button.gsx:17:28*/ button.Root()), _gsxrt.Class( /*line button.gsx:17:43*/ button.Variant(variant)), _gsxrt.Class( /*line button.gsx:17:68*/ button.Size(size)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
 //line button.gsx:21:4
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line button.gsx:21:6*/, children)
 		_gsxgw.S("</a>")
 	} else {
 //line button.gsx:24:3
 		_gsxgw.S("<button")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line button.gsx:25:29*/ _gsxstd.Default(( /*line button.gsx:25:18*/ variant) /*line button.gsx:25:37*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.AttrValue(string( /*line button.gsx:26:23*/ _gsxstd.Default(( /*line button.gsx:26:15*/ size) /*line button.gsx:26:31*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
 		if !attrs.Has("disabled") {
-			_gsxgw.BoolAttr("disabled", bool(disabled))
+			_gsxgw.BoolAttr("disabled", bool( /*line button.gsx:28:14*/ disabled))
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line button.gsx:29:12*/ "group/button"), _gsxrt.Class( /*line button.gsx:29:28*/ button.Root()), _gsxrt.Class( /*line button.gsx:29:43*/ button.Variant(variant)), _gsxrt.Class( /*line button.gsx:29:68*/ button.Size(size)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
 //line button.gsx:33:4
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line button.gsx:33:6*/, children)
 		_gsxgw.S("</button>")
 	}
 	return _gsxgw.Err()

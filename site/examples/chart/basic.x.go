@@ -32,10 +32,10 @@ func Basic() _gsxrt.Node {
 			{"month": "Mar", "desktop": 237.0, "mobile": 120.0},
 		}
 //line basic.gsx:24:2
-		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Chart( /*line basic.gsx:24:20*/ cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:25:3
-			_gsxgw.Node(ctx, ui.BarChart(data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.BarChart( /*line basic.gsx:25:22*/ data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:26:4
 				_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, false))

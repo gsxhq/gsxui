@@ -33,7 +33,7 @@ func Form() _gsxrt.Node {
 //line form.gsx:20:2
 		_gsxgw.S("<form class=\"flex max-w-xs flex-col gap-4\">")
 //line form.gsx:21:3
-		_gsxgw.Node(ctx, ui.Calendar("single", FormDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "date", *new(_gsxty2.CalendarLocale), nil))
+		_gsxgw.Node(ctx, ui.Calendar("single" /*line form.gsx:23:11*/, FormDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line form.gsx:25:18*/, time.Sunday /*line form.gsx:26:21*/, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "date", *new(_gsxty2.CalendarLocale), nil))
 //line form.gsx:29:3
 		_gsxgw.S("<div class=\"flex flex-col gap-2\">")
 //line form.gsx:30:4
@@ -60,13 +60,13 @@ func Form() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line form.gsx:36:7
-					_gsxgw.Node(ctx, ui.ComboboxItem("next.js", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("next.js" /*line form.gsx:36:50*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Next.js")
 						return _gsxgw.Err()
 					}), nil))
 //line form.gsx:37:7
-					_gsxgw.Node(ctx, ui.ComboboxItem("sveltekit", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("sveltekit" /*line form.gsx:37:52*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("SvelteKit")
 						return _gsxgw.Err()

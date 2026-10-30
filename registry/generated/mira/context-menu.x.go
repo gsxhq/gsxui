@@ -73,14 +73,14 @@ func ContextMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:62:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:62:15*/ "contents"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:62:70
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:62:72*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -106,7 +106,7 @@ func ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-trigger", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:72:57
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:72:59*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -132,7 +132,7 @@ func ContextMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:88:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class("transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-32 rounded-lg p-1 shadow-md ring-1 duration-100"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:90:4*/ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class( /*line context-menu.gsx:91:4*/ "transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-32 rounded-lg p-1 shadow-md ring-1 duration-100"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
@@ -151,7 +151,7 @@ func ContextMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-content", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:100:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:100:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -170,21 +170,21 @@ func ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:110:2
 		_gsxgw.S("<div")
-		_gsxv0 := "group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"
-		_gsxv1 := "focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs/relaxed data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex data-disabled:pointer-events-none"
+		_gsxv0 := /*line context-menu.gsx:112:4*/ "group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"
+		_gsxv1 := /*line context-menu.gsx:113:4*/ "focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs/relaxed data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex data-disabled:pointer-events-none"
 		var _gsxv2 string
-		switch variant {
-		case "destructive":
-			_gsxv2 = "text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
+		switch /*line context-menu.gsx:114:11*/ variant {
+		case /*line context-menu.gsx:115:9*/ "destructive":
+			_gsxv2 = /*line context-menu.gsx:116:5*/ "text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
 		default:
-			_gsxv2 = "text-foreground"
+			_gsxv2 = /*line context-menu.gsx:118:5*/ "text-foreground"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line context-menu.gsx:121:28*/ _gsxstd.Default(( /*line context-menu.gsx:121:17*/ variant) /*line context-menu.gsx:121:36*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("role") {
@@ -198,7 +198,7 @@ func ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-item", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:127:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:127:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -228,7 +228,7 @@ func ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-group", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:139:68
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:139:70*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -255,17 +255,17 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:156:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground min-h-7 gap-2 rounded-md py-1.5 pr-8 pl-2 text-xs data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:158:4*/ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class( /*line context-menu.gsx:159:4*/ "data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground min-h-7 gap-2 rounded-md py-1.5 pr-8 pl-2 text-xs data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line context-menu.gsx:162:15*/ value))
 			_gsxgw.S("\"")
 		}
-		if checked {
+		if /*line context-menu.gsx:163:8*/ checked {
 			if !attrs.Has("aria-checked") {
 				_gsxgw.S(" aria-checked=\"true\"")
 			}
@@ -289,7 +289,7 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		_gsxgw.S(">")
 //line context-menu.gsx:174:3
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:176:5*/ "pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-checkbox-item-indicator", true)
 		_gsxgw.S(">")
@@ -297,7 +297,7 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		_gsxgw.Node(ctx, icon.Check())
 		_gsxgw.S("</span>")
 //line context-menu.gsx:182:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:182:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -322,7 +322,7 @@ func ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gs
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line context-menu.gsx:195:15*/ value))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
@@ -331,7 +331,7 @@ func ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-radio-group", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:199:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:199:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -354,17 +354,17 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:213:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground min-h-7 gap-2 rounded-md py-1.5 pr-8 pl-2 text-xs data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:215:4*/ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class( /*line context-menu.gsx:216:4*/ "data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground min-h-7 gap-2 rounded-md py-1.5 pr-8 pl-2 text-xs data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line context-menu.gsx:219:15*/ value))
 			_gsxgw.S("\"")
 		}
-		if checked {
+		if /*line context-menu.gsx:220:8*/ checked {
 			if !attrs.Has("aria-checked") {
 				_gsxgw.S(" aria-checked=\"true\"")
 			}
@@ -388,7 +388,7 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		_gsxgw.S(">")
 //line context-menu.gsx:231:3
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:233:5*/ "pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-radio-item-indicator", true)
 		_gsxgw.S(">")
@@ -396,7 +396,7 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		_gsxgw.Node(ctx, icon.Circle())
 		_gsxgw.S("</span>")
 //line context-menu.gsx:239:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:239:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -416,14 +416,14 @@ func ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:250:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground px-2 py-1.5 text-xs data-inset:pl-7.5"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:251:11*/ "text-muted-foreground px-2 py-1.5 text-xs data-inset:pl-7.5"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-label", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:255:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:255:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -435,7 +435,7 @@ func ContextMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:260:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border/50 -mx-1 my-1 h-px"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:261:11*/ "bg-border/50 -mx-1 my-1 h-px"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
@@ -454,14 +454,14 @@ func ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:269:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground group-focus/context-menu-item:text-accent-foreground ml-auto text-[0.625rem] tracking-widest"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:271:4*/ "text-muted-foreground group-focus/context-menu-item:text-accent-foreground ml-auto text-[0.625rem] tracking-widest"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-shortcut"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-shortcut", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:276:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:276:5*/, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
@@ -482,14 +482,14 @@ func ContextMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:288:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:288:15*/ "contents"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-sub"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:288:74
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:288:76*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -515,7 +515,7 @@ func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:304:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:306:4*/ "cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class( /*line context-menu.gsx:307:4*/ "focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")
@@ -537,7 +537,7 @@ func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub-trigger", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:317:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:317:5*/, children)
 //line context-menu.gsx:318:3
 		_gsxgw.Node(ctx, icon.ChevronRight())
 		_gsxgw.S("</div>")
@@ -567,7 +567,7 @@ func ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:337:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class("transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-32 rounded-lg p-1 shadow-md ring-1 duration-100"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:339:4*/ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class( /*line context-menu.gsx:340:4*/ "transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-32 rounded-lg p-1 shadow-md ring-1 duration-100"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
@@ -589,7 +589,7 @@ func ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub-content", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:350:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:350:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

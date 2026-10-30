@@ -33,7 +33,7 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line rtl.gsx:16:4
-			_gsxgw.Node(ctx, uirtl.ResizableHandle("horizontal", true, nil))
+			_gsxgw.Node(ctx, uirtl.ResizableHandle("horizontal" /*line rtl.gsx:16:64*/, true, nil))
 //line rtl.gsx:17:4
 			_gsxgw.Node(ctx, uirtl.ResizablePanel("50%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -50,7 +50,7 @@ func Rtl() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:24:6
-					_gsxgw.Node(ctx, uirtl.ResizableHandle("vertical", true, nil))
+					_gsxgw.Node(ctx, uirtl.ResizableHandle("vertical" /*line rtl.gsx:24:64*/, true, nil))
 //line rtl.gsx:25:6
 					_gsxgw.Node(ctx, uirtl.ResizablePanel("75%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)

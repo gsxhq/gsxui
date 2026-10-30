@@ -20,14 +20,14 @@ func Popover(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line popover.gsx:8:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line popover.gsx:8:15*/ "contents"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-popover"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover", true)
 		_gsxgw.S(">")
 //line popover.gsx:8:65
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line popover.gsx:8:67*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -51,7 +51,7 @@ func PopoverTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-trigger", true)
 		_gsxgw.S(">")
 //line popover.gsx:18:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line popover.gsx:18:5*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -76,14 +76,14 @@ func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/5 [&:popover-open]:flex flex-col gap-4 rounded-2xl p-4 text-sm shadow-2xl ring-1 duration-100 w-72 origin-top outline-hidden"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line popover.gsx:29:4*/ "transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/5 [&:popover-open]:flex flex-col gap-4 rounded-2xl p-4 text-sm shadow-2xl ring-1 duration-100 w-72 origin-top outline-hidden"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-popover-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-content", true)
 		_gsxgw.S(">")
 //line popover.gsx:34:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line popover.gsx:34:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

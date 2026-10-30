@@ -31,7 +31,7 @@ func Rtl() _gsxrt.Node {
 			_gsxgw.Node(ctx, uirtl.CarouselContent("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:16:5
-				for _, n := range rtlSlides {
+				for /*line rtl.gsx:16:11*/ _, n := range rtlSlides {
 //line rtl.gsx:17:6
 					_gsxgw.Node(ctx, uirtl.CarouselItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
@@ -46,7 +46,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:21:10
 								_gsxgw.S("<span class=\"text-4xl font-semibold\">")
 //line rtl.gsx:21:47
-								_gsxgw.Text(string(n))
+								_gsxgw.Text(string( /*line rtl.gsx:21:49*/ n))
 								_gsxgw.S("</span>")
 								return _gsxgw.Err()
 							}), _gsxrt.Attrs{{Key: "class", Value: "flex aspect-square items-center justify-center p-6"}}))

@@ -41,7 +41,7 @@ func Checkbox(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" type=\"checkbox\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(checkbox.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line checkbox.gsx:27:11*/ checkbox.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-checkbox"})

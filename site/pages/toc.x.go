@@ -32,13 +32,13 @@ func _gsxrenderdocHeading(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, item docTO
 //line toc.gsx:12:2
 	headingAttrs := attrs.WithoutFold("id", "data-doc-heading", "tabindex")
 //line toc.gsx:13:2
-	if item.Depth == 3 {
+	if /*line toc.gsx:13:7*/ item.Depth == 3 {
 //line toc.gsx:14:3
-		_gsxv0 := headingAttrs
+		_gsxv0 := /*line toc.gsx:19:6*/ headingAttrs
 		_gsxgw.S("<h3")
 		if !_gsxv0.Has("id") {
 			_gsxgw.S(" id=\"")
-			_gsxgw.AttrValue(string(item.ID))
+			_gsxgw.AttrValue(string( /*line toc.gsx:15:8*/ item.ID))
 			_gsxgw.S("\"")
 		}
 		if !_gsxv0.Has("data-doc-heading") {
@@ -54,15 +54,15 @@ func _gsxrenderdocHeading(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, item docTO
 		_gsxgw.Spread(ctx, "h3", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style"})
 		_gsxgw.S(">")
 //line toc.gsx:21:4
-		_gsxgw.Text(string(item.Title))
+		_gsxgw.Text(string( /*line toc.gsx:21:6*/ item.Title))
 		_gsxgw.S("</h3>")
 	} else {
 //line toc.gsx:24:3
-		_gsxv1 := headingAttrs
+		_gsxv1 := /*line toc.gsx:29:6*/ headingAttrs
 		_gsxgw.S("<h2")
 		if !_gsxv1.Has("id") {
 			_gsxgw.S(" id=\"")
-			_gsxgw.AttrValue(string(item.ID))
+			_gsxgw.AttrValue(string( /*line toc.gsx:25:8*/ item.ID))
 			_gsxgw.S("\"")
 		}
 		if !_gsxv1.Has("data-doc-heading") {
@@ -78,7 +78,7 @@ func _gsxrenderdocHeading(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, item docTO
 		_gsxgw.Spread(ctx, "h2", _gsxv1, _gsxrt.AttrSinks{}, []string{"class", "style"})
 		_gsxgw.S(">")
 //line toc.gsx:31:4
-		_gsxgw.Text(string(item.Title))
+		_gsxgw.Text(string( /*line toc.gsx:31:6*/ item.Title))
 		_gsxgw.S("</h2>")
 	}
 	return _gsxgw.Err()
@@ -103,17 +103,17 @@ func _gsxrenderdocTableOfContents(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, it
 //line toc.gsx:39:3
 	_gsxgw.S("<div class=\"flex flex-col gap-2\">")
 //line toc.gsx:40:4
-	for _, item := range items {
+	for /*line toc.gsx:40:10*/ _, item := range items {
 //line toc.gsx:41:5
 		_gsxgw.S("<a")
 		_gsxgw.BoolAttr("data-site-toc-link", true)
 		_gsxgw.S(" href=\"")
-		_gsxgw.URL(string("#" + item.ID))
+		_gsxgw.URL(string( /*line toc.gsx:43:12*/ "#" + item.ID))
 		_gsxgw.S("\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground transition-colors hover:text-foreground data-[active]:font-medium data-[active]:text-foreground"), _gsxrt.ClassIf("pl-3", item.Depth == 3))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toc.gsx:45:7*/ "text-muted-foreground transition-colors hover:text-foreground data-[active]:font-medium data-[active]:text-foreground"), _gsxrt.ClassIf( /*line toc.gsx:46:7*/ "pl-3" /*line toc.gsx:46:15*/, item.Depth == 3))
 		_gsxgw.S("\">")
 //line toc.gsx:49:6
-		_gsxgw.Text(string(item.Title))
+		_gsxgw.Text(string( /*line toc.gsx:49:8*/ item.Title))
 		_gsxgw.S("</a>")
 	}
 	_gsxgw.S("</div></nav>")

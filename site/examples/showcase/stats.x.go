@@ -62,7 +62,7 @@ func StatsCard() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line stats.gsx:22:6
-					_gsxgw.Node(ctx, ui.AvatarImage(_gsxstd.DataURL((showcaseAvatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
+					_gsxgw.Node(ctx, ui.AvatarImage( /*line stats.gsx:22:48*/ _gsxstd.DataURL(( /*line stats.gsx:22:27*/ showcaseAvatarSVG) /*line stats.gsx:22:56*/, "image/svg+xml"), "Ada Lovelace", nil))
 //line stats.gsx:23:6
 					_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
@@ -86,7 +86,7 @@ func StatsCard() _gsxrt.Node {
 //line stats.gsx:33:6
 				_gsxgw.S("<span class=\"text-muted-foreground\">72%</span></div>")
 //line stats.gsx:35:5
-				_gsxgw.Node(ctx, ui.Progress(72, nil))
+				_gsxgw.Node(ctx, ui.Progress( /*line stats.gsx:35:25*/ 72, nil))
 				_gsxgw.S("</div>")
 //line stats.gsx:37:4
 				_gsxgw.S("<div class=\"grid gap-2\">")
@@ -97,7 +97,7 @@ func StatsCard() _gsxrt.Node {
 //line stats.gsx:40:6
 				_gsxgw.S("<span class=\"text-muted-foreground\">31%</span></div>")
 //line stats.gsx:42:5
-				_gsxgw.Node(ctx, ui.Progress(31, nil))
+				_gsxgw.Node(ctx, ui.Progress( /*line stats.gsx:42:25*/ 31, nil))
 				_gsxgw.S("</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex flex-col gap-4"}}))

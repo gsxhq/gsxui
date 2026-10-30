@@ -32,7 +32,7 @@ func Basic() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:16:3
-			_gsxgw.Node(ctx, ui.ResizableHandle("horizontal", true, nil))
+			_gsxgw.Node(ctx, ui.ResizableHandle("horizontal" /*line basic.gsx:16:60*/, true, nil))
 //line basic.gsx:17:3
 			_gsxgw.Node(ctx, ui.ResizablePanel("50%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -49,7 +49,7 @@ func Basic() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line basic.gsx:24:5
-					_gsxgw.Node(ctx, ui.ResizableHandle("vertical", true, nil))
+					_gsxgw.Node(ctx, ui.ResizableHandle("vertical" /*line basic.gsx:24:60*/, true, nil))
 //line basic.gsx:25:5
 					_gsxgw.Node(ctx, ui.ResizablePanel("75%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)

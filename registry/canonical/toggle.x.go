@@ -78,33 +78,33 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		}
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line toggle.gsx:62:28*/ _gsxstd.Default(( /*line toggle.gsx:62:17*/ variant) /*line toggle.gsx:62:36*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.AttrValue(string( /*line toggle.gsx:63:22*/ _gsxstd.Default(( /*line toggle.gsx:63:14*/ size) /*line toggle.gsx:63:30*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
-			_gsxgw.AttrValue(string(state))
+			_gsxgw.AttrValue(string( /*line toggle.gsx:64:15*/ state))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("aria-pressed") {
 			_gsxgw.S(" aria-pressed=\"")
-			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
+			_gsxgw.S(_gsxsc.FormatBool(bool( /*line toggle.gsx:65:17*/ pressed)))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toggle.Root()), _gsxrt.Class(toggle.Variant(variant)), _gsxrt.Class(toggle.Size(size)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toggle.gsx:66:11*/ toggle.Root()), _gsxrt.Class( /*line toggle.gsx:66:26*/ toggle.Variant(variant)), _gsxrt.Class( /*line toggle.gsx:66:51*/ toggle.Size(size)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
 //line toggle.gsx:70:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line toggle.gsx:70:5*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})

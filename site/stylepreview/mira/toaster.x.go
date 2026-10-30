@@ -46,7 +46,7 @@ func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line toaster.gsx:36:2
 		_gsxgw.S("<section aria-label=\"")
-		_gsxgw.AttrValue(string(i18n.T("Notifications")))
+		_gsxgw.AttrValue(string( /*line toaster.gsx:36:23*/ i18n.T("Notifications")))
 		_gsxgw.S("\" tabindex=\"-1\">")
 //line toaster.gsx:37:3
 		_gsxgw.S("<ol")
@@ -54,7 +54,7 @@ func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" id=\"gsxui-toaster\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toaster.gsx:39:12*/ "[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "ol", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toaster"})

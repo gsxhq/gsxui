@@ -31,14 +31,14 @@ func _gsxrenderLabel(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.No
 	}
 //line label.gsx:11:2
 	_gsxgw.S("<label class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(label.Root()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line label.gsx:11:17*/ label.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "label", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-label"})
 	_gsxgw.BoolAttr("data-gsxui-slot-label", true)
 	_gsxgw.S(">")
 //line label.gsx:12:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line label.gsx:12:5*/, children)
 	_gsxgw.S("</label>")
 	return _gsxgw.Err()
 }

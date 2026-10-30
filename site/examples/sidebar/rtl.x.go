@@ -25,10 +25,10 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:15:2
 		_gsxgw.S("<div dir=\"rtl\">")
 //line rtl.gsx:16:3
-		_gsxgw.Node(ctx, uirtl.SidebarProvider(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, uirtl.SidebarProvider( /*line rtl.gsx:16:32*/ true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:17:4
-			_gsxgw.Node(ctx, uirtl.Sidebar(true, "right", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, uirtl.Sidebar( /*line rtl.gsx:17:25*/ true, "right", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:5
 				_gsxgw.Node(ctx, uirtl.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -61,7 +61,7 @@ func Rtl() _gsxrt.Node {
 								_gsxgw.Node(ctx, uirtl.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:28:10
-									_gsxgw.Node(ctx, uirtl.SidebarMenuButton(true, "", "", "الرئيسية", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, uirtl.SidebarMenuButton( /*line rtl.gsx:28:45*/ true, "", "", "الرئيسية", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:11
 										_gsxgw.Node(ctx, icon.House())

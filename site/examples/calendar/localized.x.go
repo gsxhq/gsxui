@@ -68,7 +68,7 @@ func Localized(month time.Time) _gsxrt.Node {
 //line localized.gsx:56:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\">")
 //line localized.gsx:57:3
-		_gsxgw.Node(ctx, uirtl.Calendar("single", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Saturday, true, "dropdown", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", Arabic, nil))
+		_gsxgw.Node(ctx, uirtl.Calendar("single" /*line localized.gsx:59:11*/, month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line localized.gsx:60:18*/, time.Saturday /*line localized.gsx:61:21*/, true, "dropdown", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "" /*line localized.gsx:63:12*/, Arabic, nil))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

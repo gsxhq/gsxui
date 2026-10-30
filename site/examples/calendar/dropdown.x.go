@@ -38,7 +38,7 @@ func Dropdown() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dropdown.gsx:27:2
-		_gsxgw.Node(ctx, ui.Calendar("single", DropdownDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "dropdown", 1980, 2030, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
+		_gsxgw.Node(ctx, ui.Calendar("single" /*line dropdown.gsx:29:10*/, DropdownDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line dropdown.gsx:30:17*/, time.Sunday /*line dropdown.gsx:31:20*/, true, "dropdown" /*line dropdown.gsx:33:13*/, 1980 /*line dropdown.gsx:34:11*/, 2030, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
 		return _gsxgw.Err()
 	})
 }

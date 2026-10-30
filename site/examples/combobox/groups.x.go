@@ -53,7 +53,7 @@ func Groups() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line groups.gsx:31:5
-					for i, g := range fruitGroups {
+					for /*line groups.gsx:31:11*/ i, g := range fruitGroups {
 //line groups.gsx:32:6
 						_gsxgw.Node(ctx, ui.ComboboxGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
@@ -61,23 +61,23 @@ func Groups() _gsxrt.Node {
 							_gsxgw.Node(ctx, ui.ComboboxLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 //line groups.gsx:33:25
-								_gsxgw.Text(string(g.Label))
+								_gsxgw.Text(string( /*line groups.gsx:33:27*/ g.Label))
 								return _gsxgw.Err()
 							}), nil))
 //line groups.gsx:34:7
-							for _, f := range g.Items {
+							for /*line groups.gsx:34:13*/ _, f := range g.Items {
 //line groups.gsx:35:8
-								_gsxgw.Node(ctx, ui.ComboboxItem(f.Value, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw.Node(ctx, ui.ComboboxItem( /*line groups.gsx:35:32*/ f.Value /*line groups.gsx:35:51*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line groups.gsx:35:58
-									_gsxgw.Text(string(f.Label))
+									_gsxgw.Text(string( /*line groups.gsx:35:60*/ f.Label))
 									return _gsxgw.Err()
 								}), nil))
 							}
 							return _gsxgw.Err()
 						}), nil))
 //line groups.gsx:38:6
-						if i < len(fruitGroups)-1 {
+						if /*line groups.gsx:38:11*/ i < len(fruitGroups)-1 {
 //line groups.gsx:39:7
 							_gsxgw.Node(ctx, ui.ComboboxSeparator(nil))
 						}

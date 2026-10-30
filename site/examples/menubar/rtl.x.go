@@ -241,13 +241,13 @@ func Rtl() _gsxrt.Node {
 				_gsxgw.Node(ctx, uirtl.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:78:6
-					_gsxgw.Node(ctx, uirtl.MenubarCheckboxItem(true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.MenubarCheckboxItem( /*line rtl.gsx:78:42*/ true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("شريط الإشارات المرجعية")
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:79:6
-					_gsxgw.Node(ctx, uirtl.MenubarCheckboxItem(false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.MenubarCheckboxItem( /*line rtl.gsx:79:42*/ false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("عناوين URL الكاملة")
 						return _gsxgw.Err()
@@ -298,19 +298,19 @@ func Rtl() _gsxrt.Node {
 					_gsxgw.Node(ctx, uirtl.MenubarRadioGroup("benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:95:7
-						_gsxgw.Node(ctx, uirtl.MenubarRadioItem(false, "andy", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.MenubarRadioItem( /*line rtl.gsx:95:40*/ false, "andy", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Andy")
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:96:7
-						_gsxgw.Node(ctx, uirtl.MenubarRadioItem(true, "benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.MenubarRadioItem( /*line rtl.gsx:96:40*/ true, "benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Benoit")
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:97:7
-						_gsxgw.Node(ctx, uirtl.MenubarRadioItem(false, "luis", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.MenubarRadioItem( /*line rtl.gsx:97:40*/ false, "luis", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Luis")
 							return _gsxgw.Err()

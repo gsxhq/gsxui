@@ -34,7 +34,7 @@ func _gsxrenderInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs
 		_gsxgw.S(" type=\"text\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(input.Root()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input.gsx:12:11*/ input.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input"})

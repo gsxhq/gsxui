@@ -30,14 +30,14 @@ func _gsxrenderTextarea(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value string
 	}
 //line textarea.gsx:10:2
 	_gsxgw.S("<textarea class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(textarea.Root()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line textarea.gsx:11:11*/ textarea.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "textarea", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-textarea"})
 	_gsxgw.BoolAttr("data-gsxui-slot-textarea", true)
 	_gsxgw.S(">")
 //line textarea.gsx:14:3
-	_gsxgw.Text(string(value))
+	_gsxgw.Text(string( /*line textarea.gsx:14:5*/ value))
 	_gsxgw.S("</textarea>")
 	return _gsxgw.Err()
 }

@@ -51,19 +51,19 @@ func TriggerClear() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line trigger-clear.gsx:29:5
-					_gsxgw.Node(ctx, ui.ComboboxItem("go", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("go" /*line trigger-clear.gsx:29:43*/, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Go")
 						return _gsxgw.Err()
 					}), nil))
 //line trigger-clear.gsx:30:5
-					_gsxgw.Node(ctx, ui.ComboboxItem("rust", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("rust" /*line trigger-clear.gsx:30:45*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Rust")
 						return _gsxgw.Err()
 					}), nil))
 //line trigger-clear.gsx:31:5
-					_gsxgw.Node(ctx, ui.ComboboxItem("typescript", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("typescript" /*line trigger-clear.gsx:31:51*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("TypeScript")
 						return _gsxgw.Err()

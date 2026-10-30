@@ -32,18 +32,18 @@ func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<span")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line badge.gsx:18:28*/ _gsxstd.Default(( /*line badge.gsx:18:17*/ variant) /*line badge.gsx:18:36*/, "default")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(badge.Root()), _gsxrt.Class(badge.Variant(variant)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line badge.gsx:19:11*/ badge.Root()), _gsxrt.Class( /*line badge.gsx:19:25*/ badge.Variant(variant)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-badge"})
 		_gsxgw.BoolAttr("data-gsxui-slot-badge", true)
 		_gsxgw.S(">")
 //line badge.gsx:23:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line badge.gsx:23:5*/, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
