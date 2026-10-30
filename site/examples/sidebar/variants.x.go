@@ -77,7 +77,7 @@ func _gsxrendermenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:38:4
-			_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SidebarMenuButton( /*line variants.gsx:38:36*/ true, "", "", "Home", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:39:5
 				_gsxgw.Node(ctx, icon.House())
@@ -144,10 +144,10 @@ func _gsxrenderdemo(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side string, var
 		return _gsxerr
 	}
 //line variants.gsx:68:2
-	_gsxgw.Node(ctx, ui.SidebarProvider(open, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+	_gsxgw.Node(ctx, ui.SidebarProvider( /*line variants.gsx:68:28*/ open, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:69:3
-		_gsxgw.Node(ctx, ui.Sidebar(open, side, variant, collapsible, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Sidebar( /*line variants.gsx:69:21*/ open /*line variants.gsx:69:33*/, side /*line variants.gsx:69:48*/, variant /*line variants.gsx:69:70*/, collapsible, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:70:4
 			_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -169,7 +169,7 @@ func _gsxrenderdemo(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side string, var
 				return _gsxgw.Err()
 			}), nil))
 //line variants.gsx:78:4
-			if rail {
+			if /*line variants.gsx:78:9*/ rail {
 //line variants.gsx:79:5
 				_gsxgw.Node(ctx, ui.SidebarRail(nil))
 			}
@@ -202,7 +202,7 @@ func Variants() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:96:2
-		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "", true, true))
+		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "" /*line variants.gsx:96:48*/, true /*line variants.gsx:96:60*/, true))
 		return _gsxgw.Err()
 	})
 }
@@ -212,7 +212,7 @@ func VariantFloating() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:100:2
-		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "floating", "", true, true))
+		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "floating", "" /*line variants.gsx:100:56*/, true /*line variants.gsx:100:68*/, true))
 		return _gsxgw.Err()
 	})
 }
@@ -222,7 +222,7 @@ func VariantInset() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:104:2
-		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "inset", "", true, true))
+		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "inset", "" /*line variants.gsx:104:53*/, true /*line variants.gsx:104:65*/, true))
 		return _gsxgw.Err()
 	})
 }
@@ -232,7 +232,7 @@ func CollapsibleOffcanvas() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:108:2
-		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "offcanvas", true, true))
+		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "offcanvas" /*line variants.gsx:108:57*/, true /*line variants.gsx:108:69*/, true))
 		return _gsxgw.Err()
 	})
 }
@@ -242,7 +242,7 @@ func CollapsibleIcon() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:112:2
-		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "icon", true, true))
+		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "icon" /*line variants.gsx:112:52*/, true /*line variants.gsx:112:64*/, true))
 		return _gsxgw.Err()
 	})
 }
@@ -252,7 +252,7 @@ func CollapsibleNone() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:116:2
-		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "none", true, false))
+		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "none" /*line variants.gsx:116:52*/, true /*line variants.gsx:116:64*/, false))
 		return _gsxgw.Err()
 	})
 }
@@ -262,7 +262,7 @@ func RightCollapsed() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:120:2
-		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "right", "", "offcanvas", false, true))
+		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "right", "", "offcanvas" /*line variants.gsx:120:62*/, false /*line variants.gsx:120:75*/, true))
 		return _gsxgw.Err()
 	})
 }
@@ -272,7 +272,7 @@ func IconCollapsed() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:124:2
-		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "icon", false, true))
+		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "icon" /*line variants.gsx:124:52*/, false /*line variants.gsx:124:65*/, true))
 		return _gsxgw.Err()
 	})
 }

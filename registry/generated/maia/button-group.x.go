@@ -61,17 +61,17 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.AttrValue(string( /*line button-group.gsx:45:36*/ _gsxstd.Default(( /*line button-group.gsx:45:21*/ orientation) /*line button-group.gsx:45:44*/, "horizontal")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "group/button-group"
-		_gsxv1 := "flex w-fit items-stretch [&>*:focus-visible]:relative [&>*:focus-visible]:z-10 [&>input]:flex-1"
+		_gsxv0 := /*line button-group.gsx:47:4*/ "group/button-group"
+		_gsxv1 := /*line button-group.gsx:48:4*/ "flex w-fit items-stretch [&>*:focus-visible]:relative [&>*:focus-visible]:z-10 [&>input]:flex-1"
 		var _gsxv2 string
-		switch orientation {
-		case "vertical":
-			_gsxv2 = "flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:last-child)]:rounded-b-none [&>*:not(:first-child)]:border-t-0"
+		switch /*line button-group.gsx:49:11*/ orientation {
+		case /*line button-group.gsx:50:9*/ "vertical":
+			_gsxv2 = /*line button-group.gsx:51:5*/ "flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:last-child)]:rounded-b-none [&>*:not(:first-child)]:border-t-0"
 		default:
-			_gsxv2 = "flex-row [&>*:not(:first-child)]:rounded-s-none [&>*:not(:last-child)]:rounded-e-none [&>*:not(:first-child)]:border-s-0"
+			_gsxv2 = /*line button-group.gsx:53:5*/ "flex-row [&>*:not(:first-child)]:rounded-s-none [&>*:not(:last-child)]:rounded-e-none [&>*:not(:first-child)]:border-s-0"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -81,7 +81,7 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group", true)
 		_gsxgw.S(">")
 //line button-group.gsx:59:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line button-group.gsx:59:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -99,14 +99,14 @@ func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line button-group.gsx:68:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line button-group.gsx:70:4*/ "bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button-group-text"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group-text", true)
 		_gsxgw.S(">")
 //line button-group.gsx:75:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line button-group.gsx:75:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -129,7 +129,7 @@ func ButtonGroupSeparator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line button-group.gsx:90:2
-		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative m-0 self-stretch bg-input data-[orientation=vertical]:h-auto"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
+		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw /*line button-group.gsx:91:31*/, _gsxstd.Default(( /*line button-group.gsx:91:16*/ orientation) /*line button-group.gsx:91:39*/, "vertical"), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line button-group.gsx:92:11*/ "relative m-0 self-stretch bg-input data-[orientation=vertical]:h-auto"))}} /*line button-group.gsx:93:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

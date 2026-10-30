@@ -52,25 +52,25 @@ func Clear() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line clear.gsx:30:5
-					_gsxgw.Node(ctx, ui.ComboboxItem("go", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("go" /*line clear.gsx:30:43*/, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Go")
 						return _gsxgw.Err()
 					}), nil))
 //line clear.gsx:31:5
-					_gsxgw.Node(ctx, ui.ComboboxItem("rust", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("rust" /*line clear.gsx:31:45*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Rust")
 						return _gsxgw.Err()
 					}), nil))
 //line clear.gsx:32:5
-					_gsxgw.Node(ctx, ui.ComboboxItem("typescript", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("typescript" /*line clear.gsx:32:51*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("TypeScript")
 						return _gsxgw.Err()
 					}), nil))
 //line clear.gsx:33:5
-					_gsxgw.Node(ctx, ui.ComboboxItem("python", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("python" /*line clear.gsx:33:47*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Python")
 						return _gsxgw.Err()

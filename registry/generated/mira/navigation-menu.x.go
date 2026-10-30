@@ -58,7 +58,7 @@ func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:48:2
 		_gsxgw.S("<nav class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/navigation-menu"), _gsxrt.Class("max-w-max flex relative flex-1 items-center justify-center"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:49:11*/ "group/navigation-menu"), _gsxrt.Class( /*line navigation-menu.gsx:49:36*/ "max-w-max flex relative flex-1 items-center justify-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-viewport") {
 			_gsxgw.S(" data-viewport=\"false\"")
@@ -68,7 +68,7 @@ func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:54:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:54:5*/, children)
 		_gsxgw.S("</nav>")
 		return _gsxgw.Err()
 	})
@@ -86,14 +86,14 @@ func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:63:2
 		_gsxgw.S("<ul class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-0 flex list-none flex-1 items-center justify-center"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:64:11*/ "gap-0 flex list-none flex-1 items-center justify-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-list", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:68:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:68:5*/, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
@@ -112,14 +112,14 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:78:2
 		_gsxgw.S("<li class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:78:14*/ "relative"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-item", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:79:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:79:5*/, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
@@ -174,7 +174,7 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:125:2
 		_gsxgw.S("<button class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/navigation-menu-trigger"), _gsxrt.Class("hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/30 rounded-lg px-2.5 py-1.5 text-xs/relaxed font-medium transition-all focus-visible:ring-2 focus-visible:outline-1 disabled:opacity-50 inline-flex h-9 w-max items-center justify-center outline-none disabled:pointer-events-none"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:127:4*/ "group/navigation-menu-trigger"), _gsxrt.Class( /*line navigation-menu.gsx:128:4*/ "hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/30 rounded-lg px-2.5 py-1.5 text-xs/relaxed font-medium transition-all focus-visible:ring-2 focus-visible:outline-1 disabled:opacity-50 inline-flex h-9 w-max items-center justify-center outline-none disabled:pointer-events-none"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -190,11 +190,11 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:136:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:136:5*/, children)
 //line navigation-menu.gsx:136:15
-		_gsxgw.Text(string(" "))
+		_gsxgw.Text(string( /*line navigation-menu.gsx:136:17*/ " "))
 //line navigation-menu.gsx:137:3
-		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative top-px ml-1 size-3 transition duration-300 group-data-[state=open]/navigation-menu-trigger:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
+		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line navigation-menu.gsx:139:5*/ "relative top-px ml-1 size-3 transition duration-300 group-data-[state=open]/navigation-menu-trigger:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -271,7 +271,7 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:210:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("transition-none data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-1.5 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-xl group-data-[viewport=false]/navigation-menu:shadow-md group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300 group-data-[viewport=false]/navigation-menu:mt-1.5 origin-top-left"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:212:4*/ "transition-none data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-1.5 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-xl group-data-[viewport=false]/navigation-menu:shadow-md group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300 group-data-[viewport=false]/navigation-menu:mt-1.5 origin-top-left"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"manual\"")
@@ -287,7 +287,7 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-content", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:220:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:220:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -329,30 +329,30 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 		}
 //line navigation-menu.gsx:254:2
 		_gsxgw.S("<a")
-		_gsxv0 := "focus-visible:ring-ring/30 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground flex flex-col gap-1.5 rounded-lg p-2 text-xs/relaxed transition-all outline-none focus-visible:ring-2 focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 [[data-gsxui-slot-navigation-menu-content]_&]:rounded-md [&_svg:not([class*='text-'])]:text-muted-foreground"
+		_gsxv0 := /*line navigation-menu.gsx:256:4*/ "focus-visible:ring-ring/30 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground flex flex-col gap-1.5 rounded-lg p-2 text-xs/relaxed transition-all outline-none focus-visible:ring-2 focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 [[data-gsxui-slot-navigation-menu-content]_&]:rounded-md [&_svg:not([class*='text-'])]:text-muted-foreground"
 		var _gsxv1 string
-		switch linkVariant {
-		case "trigger":
-			_gsxv1 = "inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
+		switch /*line navigation-menu.gsx:257:11*/ linkVariant {
+		case /*line navigation-menu.gsx:258:9*/ "trigger":
+			_gsxv1 = /*line navigation-menu.gsx:259:5*/ "inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
 		default:
-			_gsxv1 = "outline-none"
+			_gsxv1 = /*line navigation-menu.gsx:261:5*/ "outline-none"
 		}
 		var _gsxv2 string
-		switch linkActive {
-		case "true":
-			_gsxv2 = "focus:bg-muted hover:bg-muted bg-muted/50"
+		switch /*line navigation-menu.gsx:263:11*/ linkActive {
+		case /*line navigation-menu.gsx:263:29*/ "true":
+			_gsxv2 = /*line navigation-menu.gsx:263:37*/ "focus:bg-muted hover:bg-muted bg-muted/50"
 		default:
-			_gsxv2 = "outline-none"
+			_gsxv2 = /*line navigation-menu.gsx:263:90*/ "outline-none"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(linkVariant))
+			_gsxgw.AttrValue(string( /*line navigation-menu.gsx:265:17*/ linkVariant))
 			_gsxgw.S("\"")
 		}
-		if active {
+		if /*line navigation-menu.gsx:266:8*/ active {
 			if !attrs.Has("data-active") {
 				_gsxgw.S(" data-active=\"true\"")
 			}
@@ -363,7 +363,7 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 		}
 		_gsxv3 := []string{"class", "style", "data-gsxui-slot-navigation-menu-link"}
 		var _gsxv4 bool
-		if linkVariant == "trigger" {
+		if /*line navigation-menu.gsx:272:8*/ linkVariant == "trigger" {
 			_gsxv4 = true
 			_gsxv3 = append(_gsxv3, "data-gsxui-slot-navigation-menu-trigger")
 		}
@@ -375,7 +375,7 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-link", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:277:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:277:5*/, children)
 		_gsxgw.S("</a>")
 		return _gsxgw.Err()
 	})
@@ -416,7 +416,7 @@ func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:309:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex top-full z-1 h-1.5 items-end justify-center overflow-hidden pointer-events-none opacity-0 data-[state=visible]:opacity-100"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:311:4*/ "flex top-full z-1 h-1.5 items-end justify-center overflow-hidden pointer-events-none opacity-0 data-[state=visible]:opacity-100"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"hidden\"")
@@ -427,7 +427,7 @@ func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S(">")
 //line navigation-menu.gsx:317:3
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border rounded-tl-sm shadow-md relative top-[60%] h-2 w-2 rotate-45"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:318:12*/ "bg-border rounded-tl-sm shadow-md relative top-[60%] h-2 w-2 rotate-45"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator-arrow", true)
 		_gsxgw.S("></div></div>")

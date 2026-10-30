@@ -20,11 +20,11 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:9:2
 		_gsxgw.S("<div class=\"flex w-full max-w-sm flex-col gap-4\">")
 //line basic.gsx:10:3
-		_gsxgw.Node(ctx, ui.Progress(25, nil))
+		_gsxgw.Node(ctx, ui.Progress( /*line basic.gsx:10:23*/ 25, nil))
 //line basic.gsx:11:3
-		_gsxgw.Node(ctx, ui.Progress(60, nil))
+		_gsxgw.Node(ctx, ui.Progress( /*line basic.gsx:11:23*/ 60, nil))
 //line basic.gsx:12:3
-		_gsxgw.Node(ctx, ui.Progress(90, nil))
+		_gsxgw.Node(ctx, ui.Progress( /*line basic.gsx:12:23*/ 90, nil))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

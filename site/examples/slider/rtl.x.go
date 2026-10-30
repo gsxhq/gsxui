@@ -22,7 +22,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:10:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"mx-auto w-full max-w-xs\">")
 //line rtl.gsx:11:3
-		_gsxgw.Node(ctx, uirtl.Slider(75, 0, 100, 1, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "w-full"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Volume"}}, _gsxrt.Attrs{{Key: "dir", Value: "rtl"}})))
+		_gsxgw.Node(ctx, uirtl.Slider( /*line rtl.gsx:11:24*/ 75 /*line rtl.gsx:11:33*/, 0 /*line rtl.gsx:11:41*/, 100 /*line rtl.gsx:11:52*/, 1, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "w-full"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Volume"}}, _gsxrt.Attrs{{Key: "dir", Value: "rtl"}})))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

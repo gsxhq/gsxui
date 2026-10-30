@@ -53,10 +53,10 @@ func ChartContractFixture() _gsxrt.Node {
 			{"month": "Feb", "desktop": 305.0, "mobile": 200.0},
 		}
 //line chart_contract.gsx:46:2
-		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Chart( /*line chart_contract.gsx:46:20*/ cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart_contract.gsx:47:3
-			_gsxgw.Node(ctx, ui.BarChart(data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.BarChart( /*line chart_contract.gsx:47:22*/ data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line chart_contract.gsx:48:4
 				_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, true))
@@ -114,10 +114,10 @@ func ChartNarrowFlexFixture() _gsxrt.Node {
 		_gsxgw.BoolAttr("data-chart-narrow-flex", true)
 		_gsxgw.S(">")
 //line chart_contract.gsx:86:3
-		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Chart( /*line chart_contract.gsx:86:21*/ cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart_contract.gsx:87:4
-			_gsxgw.Node(ctx, ui.BarChart(data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.BarChart( /*line chart_contract.gsx:87:23*/ data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line chart_contract.gsx:88:5
 				_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, true))

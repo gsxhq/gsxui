@@ -30,14 +30,14 @@ func _gsxrenderTextarea(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value string
 	}
 //line textarea.gsx:10:2
 	_gsxgw.S("<textarea class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("field-sizing-content min-h-16 w-full outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 bg-input/50 border-transparent focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 resize-none rounded-2xl border px-3 py-3 text-base transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3 md:text-sm flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line textarea.gsx:12:4*/ "field-sizing-content min-h-16 w-full outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 bg-input/50 border-transparent focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 resize-none rounded-2xl border px-3 py-3 text-base transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3 md:text-sm flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "textarea", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-textarea"})
 	_gsxgw.BoolAttr("data-gsxui-slot-textarea", true)
 	_gsxgw.S(">")
 //line textarea.gsx:16:3
-	_gsxgw.Text(string(value))
+	_gsxgw.Text(string( /*line textarea.gsx:16:5*/ value))
 	_gsxgw.S("</textarea>")
 	return _gsxgw.Err()
 }

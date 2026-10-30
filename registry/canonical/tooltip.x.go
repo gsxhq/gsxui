@@ -28,14 +28,14 @@ func _gsxrenderTooltip(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 	}
 //line tooltip.gsx:8:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Root()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tooltip.gsx:8:15*/ tooltip.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip", true)
 	_gsxgw.S(">")
 //line tooltip.gsx:8:69
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line tooltip.gsx:8:71*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -55,7 +55,7 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-trigger", true)
 		_gsxgw.S(">")
 //line tooltip.gsx:12:69
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line tooltip.gsx:12:71*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -88,17 +88,17 @@ func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 		_gsxgw.S(" data-side=\"top\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Content()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tooltip.gsx:21:11*/ tooltip.Content()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-content", true)
 	_gsxgw.S(">")
 //line tooltip.gsx:25:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line tooltip.gsx:25:5*/, children)
 //line tooltip.gsx:26:3
 	_gsxgw.S("<span class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Arrow()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tooltip.gsx:26:17*/ tooltip.Arrow()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-arrow", true)
 	_gsxgw.S("></span></div>")

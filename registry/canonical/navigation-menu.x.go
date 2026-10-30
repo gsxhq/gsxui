@@ -58,7 +58,7 @@ func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:48:2
 		_gsxgw.S("<nav class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/navigation-menu"), _gsxrt.Class(navigationMenu.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:49:11*/ "group/navigation-menu"), _gsxrt.Class( /*line navigation-menu.gsx:49:36*/ navigationMenu.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-viewport") {
 			_gsxgw.S(" data-viewport=\"false\"")
@@ -68,7 +68,7 @@ func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:54:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:54:5*/, children)
 		_gsxgw.S("</nav>")
 		return _gsxgw.Err()
 	})
@@ -86,14 +86,14 @@ func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:63:2
 		_gsxgw.S("<ul class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(navigationMenu.List()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:63:14*/ navigationMenu.List()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-list", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:64:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:64:5*/, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
@@ -112,14 +112,14 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:74:2
 		_gsxgw.S("<li class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(navigationMenu.Item()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:74:14*/ navigationMenu.Item()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-item", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:75:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:75:5*/, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
@@ -174,7 +174,7 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:121:2
 		_gsxgw.S("<button class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/navigation-menu-trigger"), _gsxrt.Class(navigationMenu.Trigger()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:122:11*/ "group/navigation-menu-trigger"), _gsxrt.Class( /*line navigation-menu.gsx:122:44*/ navigationMenu.Trigger()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -190,11 +190,11 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:129:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:129:5*/, children)
 //line navigation-menu.gsx:129:15
-		_gsxgw.Text(string(" "))
+		_gsxgw.Text(string( /*line navigation-menu.gsx:129:17*/ " "))
 //line navigation-menu.gsx:130:3
-		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(navigationMenu.TriggerIcon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
+		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line navigation-menu.gsx:130:29*/ navigationMenu.TriggerIcon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -271,7 +271,7 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:198:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(navigationMenu.Content()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:199:11*/ navigationMenu.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"manual\"")
@@ -287,7 +287,7 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-content", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:206:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:206:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -329,14 +329,14 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 		}
 //line navigation-menu.gsx:240:2
 		_gsxgw.S("<a class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(navigationMenu.Link()), _gsxrt.Class(navigationMenu.LinkVariant(linkVariant)), _gsxrt.Class(navigationMenu.LinkActive(linkActive)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:241:11*/ navigationMenu.Link()), _gsxrt.Class( /*line navigation-menu.gsx:241:34*/ navigationMenu.LinkVariant(linkVariant)), _gsxrt.Class( /*line navigation-menu.gsx:241:75*/ navigationMenu.LinkActive(linkActive)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(linkVariant))
+			_gsxgw.AttrValue(string( /*line navigation-menu.gsx:242:17*/ linkVariant))
 			_gsxgw.S("\"")
 		}
-		if active {
+		if /*line navigation-menu.gsx:243:8*/ active {
 			if !attrs.Has("data-active") {
 				_gsxgw.S(" data-active=\"true\"")
 			}
@@ -347,7 +347,7 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 		}
 		_gsxv0 := []string{"class", "style", "data-gsxui-slot-navigation-menu-link"}
 		var _gsxv1 bool
-		if linkVariant == "trigger" {
+		if /*line navigation-menu.gsx:249:8*/ linkVariant == "trigger" {
 			_gsxv1 = true
 			_gsxv0 = append(_gsxv0, "data-gsxui-slot-navigation-menu-trigger")
 		}
@@ -359,7 +359,7 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-link", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:254:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line navigation-menu.gsx:254:5*/, children)
 		_gsxgw.S("</a>")
 		return _gsxgw.Err()
 	})
@@ -400,7 +400,7 @@ func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:286:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(navigationMenu.Indicator()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:287:11*/ navigationMenu.Indicator()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"hidden\"")
@@ -411,7 +411,7 @@ func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S(">")
 //line navigation-menu.gsx:292:3
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(navigationMenu.IndicatorArrow()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line navigation-menu.gsx:292:16*/ navigationMenu.IndicatorArrow()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator-arrow", true)
 		_gsxgw.S("></div></div>")

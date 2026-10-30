@@ -50,7 +50,7 @@ func (preview ThemePreview) Page() _gsxrt.Node {
 		_gsxgw.S("<body")
 		_gsxgw.BoolAttr("data-theme-button-preview", true)
 		_gsxgw.S(" data-theme-preview-tokens=\"")
-		_gsxgw.AttrValue(string(themePreviewTokenNames()))
+		_gsxgw.AttrValue(string( /*line theme_preview.gsx:38:31*/ themePreviewTokenNames()))
 		_gsxgw.S("\" class=\"min-h-svh overflow-auto bg-background text-foreground antialiased\">")
 //line theme_preview.gsx:41:4
 		_gsxgw.S("<main aria-label=\"Component gallery preview\">")
@@ -59,54 +59,54 @@ func (preview ThemePreview) Page() _gsxrt.Node {
 		_gsxgw.BoolAttr("hidden", true)
 		_gsxgw.S(">")
 //line theme_preview.gsx:43:6
-		_gsxgw.Node(ctx, vega.Gallery("vega"))
+		_gsxgw.Node(ctx /*line theme_preview.gsx:43:8*/, vega.Gallery("vega"))
 		_gsxgw.S("</section>")
 //line theme_preview.gsx:45:5
 		_gsxgw.S("<section data-theme-preview-style=\"nova\">")
 //line theme_preview.gsx:46:6
-		_gsxgw.Node(ctx, nova.Gallery("nova"))
+		_gsxgw.Node(ctx /*line theme_preview.gsx:46:8*/, nova.Gallery("nova"))
 		_gsxgw.S("</section>")
 //line theme_preview.gsx:48:5
 		_gsxgw.S("<section data-theme-preview-style=\"maia\"")
 		_gsxgw.BoolAttr("hidden", true)
 		_gsxgw.S(">")
 //line theme_preview.gsx:49:6
-		_gsxgw.Node(ctx, maia.Gallery("maia"))
+		_gsxgw.Node(ctx /*line theme_preview.gsx:49:8*/, maia.Gallery("maia"))
 		_gsxgw.S("</section>")
 //line theme_preview.gsx:51:5
 		_gsxgw.S("<section data-theme-preview-style=\"lyra\"")
 		_gsxgw.BoolAttr("hidden", true)
 		_gsxgw.S(">")
 //line theme_preview.gsx:52:6
-		_gsxgw.Node(ctx, lyra.Gallery("lyra"))
+		_gsxgw.Node(ctx /*line theme_preview.gsx:52:8*/, lyra.Gallery("lyra"))
 		_gsxgw.S("</section>")
 //line theme_preview.gsx:54:5
 		_gsxgw.S("<section data-theme-preview-style=\"mira\"")
 		_gsxgw.BoolAttr("hidden", true)
 		_gsxgw.S(">")
 //line theme_preview.gsx:55:6
-		_gsxgw.Node(ctx, mira.Gallery("mira"))
+		_gsxgw.Node(ctx /*line theme_preview.gsx:55:8*/, mira.Gallery("mira"))
 		_gsxgw.S("</section>")
 //line theme_preview.gsx:57:5
 		_gsxgw.S("<section data-theme-preview-style=\"luma\"")
 		_gsxgw.BoolAttr("hidden", true)
 		_gsxgw.S(">")
 //line theme_preview.gsx:58:6
-		_gsxgw.Node(ctx, luma.Gallery("luma"))
+		_gsxgw.Node(ctx /*line theme_preview.gsx:58:8*/, luma.Gallery("luma"))
 		_gsxgw.S("</section>")
 //line theme_preview.gsx:60:5
 		_gsxgw.S("<section data-theme-preview-style=\"sera\"")
 		_gsxgw.BoolAttr("hidden", true)
 		_gsxgw.S(">")
 //line theme_preview.gsx:61:6
-		_gsxgw.Node(ctx, sera.Gallery("sera"))
+		_gsxgw.Node(ctx /*line theme_preview.gsx:61:8*/, sera.Gallery("sera"))
 		_gsxgw.S("</section>")
 //line theme_preview.gsx:63:5
 		_gsxgw.S("<section data-theme-preview-style=\"rhea\"")
 		_gsxgw.BoolAttr("hidden", true)
 		_gsxgw.S(">")
 //line theme_preview.gsx:64:6
-		_gsxgw.Node(ctx, rhea.Gallery("rhea"))
+		_gsxgw.Node(ctx /*line theme_preview.gsx:64:8*/, rhea.Gallery("rhea"))
 		_gsxgw.S("</section></main></body></html>")
 		return _gsxgw.Err()
 	})

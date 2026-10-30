@@ -61,18 +61,18 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.AttrValue(string( /*line button-group.gsx:45:36*/ _gsxstd.Default(( /*line button-group.gsx:45:21*/ orientation) /*line button-group.gsx:45:44*/, "horizontal")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button-group"), _gsxrt.Class(buttonGroup.Root()), _gsxrt.Class(buttonGroup.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line button-group.gsx:46:11*/ "group/button-group"), _gsxrt.Class( /*line button-group.gsx:46:33*/ buttonGroup.Root()), _gsxrt.Class( /*line button-group.gsx:46:53*/ buttonGroup.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group", true)
 		_gsxgw.S(">")
 //line button-group.gsx:50:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line button-group.gsx:50:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -90,14 +90,14 @@ func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line button-group.gsx:59:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(buttonGroup.Text()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line button-group.gsx:59:15*/ buttonGroup.Text()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button-group-text"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group-text", true)
 		_gsxgw.S(">")
 //line button-group.gsx:60:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line button-group.gsx:60:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -120,7 +120,7 @@ func ButtonGroupSeparator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line button-group.gsx:75:2
-		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(buttonGroup.Separator()))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
+		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw /*line button-group.gsx:76:31*/, _gsxstd.Default(( /*line button-group.gsx:76:16*/ orientation) /*line button-group.gsx:76:39*/, "vertical"), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line button-group.gsx:77:11*/ buttonGroup.Separator()))}} /*line button-group.gsx:78:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

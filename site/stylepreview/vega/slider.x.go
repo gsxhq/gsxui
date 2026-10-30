@@ -97,31 +97,31 @@ func _gsxrenderSlider(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value float64,
 	}
 	if !attrs.Has("min") {
 		_gsxgw.S(" min=\"")
-		_gsxgw.FloatInto(_gsxnum[:], float64(min))
+		_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:76:8*/ min))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("max") {
 		_gsxgw.S(" max=\"")
-		_gsxgw.FloatInto(_gsxnum[:], float64(maxV))
+		_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:77:8*/ maxV))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("step") {
 		_gsxgw.S(" step=\"")
-		_gsxgw.FloatInto(_gsxnum[:], float64(stepV))
+		_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:78:9*/ stepV))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("value") {
 		_gsxgw.S(" value=\"")
-		_gsxgw.FloatInto(_gsxnum[:], float64(value))
+		_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:79:10*/ value))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("style") {
 		_gsxgw.S(" style=\"--fill: ")
-		_gsxgw.AttrValue(_gsxrt.StyleValue(string(fill)))
+		_gsxgw.AttrValue(_gsxrt.StyleValue(string( /*line slider.gsx:80:23*/ fill)))
 		_gsxgw.S("%\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full cursor-pointer bg-transparent disabled:cursor-not-allowed disabled:opacity-50 data-vertical:min-h-40 [&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] rtl:[&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] [&::-webkit-slider-runnable-track]:rounded-full data-horizontal:[&::-webkit-slider-runnable-track]:h-1.5 data-horizontal:[&::-webkit-slider-runnable-track]:w-full data-vertical:[&::-webkit-slider-runnable-track]:h-full data-vertical:[&::-webkit-slider-runnable-track]:w-1.5 [&::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] rtl:[&::-moz-range-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] [&::-moz-range-track]:rounded-full data-horizontal:[&::-moz-range-track]:h-1.5 data-horizontal:[&::-moz-range-track]:w-full data-vertical:[&::-moz-range-track]:h-full data-vertical:[&::-moz-range-track]:w-1.5 [&::-webkit-slider-thumb]:-mt-[5px] [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:ring-ring/50 [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:transition-[color,box-shadow] hover:[&::-webkit-slider-thumb]:ring-4 focus-visible:[&::-webkit-slider-thumb]:ring-4 focus-visible:[&::-webkit-slider-thumb]:outline-hidden [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:ring-ring/50 [&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-sm [&::-moz-range-thumb]:transition-[color,box-shadow] hover:[&::-moz-range-thumb]:ring-4 focus-visible:[&::-moz-range-thumb]:ring-4 focus-visible:[&::-moz-range-thumb]:outline-hidden"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line slider.gsx:82:4*/ "w-full cursor-pointer bg-transparent disabled:cursor-not-allowed disabled:opacity-50 data-vertical:min-h-40 [&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] rtl:[&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] [&::-webkit-slider-runnable-track]:rounded-full data-horizontal:[&::-webkit-slider-runnable-track]:h-1.5 data-horizontal:[&::-webkit-slider-runnable-track]:w-full data-vertical:[&::-webkit-slider-runnable-track]:h-full data-vertical:[&::-webkit-slider-runnable-track]:w-1.5 [&::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] rtl:[&::-moz-range-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] [&::-moz-range-track]:rounded-full data-horizontal:[&::-moz-range-track]:h-1.5 data-horizontal:[&::-moz-range-track]:w-full data-vertical:[&::-moz-range-track]:h-full data-vertical:[&::-moz-range-track]:w-1.5 [&::-webkit-slider-thumb]:-mt-[5px] [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:ring-ring/50 [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:transition-[color,box-shadow] hover:[&::-webkit-slider-thumb]:ring-4 focus-visible:[&::-webkit-slider-thumb]:ring-4 focus-visible:[&::-webkit-slider-thumb]:outline-hidden [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:ring-ring/50 [&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-sm [&::-moz-range-thumb]:transition-[color,box-shadow] hover:[&::-moz-range-thumb]:ring-4 focus-visible:[&::-moz-range-thumb]:ring-4 focus-visible:[&::-moz-range-thumb]:outline-hidden"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-horizontal", "data-gsxui-slot-slider"})

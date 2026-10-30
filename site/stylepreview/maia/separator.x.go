@@ -37,16 +37,16 @@ func _gsxrenderSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation
 	}
 	if !attrs.Has("data-orientation") {
 		_gsxgw.S(" data-orientation=\"")
-		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+		_gsxgw.AttrValue(string( /*line separator.gsx:13:36*/ _gsxstd.Default(( /*line separator.gsx:13:21*/ orientation) /*line separator.gsx:13:44*/, "horizontal")))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "bg-border shrink-0"
+	_gsxv0 := /*line separator.gsx:14:11*/ "bg-border shrink-0"
 	var _gsxv1 string
-	switch orientation {
-	case "vertical":
-		_gsxv1 = "h-full w-px"
+	switch /*line separator.gsx:14:40*/ orientation {
+	case /*line separator.gsx:14:59*/ "vertical":
+		_gsxv1 = /*line separator.gsx:14:71*/ "h-full w-px"
 	default:
-		_gsxv1 = "h-px w-full"
+		_gsxv1 = /*line separator.gsx:14:94*/ "h-px w-full"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))

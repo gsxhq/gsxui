@@ -53,14 +53,14 @@ func _gsxrenderInputGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 		_gsxgw.S(" role=\"group\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/input-group"), _gsxrt.Class("border-input dark:bg-input/30 has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/50 has-[[aria-invalid=true]]:ring-destructive/20 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:ring-destructive/40 has-disabled:bg-input/50 dark:has-disabled:bg-input/80 h-8 rounded-lg border transition-colors [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-disabled:opacity-50 has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-3 has-[[aria-invalid=true]]:ring-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5 flex relative w-full min-w-0 items-center outline-none has-[>textarea]:h-auto"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-group.gsx:31:4*/ "group/input-group"), _gsxrt.Class( /*line input-group.gsx:32:4*/ "border-input dark:bg-input/30 has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/50 has-[[aria-invalid=true]]:ring-destructive/20 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:ring-destructive/40 has-disabled:bg-input/50 dark:has-disabled:bg-input/80 h-8 rounded-lg border transition-colors [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-disabled:opacity-50 has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-3 has-[[aria-invalid=true]]:ring-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5 flex relative w-full min-w-0 items-center outline-none has-[>textarea]:h-auto"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-group"})
 	_gsxgw.BoolAttr("data-gsxui-slot-input-group", true)
 	_gsxgw.S(">")
 //line input-group.gsx:37:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line input-group.gsx:37:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -88,20 +88,20 @@ func _gsxrenderInputGroupAddon(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, align
 	}
 	if !attrs.Has("data-align") {
 		_gsxgw.S(" data-align=\"")
-		_gsxgw.AttrValue(string(_gsxstd.Default((align), "inline-start")))
+		_gsxgw.AttrValue(string( /*line input-group.gsx:46:24*/ _gsxstd.Default(( /*line input-group.gsx:46:15*/ align) /*line input-group.gsx:46:32*/, "inline-start")))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "text-muted-foreground h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4 flex cursor-text items-center justify-center select-none"
+	_gsxv0 := /*line input-group.gsx:48:4*/ "text-muted-foreground h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4 flex cursor-text items-center justify-center select-none"
 	var _gsxv1 string
-	switch align {
-	case "inline-end":
-		_gsxv1 = "pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem] order-last"
-	case "block-start":
-		_gsxv1 = "px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2 order-first w-full justify-start"
-	case "block-end":
-		_gsxv1 = "px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2 order-last w-full justify-start"
+	switch /*line input-group.gsx:49:11*/ align {
+	case /*line input-group.gsx:50:9*/ "inline-end":
+		_gsxv1 = /*line input-group.gsx:51:5*/ "pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem] order-last"
+	case /*line input-group.gsx:52:9*/ "block-start":
+		_gsxv1 = /*line input-group.gsx:53:5*/ "px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2 order-first w-full justify-start"
+	case /*line input-group.gsx:54:9*/ "block-end":
+		_gsxv1 = /*line input-group.gsx:55:5*/ "px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2 order-last w-full justify-start"
 	default:
-		_gsxv1 = "pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem] order-first"
+		_gsxv1 = /*line input-group.gsx:57:5*/ "pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem] order-first"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
@@ -111,7 +111,7 @@ func _gsxrenderInputGroupAddon(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, align
 	_gsxgw.BoolAttr("data-gsxui-slot-input-group-addon", true)
 	_gsxgw.S(">")
 //line input-group.gsx:63:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line input-group.gsx:63:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -135,14 +135,14 @@ func _gsxrenderInputGroupButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, vari
 		return _gsxerr
 	}
 //line input-group.gsx:72:2
-	_gsxa2 := _gsxstd.Default((size), "xs")
-	_gsxa3 := _gsxstd.Default((variant), "ghost")
+	_gsxa2 := /*line input-group.gsx:73:17*/ _gsxstd.Default(( /*line input-group.gsx:73:9*/ size) /*line input-group.gsx:73:25*/, "xs")
+	_gsxa3 := /*line input-group.gsx:74:23*/ _gsxstd.Default(( /*line input-group.gsx:74:12*/ variant) /*line input-group.gsx:74:31*/, "ghost")
 	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, _gsxa3, _gsxa2, "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-group.gsx:78:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line input-group.gsx:78:5*/, children)
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-button", Value: _gsxrt.Toggle(true)}})))
+	}), _gsxrt.ConcatAttrs( /*line input-group.gsx:75:5*/ attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-button", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 
@@ -155,14 +155,14 @@ func InputGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-group.gsx:84:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground gap-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line input-group.gsx:86:4*/ "text-muted-foreground gap-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-group-text"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-group-text", true)
 		_gsxgw.S(">")
 //line input-group.gsx:91:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line input-group.gsx:91:5*/, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
@@ -185,7 +185,7 @@ func _gsxrenderInputGroupInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs
 		return _gsxerr
 	}
 //line input-group.gsx:98:2
-	_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent rounded-none border-0 ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:disabled:bg-transparent"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-control", Value: _gsxrt.Toggle(true)}})))
+	_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line input-group.gsx:100:4*/ "flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent rounded-none border-0 ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:disabled:bg-transparent"))}} /*line input-group.gsx:102:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-control", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 
@@ -200,7 +200,7 @@ func InputGroupTextarea(value string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-group.gsx:112:2
-		_gsxgw.NodeResult(_gsxrenderTextarea(ctx, _gsxgw, value, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent rounded-none border-0 ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:disabled:bg-transparent"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-control", Value: _gsxrt.Toggle(true)}})))
+		_gsxgw.NodeResult(_gsxrenderTextarea(ctx, _gsxgw /*line input-group.gsx:113:10*/, value, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line input-group.gsx:115:4*/ "flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent rounded-none border-0 ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:disabled:bg-transparent"))}} /*line input-group.gsx:117:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-control", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

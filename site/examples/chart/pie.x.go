@@ -62,7 +62,7 @@ func Pie() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line pie.gsx:38:4
-				_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.Chart( /*line pie.gsx:38:22*/ cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line pie.gsx:39:5
 					_gsxgw.Node(ctx, ui.PieChart(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -70,7 +70,7 @@ func Pie() _gsxrt.Node {
 //line pie.gsx:40:6
 						_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", true, false, "", "", "", "", false, 0))
 //line pie.gsx:41:6
-						_gsxgw.Node(ctx, ui.ChartPie(data, "visitors", "browser", 60, 0, 0, "", false, "", false))
+						_gsxgw.Node(ctx, ui.ChartPie( /*line pie.gsx:41:25*/ data, "visitors", "browser" /*line pie.gsx:41:77*/, 60, 0, 0, "", false, "", false))
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()

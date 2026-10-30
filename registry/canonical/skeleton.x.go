@@ -28,7 +28,7 @@ func _gsxrenderSkeleton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.At
 	}
 //line skeleton.gsx:8:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(skeleton.Root()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line skeleton.gsx:8:15*/ skeleton.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-skeleton"})

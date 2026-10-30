@@ -50,7 +50,7 @@ func HiddenOutside(month time.Time) _gsxrt.Node {
 			month = HiddenOutsideDefaultMonth
 		}
 //line outside.gsx:40:2
-		_gsxgw.Node(ctx, ui.Calendar("single", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, false, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
+		_gsxgw.Node(ctx, ui.Calendar("single" /*line outside.gsx:40:36*/, month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line outside.gsx:40:57*/, time.Sunday /*line outside.gsx:40:87*/, false, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
 		return _gsxgw.Err()
 	})
 }

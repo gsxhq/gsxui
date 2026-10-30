@@ -73,14 +73,14 @@ func ContextMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:62:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(contextMenu.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:62:15*/ contextMenu.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:62:78
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:62:80*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -106,7 +106,7 @@ func ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-trigger", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:72:57
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:72:59*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -132,7 +132,7 @@ func ContextMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:88:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class(contextMenu.Content()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:89:11*/ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class( /*line context-menu.gsx:89:86*/ contextMenu.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
@@ -151,7 +151,7 @@ func ContextMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-content", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:97:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:97:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -170,11 +170,11 @@ func ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:107:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(contextMenu.Item()), _gsxrt.Class(contextMenu.ItemVariant(variant)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:109:4*/ "group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class( /*line context-menu.gsx:110:4*/ contextMenu.Item()), _gsxrt.Class( /*line context-menu.gsx:111:4*/ contextMenu.ItemVariant(variant)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line context-menu.gsx:113:28*/ _gsxstd.Default(( /*line context-menu.gsx:113:17*/ variant) /*line context-menu.gsx:113:36*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("role") {
@@ -188,7 +188,7 @@ func ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-item", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:119:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:119:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -218,7 +218,7 @@ func ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-group", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:131:68
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:131:70*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -245,17 +245,17 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:148:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(contextMenu.CheckboxItem()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:150:4*/ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class( /*line context-menu.gsx:151:4*/ contextMenu.CheckboxItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line context-menu.gsx:154:15*/ value))
 			_gsxgw.S("\"")
 		}
-		if checked {
+		if /*line context-menu.gsx:155:8*/ checked {
 			if !attrs.Has("aria-checked") {
 				_gsxgw.S(" aria-checked=\"true\"")
 			}
@@ -279,7 +279,7 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		_gsxgw.S(">")
 //line context-menu.gsx:166:3
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(contextMenu.CheckboxItemIndicator()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:166:17*/ contextMenu.CheckboxItemIndicator()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-checkbox-item-indicator", true)
 		_gsxgw.S(">")
@@ -287,7 +287,7 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		_gsxgw.Node(ctx, icon.Check())
 		_gsxgw.S("</span>")
 //line context-menu.gsx:169:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:169:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -312,7 +312,7 @@ func ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gs
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line context-menu.gsx:182:15*/ value))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
@@ -321,7 +321,7 @@ func ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-radio-group", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:186:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:186:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -344,17 +344,17 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:200:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(contextMenu.RadioItem()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:202:4*/ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class( /*line context-menu.gsx:203:4*/ contextMenu.RadioItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line context-menu.gsx:206:15*/ value))
 			_gsxgw.S("\"")
 		}
-		if checked {
+		if /*line context-menu.gsx:207:8*/ checked {
 			if !attrs.Has("aria-checked") {
 				_gsxgw.S(" aria-checked=\"true\"")
 			}
@@ -378,7 +378,7 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		_gsxgw.S(">")
 //line context-menu.gsx:218:3
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(contextMenu.RadioItemIndicator()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:218:17*/ contextMenu.RadioItemIndicator()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-radio-item-indicator", true)
 		_gsxgw.S(">")
@@ -386,7 +386,7 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		_gsxgw.Node(ctx, icon.Circle())
 		_gsxgw.S("</span>")
 //line context-menu.gsx:221:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:221:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -406,14 +406,14 @@ func ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:232:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(contextMenu.Label()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:232:15*/ contextMenu.Label()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-label", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:232:85
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:232:87*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -425,7 +425,7 @@ func ContextMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:236:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(contextMenu.Separator()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:236:15*/ contextMenu.Separator()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
@@ -444,14 +444,14 @@ func ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:240:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(contextMenu.Shortcut()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:240:16*/ contextMenu.Shortcut()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-shortcut"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-shortcut", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:241:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:241:5*/, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
@@ -472,14 +472,14 @@ func ContextMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:253:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(contextMenu.Sub()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:253:15*/ contextMenu.Sub()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-sub"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:253:81
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:253:83*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -505,7 +505,7 @@ func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:269:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(contextMenu.SubTrigger()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:271:4*/ "cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class( /*line context-menu.gsx:272:4*/ contextMenu.SubTrigger()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")
@@ -527,7 +527,7 @@ func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub-trigger", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:282:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:282:5*/, children)
 //line context-menu.gsx:283:3
 		_gsxgw.Node(ctx, icon.ChevronRight())
 		_gsxgw.S("</div>")
@@ -557,7 +557,7 @@ func ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:302:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class(contextMenu.SubContent()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line context-menu.gsx:303:11*/ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class( /*line context-menu.gsx:303:86*/ contextMenu.SubContent()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
@@ -579,7 +579,7 @@ func ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub-content", true)
 		_gsxgw.S(">")
 //line context-menu.gsx:312:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line context-menu.gsx:312:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

@@ -71,7 +71,7 @@ func Rtl() _gsxrt.Node {
 			_gsxgw.Node(ctx, uirtl.TableBody(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:27:4
-				for _, inv := range invoices {
+				for /*line rtl.gsx:27:10*/ _, inv := range invoices {
 //line rtl.gsx:28:5
 					_gsxgw.Node(ctx, uirtl.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
@@ -79,28 +79,28 @@ func Rtl() _gsxrt.Node {
 						_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:43
-							_gsxgw.Text(string(inv.Invoice))
+							_gsxgw.Text(string( /*line rtl.gsx:29:45*/ inv.Invoice))
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: "font-medium"}}))
 //line rtl.gsx:30:6
 						_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:30:23
-							_gsxgw.Text(string(inv.Status))
+							_gsxgw.Text(string( /*line rtl.gsx:30:25*/ inv.Status))
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:31:6
 						_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:31:23
-							_gsxgw.Text(string(inv.Method))
+							_gsxgw.Text(string( /*line rtl.gsx:31:25*/ inv.Method))
 							return _gsxgw.Err()
 						}), nil))
 //line rtl.gsx:32:6
 						_gsxgw.Node(ctx, uirtl.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:32:42
-							_gsxgw.Text(string(inv.Amount))
+							_gsxgw.Text(string( /*line rtl.gsx:32:44*/ inv.Amount))
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: "text-right"}}))
 						return _gsxgw.Err()

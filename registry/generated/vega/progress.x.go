@@ -69,11 +69,11 @@ func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		if !attrs.Has("aria-valuenow") {
 			_gsxgw.S(" aria-valuenow=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(value))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line progress.gsx:48:18*/ value))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex w-full items-center overflow-x-hidden"), _gsxrt.Class("bg-muted h-1.5 rounded-full"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line progress.gsx:49:11*/ "relative flex w-full items-center overflow-x-hidden"), _gsxrt.Class( /*line progress.gsx:49:66*/ "bg-muted h-1.5 rounded-full"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-progress"})
@@ -81,9 +81,9 @@ func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S(">")
 //line progress.gsx:53:3
 		_gsxgw.S("<div style=\"transform: translateX(-")
-		_gsxgw.AttrValue(_gsxrt.StyleValue(_gsxsc.FormatFloat(float64(100-value), 'g', -1, 64)))
+		_gsxgw.AttrValue(_gsxrt.StyleValue(_gsxsc.FormatFloat(float64( /*line progress.gsx:54:39*/ 100-value), 'g', -1, 64)))
 		_gsxgw.S("%)\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-full flex-1 transition-all"), _gsxrt.Class("bg-primary"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line progress.gsx:55:12*/ "size-full flex-1 transition-all"), _gsxrt.Class( /*line progress.gsx:55:47*/ "bg-primary"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-progress-indicator", true)
 		_gsxgw.S("></div></div>")

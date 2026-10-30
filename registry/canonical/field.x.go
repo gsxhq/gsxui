@@ -37,14 +37,14 @@ func FieldSet(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line field.gsx:24:2
 		_gsxgw.S("<fieldset class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(field.Set()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:25:11*/ field.Set()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "fieldset", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-set"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-set", true)
 		_gsxgw.S(">")
 //line field.gsx:29:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line field.gsx:29:5*/, children)
 		_gsxgw.S("</fieldset>")
 		return _gsxgw.Err()
 	})
@@ -61,18 +61,18 @@ func FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 		_gsxgw.S("<legend")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "legend")))
+			_gsxgw.AttrValue(string( /*line field.gsx:36:28*/ _gsxstd.Default(( /*line field.gsx:36:17*/ variant) /*line field.gsx:36:36*/, "legend")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(field.Legend()), _gsxrt.Class(field.LegendVariant(variant)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:37:11*/ field.Legend()), _gsxrt.Class( /*line field.gsx:37:27*/ field.LegendVariant(variant)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "legend", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-legend"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-legend", true)
 		_gsxgw.S(">")
 //line field.gsx:41:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line field.gsx:41:5*/, children)
 		_gsxgw.S("</legend>")
 		return _gsxgw.Err()
 	})
@@ -84,14 +84,14 @@ func FieldGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line field.gsx:46:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/field-group"), _gsxrt.Class(field.Group()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:47:11*/ "group/field-group"), _gsxrt.Class( /*line field.gsx:47:32*/ field.Group()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-group", true)
 		_gsxgw.S(">")
 //line field.gsx:51:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line field.gsx:51:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -112,18 +112,18 @@ func Field(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "vertical")))
+			_gsxgw.AttrValue(string( /*line field.gsx:60:36*/ _gsxstd.Default(( /*line field.gsx:60:21*/ orientation) /*line field.gsx:60:44*/, "vertical")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/field"), _gsxrt.Class(field.Root()), _gsxrt.Class(field.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:61:11*/ "group/field"), _gsxrt.Class( /*line field.gsx:61:26*/ field.Root()), _gsxrt.Class( /*line field.gsx:61:40*/ field.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field", true)
 		_gsxgw.S(">")
 //line field.gsx:65:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line field.gsx:65:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -135,14 +135,14 @@ func FieldContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line field.gsx:70:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(field.Content()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:71:11*/ field.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-content", true)
 		_gsxgw.S(">")
 //line field.gsx:75:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line field.gsx:75:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -167,9 +167,9 @@ func FieldLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line field.gsx:94:3
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line field.gsx:94:5*/, children)
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("group/field-label"), _gsxrt.Class(field.Label()))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-label", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line field.gsx:90:11*/ "group/field-label"), _gsxrt.Class( /*line field.gsx:90:32*/ field.Label()))}} /*line field.gsx:91:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-label", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -184,14 +184,14 @@ func FieldTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line field.gsx:101:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(field.Title()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:102:11*/ field.Title()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-title", true)
 		_gsxgw.S(">")
 //line field.gsx:106:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line field.gsx:106:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -203,14 +203,14 @@ func FieldDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line field.gsx:111:2
 		_gsxgw.S("<p class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(field.Description()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:112:11*/ field.Description()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-description", true)
 		_gsxgw.S(">")
 //line field.gsx:116:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line field.gsx:116:5*/, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
 	})
@@ -230,27 +230,27 @@ func FieldSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line field.gsx:126:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-content") {
-			_gsxgw.BoolAttr("data-content", bool(children != nil))
+			_gsxgw.BoolAttr("data-content", bool( /*line field.gsx:127:17*/ children != nil))
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(field.SeparatorWrapper()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:128:11*/ field.SeparatorWrapper()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-separator-wrapper"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-separator-wrapper", true)
 		_gsxgw.S(">")
 //line field.gsx:132:3
-		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(field.Separator()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-separator", Value: _gsxrt.Toggle(true)}})))
+		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line field.gsx:132:22*/ field.Separator()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-separator", Value: _gsxrt.Toggle(true)}})))
 //line field.gsx:133:3
-		if children != nil {
+		if /*line field.gsx:133:8*/ children != nil {
 //line field.gsx:134:4
 			_gsxgw.S("<span class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(field.SeparatorContent()))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:135:13*/ field.SeparatorContent()))
 			_gsxgw.S("\"")
 			_gsxgw.BoolAttr("data-gsxui-slot-field-separator-content", true)
 			_gsxgw.S(">")
 //line field.gsx:138:5
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line field.gsx:138:7*/, children)
 			_gsxgw.S("</span>")
 		}
 		_gsxgw.S("</div>")
@@ -268,21 +268,21 @@ func FieldError(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line field.gsx:148:2
-		if children != nil {
+		if /*line field.gsx:148:7*/ children != nil {
 //line field.gsx:149:3
 			_gsxgw.S("<div")
 			if !attrs.Has("role") {
 				_gsxgw.S(" role=\"alert\"")
 			}
 			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(field.Error()), _gsxrt.Class(attrs.Class()))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line field.gsx:149:29*/ field.Error()), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
 			_gsxgw.StyleMerged("", attrs.Style())
 			_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-error"})
 			_gsxgw.BoolAttr("data-gsxui-slot-field-error", true)
 			_gsxgw.S(">")
 //line field.gsx:150:4
-			_gsxgw.Node(ctx, children)
+			_gsxgw.Node(ctx /*line field.gsx:150:6*/, children)
 			_gsxgw.S("</div>")
 		}
 		return _gsxgw.Err()

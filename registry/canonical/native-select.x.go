@@ -46,21 +46,21 @@ func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	}
 //line native-select.gsx:40:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/native-select"), _gsxrt.Class(nativeSelect.Wrapper()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line native-select.gsx:40:15*/ "group/native-select"), _gsxrt.Class( /*line native-select.gsx:40:38*/ nativeSelect.Wrapper()), _gsxrt.Class( /*line native-select.gsx:40:62*/ attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-native-select-wrapper", true)
 	_gsxgw.S(">")
 //line native-select.gsx:41:3
-	_gsxv0 := attrs.Without("class")
+	_gsxv0 := /*line native-select.gsx:43:6*/ attrs.Without("class")
 	_gsxgw.S("<select class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(nativeSelect.Root()), _gsxrt.Class(_gsxv0.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line native-select.gsx:42:12*/ nativeSelect.Root()), _gsxrt.Class(_gsxv0.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", _gsxv0.Style())
 	_gsxgw.Spread(ctx, "select", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-native-select"})
 	_gsxgw.BoolAttr("data-gsxui-slot-native-select", true)
 	_gsxgw.S(">")
 //line native-select.gsx:46:4
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line native-select.gsx:46:6*/, children)
 	_gsxgw.S("</select>")
 //line native-select.gsx:48:3
 	_gsxgw.Node(ctx, icon.ChevronDown())
@@ -91,21 +91,21 @@ func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, va
 	_gsxgw.S("<option")
 	if !attrs.Has("value") {
 		_gsxgw.S(" value=\"")
-		_gsxgw.AttrValue(string(value))
+		_gsxgw.AttrValue(string( /*line native-select.gsx:58:17*/ value))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("selected") {
-		_gsxgw.BoolAttr("selected", bool(selected))
+		_gsxgw.BoolAttr("selected", bool( /*line native-select.gsx:58:34*/ selected))
 	}
 	if !attrs.Has("disabled") {
-		_gsxgw.BoolAttr("disabled", bool(disabled))
+		_gsxgw.BoolAttr("disabled", bool( /*line native-select.gsx:58:54*/ disabled))
 	}
 	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "option", attrs, _gsxrt.AttrSinks{}, []string{"class", "style"})
 	_gsxgw.S(">")
 //line native-select.gsx:58:77
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line native-select.gsx:58:79*/, children)
 	_gsxgw.S("</option>")
 	return _gsxgw.Err()
 }
@@ -126,7 +126,7 @@ func NativeSelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.S("<optgroup")
 		if !attrs.Has("label") {
 			_gsxgw.S(" label=\"")
-			_gsxgw.AttrValue(string(label))
+			_gsxgw.AttrValue(string( /*line native-select.gsx:68:19*/ label))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
@@ -134,7 +134,7 @@ func NativeSelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.Spread(ctx, "optgroup", attrs, _gsxrt.AttrSinks{}, []string{"class", "style"})
 		_gsxgw.S(">")
 //line native-select.gsx:68:39
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line native-select.gsx:68:41*/, children)
 		_gsxgw.S("</optgroup>")
 		return _gsxgw.Err()
 	})

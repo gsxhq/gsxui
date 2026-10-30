@@ -41,7 +41,7 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:31:2
 		localized := localizedCalendarExample()
 //line i18n.gsx:32:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Internationalization", "i18n", layoutDocs, i18nTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Internationalization", "i18n" /*line i18n.gsx:32:63*/, layoutDocs /*line i18n.gsx:32:80*/, i18nTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line i18n.gsx:33:3
 			_gsxgw.S("<div data-doc=\"i18n\" class=\"flex max-w-3xl flex-col gap-10 py-10\">")
@@ -51,6 +51,8 @@ func (p I18n) Page() _gsxrt.Node {
 			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">Internationalization</h1>")
 //line i18n.gsx:36:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">Text you pass to a component is yours. The few strings a component writes itself are")
+//line i18n.gsx:37:90
+			_gsxgw.Text(string( /*line i18n.gsx:37:92*/ " "))
 //line i18n.gsx:38:6
 			_gsxgw.S("<code>i18n.T</code> messages, and one line in ")
 //line i18n.gsx:38:52
@@ -58,7 +60,7 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:42:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line i18n.gsx:43:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[0], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line i18n.gsx:43:23*/, i18nTOCItems[0], nil))
 //line i18n.gsx:44:5
 			_gsxgw.S("<p>Add ")
 //line i18n.gsx:45:10
@@ -70,7 +72,7 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:48:10
 			_gsxgw.S("<code>")
 //line i18n.gsx:48:16
-			_gsxgw.Node(ctx, hl.Node("snippets/i18n-renderer.toml"))
+			_gsxgw.Node(ctx /*line i18n.gsx:48:18*/, hl.Node("snippets/i18n-renderer.toml"))
 			_gsxgw.S("</code></pre>")
 //line i18n.gsx:49:5
 			_gsxgw.S("<p>Write the translator. It receives the render context, so the request's locale is in reach:</p>")
@@ -79,12 +81,12 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:50:10
 			_gsxgw.S("<code>")
 //line i18n.gsx:50:16
-			_gsxgw.Node(ctx, hl.Node("snippets/i18n-translate.go"))
+			_gsxgw.Node(ctx /*line i18n.gsx:50:18*/, hl.Node("snippets/i18n-translate.go"))
 			_gsxgw.S("</code></pre></section>")
 //line i18n.gsx:52:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line i18n.gsx:53:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[1], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line i18n.gsx:53:23*/, i18nTOCItems[1], nil))
 //line i18n.gsx:54:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
 //line i18n.gsx:55:6
@@ -126,9 +128,11 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:76:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line i18n.gsx:77:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[2], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line i18n.gsx:77:23*/, i18nTOCItems[2], nil))
 //line i18n.gsx:78:5
 			_gsxgw.S("<p>Calendar composes month and weekday names, the caption and each day's label. Pass a")
+//line i18n.gsx:79:89
+			_gsxgw.Text(string( /*line i18n.gsx:79:91*/ " "))
 //line i18n.gsx:80:6
 			_gsxgw.S("<code>locale</code>; the zero value is English.</p>")
 //line i18n.gsx:82:5
@@ -142,22 +146,22 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:84:65
 			_gsxgw.S("<code>")
 //line i18n.gsx:84:71
-			_gsxgw.Text(string("{month}"))
+			_gsxgw.Text(string( /*line i18n.gsx:84:73*/ "{month}"))
 			_gsxgw.S("</code>, ")
 //line i18n.gsx:85:9
 			_gsxgw.S("<code>")
 //line i18n.gsx:85:15
-			_gsxgw.Text(string("{year}"))
+			_gsxgw.Text(string( /*line i18n.gsx:85:17*/ "{year}"))
 			_gsxgw.S("</code>, ")
 //line i18n.gsx:85:36
 			_gsxgw.S("<code>")
 //line i18n.gsx:85:42
-			_gsxgw.Text(string("{weekday}"))
+			_gsxgw.Text(string( /*line i18n.gsx:85:44*/ "{weekday}"))
 			_gsxgw.S("</code> and ")
 //line i18n.gsx:85:69
 			_gsxgw.S("<code>")
 //line i18n.gsx:85:75
-			_gsxgw.Text(string("{day}"))
+			_gsxgw.Text(string( /*line i18n.gsx:85:77*/ "{day}"))
 			_gsxgw.S("</code>. Other text is literal.</li>")
 //line i18n.gsx:88:6
 			_gsxgw.S("<li>")
@@ -170,7 +174,7 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:92:85
 			_gsxgw.S("<code>29 июня</code>, caption")
 //line i18n.gsx:93:14
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:93:16*/ " "))
 //line i18n.gsx:93:21
 			_gsxgw.S("<code>июнь</code>. Leave it unset where both forms match.</li>")
 //line i18n.gsx:95:6
@@ -180,7 +184,7 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:98:5
 			_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
 //line i18n.gsx:99:6
-			_gsxgw.Node(ctx, localized.Node)
+			_gsxgw.Node(ctx /*line i18n.gsx:99:8*/, localized.Node)
 			_gsxgw.S("</div>")
 //line i18n.gsx:101:5
 			_gsxgw.S("<div class=\"relative\"")
@@ -191,7 +195,7 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:104:7
 			_gsxgw.S("<code>")
 //line i18n.gsx:104:13
-			_gsxgw.Node(ctx, hl.Node(localized.SourcePath))
+			_gsxgw.Node(ctx /*line i18n.gsx:104:15*/, hl.Node(localized.SourcePath))
 			_gsxgw.S("</code></pre>")
 //line i18n.gsx:105:6
 			_gsxgw.S("<button type=\"button\"")
@@ -200,17 +204,17 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:114:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line i18n.gsx:115:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[3], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line i18n.gsx:115:23*/, i18nTOCItems[3], nil))
 //line i18n.gsx:116:5
 			_gsxgw.S("<p>Every field is CLDR data, so the server can fill it from a CLDR source instead of a typed table. With")
 //line i18n.gsx:117:107
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:117:109*/ " "))
 //line i18n.gsx:118:6
 			_gsxgw.S("<code>Intl</code> on the server (a Cloudflare Worker has V8's), each field is one call; every date format also takes ")
 //line i18n.gsx:119:12
 			_gsxgw.S("<code>")
 //line i18n.gsx:119:18
-			_gsxgw.Text(string(`calendar: "gregory", timeZone: "UTC"`))
+			_gsxgw.Text(string( /*line i18n.gsx:119:20*/ `calendar: "gregory", timeZone: "UTC"`))
 			_gsxgw.S("</code>:</p>")
 //line i18n.gsx:121:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
@@ -223,11 +227,11 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:123:59
 			_gsxgw.S("<code>formatToParts</code> for")
 //line i18n.gsx:123:89
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:123:91*/ " "))
 //line i18n.gsx:124:7
 			_gsxgw.S("<code>")
 //line i18n.gsx:124:13
-			_gsxgw.Text(string(`{month: "long", year: "numeric"}`))
+			_gsxgw.Text(string( /*line i18n.gsx:124:15*/ `{month: "long", year: "numeric"}`))
 			_gsxgw.S("</code>, the caption's own form: Russian ")
 //line i18n.gsx:124:92
 			_gsxgw.S("<code>июнь</code>, Japanese ")
@@ -244,14 +248,14 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:128:38
 			_gsxgw.S("<code>month</code> part for the day label's")
 //line i18n.gsx:128:81
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:128:83*/ " "))
 //line i18n.gsx:129:7
 			_gsxgw.S("<code>")
 //line i18n.gsx:129:13
-			_gsxgw.Text(string(`{weekday: "long", month: "long", day: "numeric", year: "numeric"}`))
+			_gsxgw.Text(string( /*line i18n.gsx:129:15*/ `{weekday: "long", month: "long", day: "numeric", year: "numeric"}`))
 			_gsxgw.S("</code>: Russian")
 //line i18n.gsx:129:100
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:129:102*/ " "))
 //line i18n.gsx:130:7
 			_gsxgw.S("<code>июня</code>.</li>")
 //line i18n.gsx:132:6
@@ -261,7 +265,7 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:132:36
 			_gsxgw.S("<code>")
 //line i18n.gsx:132:42
-			_gsxgw.Text(string(`{month: "short"}`))
+			_gsxgw.Text(string( /*line i18n.gsx:132:44*/ `{month: "short"}`))
 			_gsxgw.S("</code>.</li>")
 //line i18n.gsx:133:6
 			_gsxgw.S("<li>")
@@ -272,17 +276,17 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:134:61
 			_gsxgw.S("<code>")
 //line i18n.gsx:134:67
-			_gsxgw.Text(string(`{weekday: "long"}`))
+			_gsxgw.Text(string( /*line i18n.gsx:134:69*/ `{weekday: "long"}`))
 			_gsxgw.S("</code> and")
 //line i18n.gsx:134:101
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:134:103*/ " "))
 //line i18n.gsx:135:7
 			_gsxgw.S("<code>")
 //line i18n.gsx:135:13
-			_gsxgw.Text(string(`{weekday: "narrow"}`))
+			_gsxgw.Text(string( /*line i18n.gsx:135:15*/ `{weekday: "narrow"}`))
 			_gsxgw.S("</code> on seven days from a Sunday. Narrow names can repeat (Russian")
 //line i18n.gsx:135:107
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:135:109*/ " "))
 //line i18n.gsx:136:7
 			_gsxgw.S("<code>В П В С Ч П С</code>); type the header row by hand where they do.</li>")
 //line i18n.gsx:138:6
@@ -292,7 +296,7 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:139:32
 			_gsxgw.S("<code>DayLabel</code>: the same two formats' parts, with each")
 //line i18n.gsx:139:93
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:139:95*/ " "))
 //line i18n.gsx:140:7
 			_gsxgw.S("<code>month</code>, ")
 //line i18n.gsx:140:27
@@ -304,25 +308,25 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:141:41
 			_gsxgw.S("<code>")
 //line i18n.gsx:141:47
-			_gsxgw.Text(string("{month} {year} г."))
+			_gsxgw.Text(string( /*line i18n.gsx:141:49*/ "{month} {year} г."))
 			_gsxgw.S("</code></li>")
 //line i18n.gsx:143:6
 			_gsxgw.S("<li>")
 //line i18n.gsx:144:7
 			_gsxgw.S("<code>Digits</code>:")
 //line i18n.gsx:144:27
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:144:29*/ " "))
 //line i18n.gsx:145:7
 			_gsxgw.S("<code>")
 //line i18n.gsx:145:13
-			_gsxgw.Text(string(`new Intl.NumberFormat(lang, {useGrouping: false}).format(1234567890)`))
+			_gsxgw.Text(string( /*line i18n.gsx:145:15*/ `new Intl.NumberFormat(lang, {useGrouping: false}).format(1234567890)`))
 			_gsxgw.S("</code> with its last digit moved to the front; empty when that is ASCII. Plain ")
 //line i18n.gsx:146:59
 			_gsxgw.S("<code>ar</code> gives ASCII; ")
 //line i18n.gsx:147:14
 			_gsxgw.S("<code>ar-EG</code> or")
 //line i18n.gsx:147:35
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:147:37*/ " "))
 //line i18n.gsx:148:7
 			_gsxgw.S("<code>ar-u-nu-arab</code> gives ")
 //line i18n.gsx:148:39
@@ -334,19 +338,19 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:151:36
 			_gsxgw.S("<code>Calendar</code> argument:")
 //line i18n.gsx:151:67
-			_gsxgw.Text(string(" "))
+			_gsxgw.Text(string( /*line i18n.gsx:151:69*/ " "))
 //line i18n.gsx:152:7
 			_gsxgw.S("<code>new Intl.Locale(lang).maximize().getWeekInfo().firstDay % 7</code>.</li></ul></section>")
 //line i18n.gsx:156:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line i18n.gsx:157:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[4], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line i18n.gsx:157:23*/, i18nTOCItems[4], nil))
 //line i18n.gsx:158:5
 			_gsxgw.S("<p>Register a translator that wraps every message in markers, render each page, and search the output for English outside the markers. Anything found is text a caller passed in, or a gsxui bug worth an issue.</p></section>")
 //line i18n.gsx:163:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line i18n.gsx:164:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[5], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line i18n.gsx:164:23*/, i18nTOCItems[5], nil))
 //line i18n.gsx:165:5
 			_gsxgw.S("<p>When no ")
 //line i18n.gsx:166:14

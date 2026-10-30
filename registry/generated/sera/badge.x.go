@@ -32,24 +32,24 @@ func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<span")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line badge.gsx:18:28*/ _gsxstd.Default(( /*line badge.gsx:18:17*/ variant) /*line badge.gsx:18:36*/, "default")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 gap-1.5 rounded-none border-0 bg-transparent px-0 py-0 text-[0.625rem] font-semibold uppercase tracking-widest transition-colors has-[>svg]:px-0 [&>svg]:size-3 inline-flex items-center justify-center overflow-hidden whitespace-nowrap w-fit shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 [&>svg]:pointer-events-none"
+		_gsxv0 := /*line badge.gsx:20:4*/ "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 gap-1.5 rounded-none border-0 bg-transparent px-0 py-0 text-[0.625rem] font-semibold uppercase tracking-widest transition-colors has-[>svg]:px-0 [&>svg]:size-3 inline-flex items-center justify-center overflow-hidden whitespace-nowrap w-fit shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 [&>svg]:pointer-events-none"
 		var _gsxv1 string
-		switch variant {
-		case "secondary":
-			_gsxv1 = "text-muted-foreground [a]:hover:text-foreground"
-		case "destructive":
-			_gsxv1 = "text-destructive [a]:hover:text-destructive/70 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40"
-		case "outline":
-			_gsxv1 = "text-foreground [a]:hover:text-foreground/70"
-		case "ghost":
-			_gsxv1 = "text-muted-foreground hover:text-foreground"
-		case "link":
-			_gsxv1 = "text-foreground underline-offset-4 hover:underline"
+		switch /*line badge.gsx:21:11*/ variant {
+		case /*line badge.gsx:22:9*/ "secondary":
+			_gsxv1 = /*line badge.gsx:23:5*/ "text-muted-foreground [a]:hover:text-foreground"
+		case /*line badge.gsx:24:9*/ "destructive":
+			_gsxv1 = /*line badge.gsx:25:5*/ "text-destructive [a]:hover:text-destructive/70 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40"
+		case /*line badge.gsx:26:9*/ "outline":
+			_gsxv1 = /*line badge.gsx:27:5*/ "text-foreground [a]:hover:text-foreground/70"
+		case /*line badge.gsx:28:9*/ "ghost":
+			_gsxv1 = /*line badge.gsx:29:5*/ "text-muted-foreground hover:text-foreground"
+		case /*line badge.gsx:30:9*/ "link":
+			_gsxv1 = /*line badge.gsx:31:5*/ "text-foreground underline-offset-4 hover:underline"
 		default:
-			_gsxv1 = "text-foreground [a]:hover:text-foreground/70"
+			_gsxv1 = /*line badge.gsx:33:5*/ "text-foreground [a]:hover:text-foreground/70"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
@@ -59,7 +59,7 @@ func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-badge", true)
 		_gsxgw.S(">")
 //line badge.gsx:39:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line badge.gsx:39:5*/, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})

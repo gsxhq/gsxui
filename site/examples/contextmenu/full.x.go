@@ -128,13 +128,13 @@ func Full() _gsxrt.Node {
 //line full.gsx:48:4
 				_gsxgw.Node(ctx, ui.ContextMenuSeparator(nil))
 //line full.gsx:49:4
-				_gsxgw.Node(ctx, ui.ContextMenuCheckboxItem(true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.ContextMenuCheckboxItem( /*line full.gsx:49:41*/ true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Show Bookmarks")
 					return _gsxgw.Err()
 				}), nil))
 //line full.gsx:50:4
-				_gsxgw.Node(ctx, ui.ContextMenuCheckboxItem(false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.ContextMenuCheckboxItem( /*line full.gsx:50:41*/ false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Show Full URLs")
 					return _gsxgw.Err()
@@ -151,13 +151,13 @@ func Full() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-inset", Value: "true"}}))
 //line full.gsx:54:5
-					_gsxgw.Node(ctx, ui.ContextMenuRadioItem(true, "pedro", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ContextMenuRadioItem( /*line full.gsx:54:39*/ true, "pedro", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Pedro Duarte")
 						return _gsxgw.Err()
 					}), nil))
 //line full.gsx:55:5
-					_gsxgw.Node(ctx, ui.ContextMenuRadioItem(false, "colm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ContextMenuRadioItem( /*line full.gsx:55:39*/ false, "colm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Colm Tuite")
 						return _gsxgw.Err()

@@ -43,9 +43,9 @@ func _gsxrenderAlertDialog(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	_gsxgw.NodeResult(_gsxrenderDialog(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:21:52
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line alert-dialog.gsx:21:54*/, children)
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog", Value: _gsxrt.Toggle(true)}})))
+	}), _gsxrt.ConcatAttrs( /*line alert-dialog.gsx:21:12*/ attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 
@@ -70,7 +70,7 @@ func AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-trigger", true)
 		_gsxgw.S(">")
 //line alert-dialog.gsx:32:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line alert-dialog.gsx:32:5*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -89,12 +89,12 @@ func _gsxrenderAlertDialogContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, ch
 		return _gsxerr
 	}
 //line alert-dialog.gsx:37:2
-	_gsxgw.NodeResult(_gsxrenderDialogContent(ctx, _gsxgw, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+	_gsxgw.NodeResult(_gsxrenderDialogContent(ctx, _gsxgw /*line alert-dialog.gsx:42:20*/, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:49:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line alert-dialog.gsx:49:5*/, children)
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("group/alert-dialog-content"), _gsxrt.Class("transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-popover text-popover-foreground ring-foreground/10 gap-6 rounded-xl p-6 ring-1 duration-100 max-w-xs sm:max-w-lg fixed z-50 top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2"))}}, _gsxrt.Attrs{{Key: "role", Value: "alertdialog"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-static", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-size", Value: "default"}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-content", Value: _gsxrt.Toggle(true)}})))
+	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line alert-dialog.gsx:39:4*/ "group/alert-dialog-content"), _gsxrt.Class( /*line alert-dialog.gsx:40:4*/ "transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-popover text-popover-foreground ring-foreground/10 gap-6 rounded-xl p-6 ring-1 duration-100 max-w-xs sm:max-w-lg fixed z-50 top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2"))}}, _gsxrt.Attrs{{Key: "role", Value: "alertdialog"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-static", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-size", Value: "default"}} /*line alert-dialog.gsx:46:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-content", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 
@@ -112,14 +112,14 @@ func _gsxrenderAlertDialogHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	}
 //line alert-dialog.gsx:54:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line alert-dialog.gsx:56:4*/ "grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-dialog-header"})
 	_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-header", true)
 	_gsxgw.S(">")
 //line alert-dialog.gsx:61:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line alert-dialog.gsx:61:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -138,14 +138,14 @@ func _gsxrenderAlertDialogFooter(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	}
 //line alert-dialog.gsx:66:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line alert-dialog.gsx:67:11*/ "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-dialog-footer"})
 	_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-footer", true)
 	_gsxgw.S(">")
 //line alert-dialog.gsx:71:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line alert-dialog.gsx:71:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -164,7 +164,7 @@ func _gsxrenderAlertDialogTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	}
 //line alert-dialog.gsx:76:2
 	_gsxgw.S("<h2 class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-lg font-medium"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line alert-dialog.gsx:76:14*/ "text-lg font-medium"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "h2", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-dialog-title", "data-gsxui-slot-dialog-title"})
@@ -172,7 +172,7 @@ func _gsxrenderAlertDialogTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog-title", true)
 	_gsxgw.S(">")
 //line alert-dialog.gsx:77:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line alert-dialog.gsx:77:5*/, children)
 	_gsxgw.S("</h2>")
 	return _gsxgw.Err()
 }
@@ -191,7 +191,7 @@ func _gsxrenderAlertDialogDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer
 	}
 //line alert-dialog.gsx:82:2
 	_gsxgw.S("<p class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground *:[a]:hover:text-foreground text-sm text-balance md:text-pretty *:[a]:underline *:[a]:underline-offset-3"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line alert-dialog.gsx:84:4*/ "text-muted-foreground *:[a]:hover:text-foreground text-sm text-balance md:text-pretty *:[a]:underline *:[a]:underline-offset-3"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-dialog-description", "data-gsxui-slot-dialog-description"})
@@ -199,7 +199,7 @@ func _gsxrenderAlertDialogDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog-description", true)
 	_gsxgw.S(">")
 //line alert-dialog.gsx:90:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line alert-dialog.gsx:90:5*/, children)
 	_gsxgw.S("</p>")
 	return _gsxgw.Err()
 }
@@ -220,9 +220,9 @@ func _gsxrenderAlertDialogAction(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:95:83
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line alert-dialog.gsx:95:85*/, children)
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-action", Value: _gsxrt.Toggle(true)}})))
+	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}} /*line alert-dialog.gsx:95:36*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-action", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 
@@ -242,8 +242,8 @@ func _gsxrenderAlertDialogCancel(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:105:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line alert-dialog.gsx:105:5*/, children)
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-cancel", Value: _gsxrt.Toggle(true)}})))
+	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}} /*line alert-dialog.gsx:102:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-cancel", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }

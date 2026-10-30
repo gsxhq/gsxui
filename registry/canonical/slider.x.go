@@ -89,31 +89,31 @@ func Slider(value float64, min float64, max float64, step float64, attrs gsx.Att
 		}
 		if !attrs.Has("min") {
 			_gsxgw.S(" min=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(min))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:76:8*/ min))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("max") {
 			_gsxgw.S(" max=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(maxV))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:77:8*/ maxV))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("step") {
 			_gsxgw.S(" step=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(stepV))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:78:9*/ stepV))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("value") {
 			_gsxgw.S(" value=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(value))
+			_gsxgw.FloatInto(_gsxnum[:], float64( /*line slider.gsx:79:10*/ value))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("style") {
 			_gsxgw.S(" style=\"--fill: ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(fill)))
+			_gsxgw.AttrValue(_gsxrt.StyleValue(string( /*line slider.gsx:80:23*/ fill)))
 			_gsxgw.S("%\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(slider.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line slider.gsx:81:11*/ slider.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-horizontal", "data-gsxui-slot-slider"})

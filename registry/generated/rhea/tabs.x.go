@@ -53,18 +53,18 @@ func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<div")
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line tabs.gsx:38:19*/ value))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex flex-col"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tabs.gsx:38:34*/ "gap-2 flex flex-col"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs", true)
 		_gsxgw.S(">")
 //line tabs.gsx:38:92
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line tabs.gsx:38:94*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -80,14 +80,14 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" role=\"tablist\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-2xl p-[3px] h-8 inline-flex w-fit items-center justify-center bg-muted text-muted-foreground"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tabs.gsx:44:11*/ "rounded-2xl p-[3px] h-8 inline-flex w-fit items-center justify-center bg-muted text-muted-foreground"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-list", true)
 		_gsxgw.S(">")
 //line tabs.gsx:48:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line tabs.gsx:48:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -122,33 +122,33 @@ func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line tabs.gsx:69:15*/ value))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
-			_gsxgw.AttrValue(string(state))
+			_gsxgw.AttrValue(string( /*line tabs.gsx:70:15*/ state))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("aria-selected") {
 			_gsxgw.S(" aria-selected=\"")
-			_gsxgw.S(_gsxsc.FormatBool(bool(selected)))
+			_gsxgw.S(_gsxsc.FormatBool(bool( /*line tabs.gsx:71:18*/ selected)))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"")
-			_gsxgw.IntInto(_gsxnum[:], int64(tabindex))
+			_gsxgw.IntInto(_gsxnum[:], int64( /*line tabs.gsx:72:13*/ tabindex))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1.5 rounded-2xl border border-transparent px-1.5 py-0.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 inline-flex relative h-[calc(100%-1px)] flex-1 items-center justify-center whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tabs.gsx:74:4*/ "gap-1.5 rounded-2xl border border-transparent px-1.5 py-0.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 inline-flex relative h-[calc(100%-1px)] flex-1 items-center justify-center whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-trigger", true)
 		_gsxgw.S(">")
 //line tabs.gsx:79:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line tabs.gsx:79:5*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -174,26 +174,26 @@ func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
+			_gsxgw.AttrValue(string( /*line tabs.gsx:94:15*/ value))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
-			_gsxgw.AttrValue(string(state))
+			_gsxgw.AttrValue(string( /*line tabs.gsx:95:15*/ state))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("hidden") {
-			_gsxgw.BoolAttr("hidden", bool(!selected))
+			_gsxgw.BoolAttr("hidden", bool( /*line tabs.gsx:96:11*/ !selected))
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm flex-1 outline-none"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line tabs.gsx:97:11*/ "text-sm flex-1 outline-none"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-content", true)
 		_gsxgw.S(">")
 //line tabs.gsx:101:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line tabs.gsx:101:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

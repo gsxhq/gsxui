@@ -388,10 +388,10 @@ func (t Theme) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line theme.gsx:378:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Theme", "", layoutWorkspace, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Theme", "" /*line theme.gsx:378:44*/, layoutWorkspace, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line theme.gsx:379:3
-			_gsxa0, _gsxerr := _gsxf0.URLFor(ctx, (ThemePreview{}))
+			_gsxa0, _gsxerr := /*line theme.gsx:379:46*/ _gsxf0.URLFor(ctx, ( /*line theme.gsx:379:28*/ ThemePreview{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
@@ -411,7 +411,7 @@ func ThemeEditor(previewURL string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line theme.gsx:386:2
-		_gsxgw.NodeResult(_gsxrenderthemeEditor(ctx, _gsxgw, previewURL, false))
+		_gsxgw.NodeResult(_gsxrenderthemeEditor(ctx, _gsxgw /*line theme.gsx:386:27*/, previewURL, false))
 		return _gsxgw.Err()
 	})
 }
@@ -448,14 +448,14 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	}
 //line theme.gsx:409:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(editorClass))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:409:15*/ editorClass))
 	_gsxgw.S("\">")
 //line theme.gsx:410:3
 	_gsxgw.S("<script type=\"application/json\"")
 	_gsxgw.BoolAttr("data-theme-schema", true)
 	_gsxgw.Nonce(ctx)
 	_gsxgw.S(">")
-	_gsxgw.JSVal(themeEditorSchemaValue())
+	_gsxgw.JSVal( /*line theme.gsx:410:56*/ themeEditorSchemaValue())
 	_gsxgw.S("</script>")
 //line theme.gsx:411:3
 	_gsxgw.S("<div>")
@@ -469,7 +469,7 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	_gsxgw.S("<code>gsxui add</code> under the selected style.</p></div>")
 //line theme.gsx:420:3
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(gridClass))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:420:16*/ gridClass))
 	_gsxgw.S("\">")
 //line theme.gsx:421:4
 	_gsxgw.S("<section")
@@ -505,24 +505,24 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 //line theme.gsx:434:5
 	_gsxgw.S("<div class=\"grid grid-cols-2 gap-3 sm:grid-cols-4\">")
 //line theme.gsx:435:6
-	for _, choice := range preset.StyleChoices() {
+	for /*line theme.gsx:435:12*/ _, choice := range preset.StyleChoices() {
 //line theme.gsx:436:7
 		_gsxgw.S("<button type=\"button\" data-theme-style=\"")
-		_gsxgw.AttrValue(string(choice.Name))
+		_gsxgw.AttrValue(string( /*line theme.gsx:438:26*/ choice.Name))
 		_gsxgw.S("\" aria-pressed=\"")
-		_gsxgw.AttrValue(string(themeStylePressedAttr(choice.Name)))
+		_gsxgw.AttrValue(string( /*line theme.gsx:439:22*/ themeStylePressedAttr(choice.Name)))
 		_gsxgw.S("\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(themeStyleButtonClass(choice.Name)))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:440:16*/ themeStyleButtonClass(choice.Name)))
 		_gsxgw.S("\">")
 //line theme.gsx:442:8
 		_gsxgw.S("<span class=\"block font-medium\">")
 //line theme.gsx:442:40
-		_gsxgw.Text(string(choice.Title))
+		_gsxgw.Text(string( /*line theme.gsx:442:42*/ choice.Title))
 		_gsxgw.S("</span>")
 //line theme.gsx:443:8
 		_gsxgw.S("<span class=\"mt-1 block text-xs text-muted-foreground\">")
 //line theme.gsx:443:63
-		_gsxgw.Text(string(choice.Description))
+		_gsxgw.Text(string( /*line theme.gsx:443:65*/ choice.Description))
 		_gsxgw.S("</span></button>")
 	}
 	_gsxgw.S("</div>")
@@ -536,7 +536,7 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	_gsxgw.S("<div")
 	_gsxgw.BoolAttr("data-theme-preview-panel", true)
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(previewPanelClass))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:454:13*/ previewPanelClass))
 	_gsxgw.S("\">")
 //line theme.gsx:456:5
 	_gsxgw.S("<div class=\"flex flex-wrap items-center justify-between gap-3\">")
@@ -553,17 +553,17 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 //line theme.gsx:462:7
 	_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line theme.gsx:463:8
-	for _, choice := range themePageChoices() {
+	for /*line theme.gsx:463:14*/ _, choice := range themePageChoices() {
 //line theme.gsx:464:9
 		_gsxgw.S("<button type=\"button\" data-theme-page-tab=\"")
-		_gsxgw.AttrValue(string(choice.Name))
+		_gsxgw.AttrValue(string( /*line theme.gsx:466:31*/ choice.Name))
 		_gsxgw.S("\" aria-pressed=\"")
-		_gsxgw.AttrValue(string(themePagePressedAttr(choice.Name)))
+		_gsxgw.AttrValue(string( /*line theme.gsx:467:24*/ themePagePressedAttr(choice.Name)))
 		_gsxgw.S("\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(themePageTabClass(choice.Name)))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:468:18*/ themePageTabClass(choice.Name)))
 		_gsxgw.S("\">")
 //line theme.gsx:470:10
-		_gsxgw.Text(string(choice.Title))
+		_gsxgw.Text(string( /*line theme.gsx:470:12*/ choice.Title))
 		_gsxgw.S("</button>")
 	}
 	_gsxgw.S("</div>")
@@ -578,9 +578,9 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	_gsxgw.S("<iframe")
 	_gsxgw.BoolAttr("data-theme-preview-frame", true)
 	_gsxgw.S(" title=\"Theme preview\" src=\"")
-	_gsxgw.URL(string(previewURL))
+	_gsxgw.URL(string( /*line theme.gsx:480:11*/ previewURL))
 	_gsxgw.S("\" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(iframeClass))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:481:14*/ iframeClass))
 	_gsxgw.S("\"></iframe>")
 //line theme.gsx:483:5
 	_gsxgw.S("<p")
@@ -595,7 +595,7 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	_gsxgw.S("<div")
 	_gsxgw.BoolAttr("data-theme-controls-panel", true)
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(controlsPanelClass))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:493:13*/ controlsPanelClass))
 	_gsxgw.S("\">")
 //line theme.gsx:495:5
 	_gsxgw.S("<section class=\"flex flex-col gap-3 border-t border-border pt-6\">")
@@ -611,11 +611,11 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line theme.gsx:501:9
 	_gsxgw.S("<button type=\"button\" data-theme-mode-tab=\"light\" aria-pressed=\"true\" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tabBtnBase), _gsxrt.Class("bg-accent text-accent-foreground"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:505:18*/ tabBtnBase), _gsxrt.Class( /*line theme.gsx:505:30*/ "bg-accent text-accent-foreground"))
 	_gsxgw.S("\">Light</button>")
 //line theme.gsx:509:9
 	_gsxgw.S("<button type=\"button\" data-theme-mode-tab=\"dark\" aria-pressed=\"false\" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tabBtnBase), _gsxrt.Class("text-muted-foreground hover:bg-accent hover:text-accent-foreground"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:513:18*/ tabBtnBase), _gsxrt.Class( /*line theme.gsx:513:30*/ "text-muted-foreground hover:bg-accent hover:text-accent-foreground"))
 	_gsxgw.S("\">Dark</button></div></div>")
 //line theme.gsx:519:7
 	_gsxgw.S("<div class=\"flex flex-col gap-1.5\">")
@@ -624,34 +624,34 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 //line theme.gsx:521:8
 	_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line theme.gsx:522:9
-	for _, choice := range preset.MenuAccentChoices() {
+	for /*line theme.gsx:522:15*/ _, choice := range preset.MenuAccentChoices() {
 //line theme.gsx:523:10
 		_gsxgw.S("<button type=\"button\" data-theme-menu-accent-tab=\"")
-		_gsxgw.AttrValue(string(choice.Name))
+		_gsxgw.AttrValue(string( /*line theme.gsx:525:39*/ choice.Name))
 		_gsxgw.S("\" aria-pressed=\"")
-		_gsxgw.AttrValue(string(themeMenuAccentPressedAttr(choice.Name)))
+		_gsxgw.AttrValue(string( /*line theme.gsx:526:25*/ themeMenuAccentPressedAttr(choice.Name)))
 		_gsxgw.S("\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(themeMenuAccentTabClass(choice.Name)))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line theme.gsx:527:19*/ themeMenuAccentTabClass(choice.Name)))
 		_gsxgw.S("\">")
 //line theme.gsx:529:11
-		_gsxgw.Text(string(choice.Title))
+		_gsxgw.Text(string( /*line theme.gsx:529:13*/ choice.Title))
 		_gsxgw.S("</button>")
 	}
 	_gsxgw.S("</div></div></div>")
 //line theme.gsx:535:6
 	_gsxgw.S("<div class=\"grid grid-cols-2 gap-3\">")
 //line theme.gsx:536:7
-	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "baseColor", "Base color", "neutral", themePickerChoices(preset.BaseColorChoices())))
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "baseColor", "Base color", "neutral" /*line theme.gsx:540:17*/, themePickerChoices(preset.BaseColorChoices())))
 //line theme.gsx:542:7
-	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "theme", "Theme", "neutral", themePickerChoices(mustThemePickerChoices("neutral"))))
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "theme", "Theme", "neutral" /*line theme.gsx:546:17*/, themePickerChoices(mustThemePickerChoices("neutral"))))
 //line theme.gsx:548:7
-	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "radius", "Radius", "medium", themeRadiusPickerChoices(preset.RadiusChoices())))
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "radius", "Radius", "medium" /*line theme.gsx:552:17*/, themeRadiusPickerChoices(preset.RadiusChoices())))
 //line theme.gsx:554:7
-	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "chartColor", "Chart color", "neutral", themePickerChoices(mustThemePickerChoices("neutral"))))
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "chartColor", "Chart color", "neutral" /*line theme.gsx:558:17*/, themePickerChoices(mustThemePickerChoices("neutral"))))
 //line theme.gsx:560:7
-	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "fontSans", "Body font", "geist", themeFontPickerChoices(preset.FontChoices())))
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "fontSans", "Body font", "geist" /*line theme.gsx:564:17*/, themeFontPickerChoices(preset.FontChoices())))
 //line theme.gsx:566:7
-	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "fontHeading", "Heading font", "geist", themeFontPickerChoices(preset.FontChoices())))
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "fontHeading", "Heading font", "geist" /*line theme.gsx:570:17*/, themeFontPickerChoices(preset.FontChoices())))
 	_gsxgw.S("</div></section>")
 //line theme.gsx:574:5
 	_gsxgw.S("<section class=\"flex flex-col gap-3 border-t border-border pt-6\">")
@@ -704,7 +704,7 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	_gsxgw.S("</div>")
 //line theme.gsx:596:6
 	_gsxgw.S("<textarea data-theme-import=\"css\" rows=\"6\" placeholder=\"")
-	_gsxgw.AttrValue(string(themeImportPlaceholder))
+	_gsxgw.AttrValue(string( /*line theme.gsx:599:20*/ themeImportPlaceholder))
 	_gsxgw.S("\" class=\"w-full rounded-md border border-input bg-transparent p-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\"></textarea>")
 //line theme.gsx:602:6
 	_gsxgw.S("<div>")

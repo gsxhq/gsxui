@@ -24,7 +24,7 @@ func Group() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line group.gsx:10:4
-			_gsxgw.Node(ctx, ui.AvatarImage(_gsxstd.DataURL((avatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
+			_gsxgw.Node(ctx, ui.AvatarImage( /*line group.gsx:10:38*/ _gsxstd.DataURL(( /*line group.gsx:10:25*/ avatarSVG) /*line group.gsx:10:46*/, "image/svg+xml"), "Ada Lovelace", nil))
 //line group.gsx:11:4
 			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)

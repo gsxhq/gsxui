@@ -78,40 +78,40 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		}
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line toggle.gsx:62:28*/ _gsxstd.Default(( /*line toggle.gsx:62:17*/ variant) /*line toggle.gsx:62:36*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.AttrValue(string( /*line toggle.gsx:63:22*/ _gsxstd.Default(( /*line toggle.gsx:63:14*/ size) /*line toggle.gsx:63:30*/, "default")))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
-			_gsxgw.AttrValue(string(state))
+			_gsxgw.AttrValue(string( /*line toggle.gsx:64:15*/ state))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("aria-pressed") {
 			_gsxgw.S(" aria-pressed=\"")
-			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
+			_gsxgw.S(_gsxsc.FormatBool(bool( /*line toggle.gsx:65:17*/ pressed)))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 gap-1 rounded-md text-sm font-medium transition-[color,box-shadow] [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap outline-none focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0"
+		_gsxv0 := /*line toggle.gsx:67:4*/ "hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 gap-1 rounded-md text-sm font-medium transition-[color,box-shadow] [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap outline-none focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0"
 		var _gsxv1 string
-		switch variant {
-		case "outline":
-			_gsxv1 = "border-input hover:bg-muted border bg-transparent shadow-xs"
+		switch /*line toggle.gsx:68:11*/ variant {
+		case /*line toggle.gsx:69:9*/ "outline":
+			_gsxv1 = /*line toggle.gsx:70:5*/ "border-input hover:bg-muted border bg-transparent shadow-xs"
 		default:
-			_gsxv1 = "bg-transparent"
+			_gsxv1 = /*line toggle.gsx:72:5*/ "bg-transparent"
 		}
 		var _gsxv2 string
-		switch size {
-		case "sm":
-			_gsxv2 = "h-8 min-w-8 px-2.5 has-[>svg]:px-1.5"
-		case "lg":
-			_gsxv2 = "h-10 min-w-10 px-2.5 has-[>svg]:px-2"
+		switch /*line toggle.gsx:74:11*/ size {
+		case /*line toggle.gsx:75:9*/ "sm":
+			_gsxv2 = /*line toggle.gsx:76:5*/ "h-8 min-w-8 px-2.5 has-[>svg]:px-1.5"
+		case /*line toggle.gsx:77:9*/ "lg":
+			_gsxv2 = /*line toggle.gsx:78:5*/ "h-10 min-w-10 px-2.5 has-[>svg]:px-2"
 		default:
-			_gsxv2 = "h-9 min-w-9 px-2.5 has-[>svg]:px-2"
+			_gsxv2 = /*line toggle.gsx:80:5*/ "h-9 min-w-9 px-2.5 has-[>svg]:px-2"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -121,7 +121,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
 //line toggle.gsx:86:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line toggle.gsx:86:5*/, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})

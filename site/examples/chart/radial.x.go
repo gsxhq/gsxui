@@ -58,10 +58,10 @@ func Radial() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line radial.gsx:34:4
-				_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.Chart( /*line radial.gsx:34:22*/ cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line radial.gsx:35:5
-					_gsxgw.Node(ctx, ui.RadialBarChart(data, 0, 0, 0, 0, 0, 0, 30, 110, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.RadialBarChart( /*line radial.gsx:35:30*/ data, 0, 0, 0, 0, 0, 0 /*line radial.gsx:35:49*/, 30 /*line radial.gsx:35:66*/, 110, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 //line radial.gsx:36:6
 						_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", true, false, "browser", "", "", "", false, 0))

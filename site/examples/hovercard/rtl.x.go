@@ -46,7 +46,7 @@ func Rtl() _gsxrt.Node {
 				_gsxgw.Node(ctx, uirtl.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:7
-					_gsxgw.Node(ctx, uirtl.AvatarImage(_gsxstd.DataURL((avatarSVG), "image/svg+xml"), "@nextjs", nil))
+					_gsxgw.Node(ctx, uirtl.AvatarImage( /*line rtl.gsx:19:44*/ _gsxstd.DataURL(( /*line rtl.gsx:19:31*/ avatarSVG) /*line rtl.gsx:19:52*/, "image/svg+xml"), "@nextjs", nil))
 //line rtl.gsx:20:7
 					_gsxgw.Node(ctx, uirtl.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)

@@ -20,10 +20,10 @@ func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:13:2
-		_gsxgw.Node(ctx, ui.SidebarProvider(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.SidebarProvider( /*line basic.gsx:13:28*/ true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:14:3
-			_gsxgw.Node(ctx, ui.Sidebar(true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.Sidebar( /*line basic.gsx:14:21*/ true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:15:4
 				_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -65,7 +65,7 @@ func Basic() _gsxrt.Node {
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:29:9
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", "#home", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuButton( /*line basic.gsx:29:54*/ true, "", "", "Home", "#home", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:30:10
 										_gsxgw.Node(ctx, icon.House())
@@ -88,7 +88,7 @@ func Basic() _gsxrt.Node {
 										return _gsxgw.Err()
 									}), nil))
 //line basic.gsx:39:9
-									_gsxgw.Node(ctx, ui.SidebarMenuAction(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuAction( /*line basic.gsx:39:44*/ true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:40:10
 										_gsxgw.Node(ctx, icon.Plus())
@@ -101,7 +101,7 @@ func Basic() _gsxrt.Node {
 										_gsxgw.Node(ctx, ui.SidebarMenuSubItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:44:11
-											_gsxgw.Node(ctx, ui.SidebarMenuSubButton("sm", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+											_gsxgw.Node(ctx, ui.SidebarMenuSubButton("sm" /*line basic.gsx:44:56*/, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 												_gsxgw := _gsxrt.W(_gsxw)
 												_gsxgw.S("Unread")
 												return _gsxgw.Err()
@@ -167,7 +167,7 @@ func Basic() _gsxrt.Node {
 								return _gsxgw.Err()
 							}), nil))
 //line basic.gsx:68:7
-							_gsxgw.Node(ctx, ui.SidebarMenuSkeleton(true, nil))
+							_gsxgw.Node(ctx, ui.SidebarMenuSkeleton( /*line basic.gsx:68:41*/ true, nil))
 //line basic.gsx:69:7
 							_gsxgw.Node(ctx, ui.SidebarMenuSkeleton(false, nil))
 							return _gsxgw.Err()

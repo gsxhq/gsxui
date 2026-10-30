@@ -97,32 +97,32 @@ func AspectRatio(ratio string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		form, w, h := parseAspectRatio(ratio)
 //line aspect-ratio.gsx:85:2
 		_gsxv0, _gsxerr := _gsxrt.Attrs(nil), error(nil)
-		switch form {
-		case aspectRatioPair:
+		switch /*line aspect-ratio.gsx:86:12*/ form {
+		case /*line aspect-ratio.gsx:87:8*/ aspectRatioPair:
 			_gsxv0, _gsxerr = (func() (_gsxrt.Attrs, error) {
-				return _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("aspect-ratio: " + _gsxrt.FilterCSS(string(w)) + " / " + _gsxrt.FilterCSS(string(h)) + ";")}}, nil
+				return _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("aspect-ratio: " + _gsxrt.FilterCSS(string( /*line aspect-ratio.gsx:88:30*/ w)) + " / " + _gsxrt.FilterCSS(string( /*line aspect-ratio.gsx:88:37*/ h)) + ";")}}, nil
 			})()
-		case aspectRatioAutoPair:
+		case /*line aspect-ratio.gsx:89:8*/ aspectRatioAutoPair:
 			_gsxv0, _gsxerr = (func() (_gsxrt.Attrs, error) {
-				return _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("aspect-ratio: auto " + _gsxrt.FilterCSS(string(w)) + " / " + _gsxrt.FilterCSS(string(h)) + ";")}}, nil
+				return _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("aspect-ratio: auto " + _gsxrt.FilterCSS(string( /*line aspect-ratio.gsx:90:35*/ w)) + " / " + _gsxrt.FilterCSS(string( /*line aspect-ratio.gsx:90:42*/ h)) + ";")}}, nil
 			})()
 		default:
 			_gsxv0, _gsxerr = (func() (_gsxrt.Attrs, error) {
-				return _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("aspect-ratio: " + _gsxrt.FilterCSS(string(ratio)) + ";")}}, nil
+				return _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("aspect-ratio: " + _gsxrt.FilterCSS(string( /*line aspect-ratio.gsx:92:30*/ ratio)) + ";")}}, nil
 			})()
 		}
 		if _gsxerr != nil {
 			return _gsxerr
 		}
 		_gsxv1 := _gsxv0
-		_gsxv2 := _gsxrt.ConcatAttrs(_gsxv1, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(aspectRatio.Root()))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-aspect-ratio", Value: _gsxrt.Toggle(true)}})
+		_gsxv2 := _gsxrt.ConcatAttrs(_gsxv1, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line aspect-ratio.gsx:94:11*/ aspectRatio.Root()))}} /*line aspect-ratio.gsx:95:5*/, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-aspect-ratio", Value: _gsxrt.Toggle(true)}})
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
 		_gsxgw.StyleMerged("", _gsxv2.Style())
 		_gsxgw.Spread(ctx, "div", _gsxv2, _gsxrt.AttrSinks{}, []string{"class", "style"})
 		_gsxgw.S(">")
 //line aspect-ratio.gsx:98:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line aspect-ratio.gsx:98:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

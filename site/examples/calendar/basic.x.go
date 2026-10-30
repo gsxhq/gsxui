@@ -36,7 +36,7 @@ func Basic(month time.Time) _gsxrt.Node {
 			month = DefaultMonth
 		}
 //line basic.gsx:27:2
-		_gsxgw.Node(ctx, ui.Calendar("single", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
+		_gsxgw.Node(ctx, ui.Calendar("single" /*line basic.gsx:27:36*/, month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time) /*line basic.gsx:27:57*/, time.Sunday /*line basic.gsx:27:87*/, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", *new(_gsxty2.CalendarLocale), nil))
 		return _gsxgw.Err()
 	})
 }

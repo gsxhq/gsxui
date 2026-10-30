@@ -22,7 +22,7 @@ func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:13:2
-		_gsxgw.Node(ctx, ui.Slider(50, 0, 100, 1, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "w-[60%]"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Volume"}})))
+		_gsxgw.Node(ctx, ui.Slider( /*line basic.gsx:13:20*/ 50 /*line basic.gsx:13:29*/, 0 /*line basic.gsx:13:37*/, 100 /*line basic.gsx:13:48*/, 1, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "w-[60%]"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Volume"}})))
 		return _gsxgw.Err()
 	})
 }

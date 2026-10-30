@@ -65,7 +65,7 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 	_gsxgw.S("<li")
 	if !attrs.Has("data-type") {
 		_gsxgw.S(" data-type=\"")
-		_gsxgw.AttrValue(string(t))
+		_gsxgw.AttrValue(string( /*line toast.gsx:47:14*/ t))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("role") {
@@ -73,102 +73,102 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 	}
 	if !attrs.Has("aria-live") {
 		_gsxgw.S(" aria-live=\"")
-		_gsxgw.AttrValue(string(ariaLive))
+		_gsxgw.AttrValue(string( /*line toast.gsx:49:14*/ ariaLive))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("aria-atomic") {
 		_gsxgw.S(" aria-atomic=\"true\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md flex w-[356px] items-start gap-3 border border-border bg-popover p-4 text-sm text-popover-foreground shadow-lg transition-[transform,opacity] duration-300 ease-out"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toast.gsx:52:4*/ "rounded-md flex w-[356px] items-start gap-3 border border-border bg-popover p-4 text-sm text-popover-foreground shadow-lg transition-[transform,opacity] duration-300 ease-out"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toast"})
 	_gsxgw.BoolAttr("data-gsxui-slot-toast", true)
 	_gsxgw.S(">")
 //line toast.gsx:57:3
-	if t != "default" {
+	if /*line toast.gsx:57:8*/ t != "default" {
 //line toast.gsx:58:4
-		switch t {
-		case "success":
+		switch /*line toast.gsx:58:13*/ t {
+		case /*line toast.gsx:59:9*/ "success":
 //line toast.gsx:60:5
-			_gsxgw.Node(ctx, icon.CircleCheck(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
-		case "info":
+			_gsxgw.Node(ctx, icon.CircleCheck(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line toast.gsx:62:7*/ "mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
+		case /*line toast.gsx:66:9*/ "info":
 //line toast.gsx:67:5
-			_gsxgw.Node(ctx, icon.Info(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
-		case "warning":
+			_gsxgw.Node(ctx, icon.Info(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line toast.gsx:69:7*/ "mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
+		case /*line toast.gsx:73:9*/ "warning":
 //line toast.gsx:74:5
-			_gsxgw.Node(ctx, icon.TriangleAlert(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
-		case "error":
+			_gsxgw.Node(ctx, icon.TriangleAlert(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line toast.gsx:76:7*/ "mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
+		case /*line toast.gsx:80:9*/ "error":
 //line toast.gsx:81:5
-			_gsxgw.Node(ctx, icon.OctagonX(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
-		case "loading":
+			_gsxgw.Node(ctx, icon.OctagonX(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line toast.gsx:83:7*/ "mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
+		case /*line toast.gsx:87:9*/ "loading":
 //line toast.gsx:88:5
-			_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
+			_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line toast.gsx:90:7*/ "mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		}
 	}
 //line toast.gsx:96:3
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-1 flex-col gap-1"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toast.gsx:96:16*/ "flex flex-1 flex-col gap-1"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-toast-content", true)
 	_gsxgw.S(">")
 //line toast.gsx:97:4
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("font-medium text-foreground"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toast.gsx:97:17*/ "font-medium text-foreground"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-toast-title", true)
 	_gsxgw.S(">")
 //line toast.gsx:97:77
-	_gsxgw.Text(string(title))
+	_gsxgw.Text(string( /*line toast.gsx:97:79*/ title))
 	_gsxgw.S("</div>")
 //line toast.gsx:98:4
-	if description != "" {
+	if /*line toast.gsx:98:9*/ description != "" {
 //line toast.gsx:99:5
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toast.gsx:99:18*/ "text-muted-foreground"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-toast-description", true)
 		_gsxgw.S(">")
 //line toast.gsx:99:78
-		_gsxgw.Text(string(description))
+		_gsxgw.Text(string( /*line toast.gsx:99:80*/ description))
 		_gsxgw.S("</div>")
 	}
 	_gsxgw.S("</div>")
 //line toast.gsx:102:3
-	if action != "" {
+	if /*line toast.gsx:102:8*/ action != "" {
 //line toast.gsx:103:4
 		_gsxgw.S("<button type=\"button\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("shrink-0 self-center text-sm underline-offset-4 font-medium hover:underline"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toast.gsx:105:13*/ "shrink-0 self-center text-sm underline-offset-4 font-medium hover:underline"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-toast-action", true)
 		_gsxgw.S(">")
 //line toast.gsx:108:5
-		_gsxgw.Text(string(action))
+		_gsxgw.Text(string( /*line toast.gsx:108:7*/ action))
 		_gsxgw.S("</button>")
 	}
 //line toast.gsx:111:3
-	if cancel != "" {
+	if /*line toast.gsx:111:8*/ cancel != "" {
 //line toast.gsx:112:4
 		_gsxgw.S("<button type=\"button\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("shrink-0 self-center text-sm underline-offset-4 text-muted-foreground hover:underline"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toast.gsx:114:13*/ "shrink-0 self-center text-sm underline-offset-4 text-muted-foreground hover:underline"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-toast-cancel", true)
 		_gsxgw.S(">")
 //line toast.gsx:117:5
-		_gsxgw.Text(string(cancel))
+		_gsxgw.Text(string( /*line toast.gsx:117:7*/ cancel))
 		_gsxgw.S("</button>")
 	}
 //line toast.gsx:120:3
 	_gsxgw.S("<button type=\"button\" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("absolute -top-1.5 -end-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line toast.gsx:123:5*/ "absolute -top-1.5 -end-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm"))
 	_gsxgw.S("\" aria-label=\"")
-	_gsxgw.AttrValue(string(i18n.T("Close")))
+	_gsxgw.AttrValue(string( /*line toast.gsx:125:16*/ i18n.T("Close")))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-toast-close", true)
 	_gsxgw.S(">")
 //line toast.gsx:128:4
-	_gsxgw.Node(ctx, icon.X(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("size-3"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-close-icon", Value: _gsxrt.Toggle(true)}})...))
+	_gsxgw.Node(ctx, icon.X(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class( /*line toast.gsx:128:20*/ "size-3"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-close-icon", Value: _gsxrt.Toggle(true)}})...))
 	_gsxgw.S("</button></li>")
 	return _gsxgw.Err()
 }

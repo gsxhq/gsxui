@@ -45,12 +45,12 @@ func Basic() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line basic.gsx:23:5
-					for _, f := range frameworks {
+					for /*line basic.gsx:23:11*/ _, f := range frameworks {
 //line basic.gsx:24:6
-						_gsxgw.Node(ctx, ui.ComboboxItem(f.Value, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.ComboboxItem( /*line basic.gsx:24:30*/ f.Value /*line basic.gsx:24:49*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:24:56
-							_gsxgw.Text(string(f.Label))
+							_gsxgw.Text(string( /*line basic.gsx:24:58*/ f.Label))
 							return _gsxgw.Err()
 						}), nil))
 					}

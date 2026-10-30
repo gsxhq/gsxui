@@ -3,7 +3,7 @@ module github.com/gsxhq/gsxui
 go 1.26.1
 
 require (
-	github.com/gsxhq/gsx v0.3.0
+	github.com/gsxhq/gsx v0.4.2
 	github.com/gsxhq/vite v0.3.2
 	github.com/jackielii/structpages v0.6.6
 	github.com/jackielii/tailwind-merge-go v0.0.0-20260726184505-8a911ed0cf9a
@@ -24,6 +24,7 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20260611194520-c48552f49976 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/term v0.45.0 // indirect
 	golang.org/x/tools v0.47.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 )

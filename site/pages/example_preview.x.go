@@ -48,13 +48,13 @@ func (preview ExamplePreview) Page(props examplePreviewProps) _gsxrt.Node {
 //line example_preview.gsx:38:2
 		_gsxgw.S("<html lang=\"en\">")
 //line example_preview.gsx:39:3
-		_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw, props.Title, "web/main.js"))
+		_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw /*line example_preview.gsx:39:20*/, props.Title, "web/main.js"))
 //line example_preview.gsx:40:3
 		_gsxgw.S("<body")
 		_gsxgw.BoolAttr("data-site-isolated-document", true)
 		_gsxgw.S(" class=\"h-svh overflow-auto bg-background text-foreground antialiased\">")
 //line example_preview.gsx:44:4
-		_gsxgw.Node(ctx, props.Node)
+		_gsxgw.Node(ctx /*line example_preview.gsx:44:6*/, props.Node)
 		_gsxgw.S("</body></html>")
 		return _gsxgw.Err()
 	})

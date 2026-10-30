@@ -21,7 +21,7 @@ func Directions() _gsxrt.Node {
 //line directions.gsx:9:2
 		_gsxgw.S("<div class=\"grid grid-cols-2 gap-2\">")
 //line directions.gsx:10:3
-		for _, side := range []string{"top", "right", "bottom", "left"} {
+		for /*line directions.gsx:10:9*/ _, side := range []string{"top", "right", "bottom", "left"} {
 //line directions.gsx:11:4
 			_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -29,11 +29,11 @@ func Directions() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line directions.gsx:19:6
-					_gsxgw.Text(string(side))
+					_gsxgw.Text(string( /*line directions.gsx:19:8*/ side))
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-sheet-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
 //line directions.gsx:21:5
-				_gsxgw.Node(ctx, ui.SheetContent(side, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.SheetContent( /*line directions.gsx:21:28*/ side, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line directions.gsx:22:6
 					_gsxgw.Node(ctx, ui.SheetHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -61,9 +61,9 @@ func Directions() _gsxrt.Node {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Name")
 						return _gsxgw.Err()
-					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: "sheet-" + side + "-name"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
+					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: /*line directions.gsx:30:23*/ "sheet-" + side + "-name"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
 //line directions.gsx:31:8
-					_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-" + side + "-name"}}, _gsxrt.Attrs{{Key: "value", Value: "Pedro Duarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
+					_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: /*line directions.gsx:31:22*/ "sheet-" + side + "-name"}}, _gsxrt.Attrs{{Key: "value", Value: "Pedro Duarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
 					_gsxgw.S("</div>")
 //line directions.gsx:33:7
 					_gsxgw.S("<div class=\"grid grid-cols-4 items-center gap-4\">")
@@ -72,9 +72,9 @@ func Directions() _gsxrt.Node {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Username")
 						return _gsxgw.Err()
-					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: "sheet-" + side + "-username"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
+					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: /*line directions.gsx:34:23*/ "sheet-" + side + "-username"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
 //line directions.gsx:35:8
-					_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-" + side + "-username"}}, _gsxrt.Attrs{{Key: "value", Value: "@peduarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
+					_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: /*line directions.gsx:35:22*/ "sheet-" + side + "-username"}}, _gsxrt.Attrs{{Key: "value", Value: "@peduarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
 					_gsxgw.S("</div></div>")
 //line directions.gsx:38:6
 					_gsxgw.Node(ctx, ui.SheetFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {

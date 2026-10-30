@@ -34,7 +34,7 @@ component (p I18n) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Internationalization</h1>
 				<p class="text-muted-foreground">
-					Text you pass to a component is yours. The few strings a component writes itself are
+					Text you pass to a component is yours. The few strings a component writes itself are{ " " }
 					<code>i18n.T</code> messages, and one line in <code>gsx.toml</code> routes all of them through your
 					translator.
 				</p>
@@ -76,7 +76,7 @@ component (p I18n) Page() {
 			<section class="flex flex-col gap-3">
 				<docHeading item={i18nTOCItems[2]}/>
 				<p>
-					Calendar composes month and weekday names, the caption and each day's label. Pass a
+					Calendar composes month and weekday names, the caption and each day's label. Pass a{ " " }
 					<code>locale</code>; the zero value is English.
 				</p>
 				<ul class="list-disc space-y-2 pl-6">

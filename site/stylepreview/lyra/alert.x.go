@@ -35,17 +35,17 @@ func _gsxrenderAlert(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string,
 	}
 	if !attrs.Has("data-variant") {
 		_gsxgw.S(" data-variant=\"")
-		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+		_gsxgw.AttrValue(string( /*line alert.gsx:11:28*/ _gsxstd.Default(( /*line alert.gsx:11:17*/ variant) /*line alert.gsx:11:36*/, "default")))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "group/alert"
-	_gsxv1 := "grid gap-0.5 rounded-none border px-2.5 py-2 text-left text-xs has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4 w-full"
+	_gsxv0 := /*line alert.gsx:13:4*/ "group/alert"
+	_gsxv1 := /*line alert.gsx:14:4*/ "grid gap-0.5 rounded-none border px-2.5 py-2 text-left text-xs has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4 w-full"
 	var _gsxv2 string
-	switch variant {
-	case "destructive":
-		_gsxv2 = "text-destructive bg-card [&>[data-gsxui-slot-alert-description]]:text-destructive/90 *:[svg]:text-current"
+	switch /*line alert.gsx:15:11*/ variant {
+	case /*line alert.gsx:16:9*/ "destructive":
+		_gsxv2 = /*line alert.gsx:17:5*/ "text-destructive bg-card [&>[data-gsxui-slot-alert-description]]:text-destructive/90 *:[svg]:text-current"
 	default:
-		_gsxv2 = "bg-card text-card-foreground"
+		_gsxv2 = /*line alert.gsx:19:5*/ "bg-card text-card-foreground"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -55,7 +55,7 @@ func _gsxrenderAlert(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string,
 	_gsxgw.BoolAttr("data-gsxui-slot-alert", true)
 	_gsxgw.S(">")
 //line alert.gsx:25:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line alert.gsx:25:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -74,14 +74,14 @@ func _gsxrenderAlertTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 	}
 //line alert.gsx:30:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line alert.gsx:32:4*/ "font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-title"})
 	_gsxgw.BoolAttr("data-gsxui-slot-alert-title", true)
 	_gsxgw.S(">")
 //line alert.gsx:37:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line alert.gsx:37:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
@@ -100,14 +100,14 @@ func _gsxrenderAlertDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	}
 //line alert.gsx:42:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground text-xs/relaxed text-balance md:text-pretty [&_p:not(:last-child)]:mb-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line alert.gsx:44:4*/ "text-muted-foreground text-xs/relaxed text-balance md:text-pretty [&_p:not(:last-child)]:mb-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-description"})
 	_gsxgw.BoolAttr("data-gsxui-slot-alert-description", true)
 	_gsxgw.S(">")
 //line alert.gsx:49:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line alert.gsx:49:5*/, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }

@@ -81,7 +81,7 @@ func Login() _gsxrt.Node {
 				_gsxgw.Node(ctx, uirtl.NativeSelect(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line login.gsx:46:8
-					_gsxgw.Node(ctx, uirtl.NativeSelectOption("ar", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, uirtl.NativeSelectOption("ar" /*line login.gsx:46:55*/, true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("العربية")
 						return _gsxgw.Err()

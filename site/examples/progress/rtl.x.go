@@ -23,7 +23,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:12:2
 		_gsxgw.S("<div dir=\"rtl\" lang=\"ar\" class=\"w-full max-w-sm\">")
 //line rtl.gsx:13:3
-		_gsxgw.Node(ctx, uirtl.Progress(56, nil))
+		_gsxgw.Node(ctx, uirtl.Progress( /*line rtl.gsx:13:26*/ 56, nil))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

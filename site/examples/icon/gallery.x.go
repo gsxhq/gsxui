@@ -48,15 +48,15 @@ func Gallery() _gsxrt.Node {
 //line gallery.gsx:38:2
 		_gsxgw.S("<div class=\"grid grid-cols-4 gap-6 sm:grid-cols-5 md:grid-cols-8\">")
 //line gallery.gsx:39:3
-		for _, ic := range popular {
+		for /*line gallery.gsx:39:9*/ _, ic := range popular {
 //line gallery.gsx:40:4
 			_gsxgw.S("<div class=\"flex flex-col items-center gap-2\">")
 //line gallery.gsx:41:5
-			_gsxgw.Node(ctx, ic.Render(gsx.Attr{Key: "class", Value: "size-5"}))
+			_gsxgw.Node(ctx /*line gallery.gsx:41:7*/, ic.Render(gsx.Attr{Key: "class", Value: "size-5"}))
 //line gallery.gsx:42:5
 			_gsxgw.S("<span class=\"text-xs text-muted-foreground\">")
 //line gallery.gsx:42:49
-			_gsxgw.Text(string(ic.Name))
+			_gsxgw.Text(string( /*line gallery.gsx:42:51*/ ic.Name))
 			_gsxgw.S("</span></div>")
 		}
 		_gsxgw.S("</div>")

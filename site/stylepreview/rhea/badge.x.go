@@ -40,24 +40,24 @@ func _gsxrenderBadge(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string,
 	_gsxgw.S("<span")
 	if !attrs.Has("data-variant") {
 		_gsxgw.S(" data-variant=\"")
-		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+		_gsxgw.AttrValue(string( /*line badge.gsx:18:28*/ _gsxstd.Default(( /*line badge.gsx:18:17*/ variant) /*line badge.gsx:18:36*/, "default")))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 h-5 gap-1 rounded-2xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-[>svg]:px-1.5 [&>svg]:size-3 inline-flex items-center justify-center overflow-hidden whitespace-nowrap w-fit shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 [&>svg]:pointer-events-none"
+	_gsxv0 := /*line badge.gsx:20:4*/ "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 h-5 gap-1 rounded-2xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-[>svg]:px-1.5 [&>svg]:size-3 inline-flex items-center justify-center overflow-hidden whitespace-nowrap w-fit shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 [&>svg]:pointer-events-none"
 	var _gsxv1 string
-	switch variant {
-	case "secondary":
-		_gsxv1 = "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80"
-	case "destructive":
-		_gsxv1 = "bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20"
-	case "outline":
-		_gsxv1 = "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground"
-	case "ghost":
-		_gsxv1 = "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50"
-	case "link":
-		_gsxv1 = "text-primary underline-offset-4 hover:underline"
+	switch /*line badge.gsx:21:11*/ variant {
+	case /*line badge.gsx:22:9*/ "secondary":
+		_gsxv1 = /*line badge.gsx:23:5*/ "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80"
+	case /*line badge.gsx:24:9*/ "destructive":
+		_gsxv1 = /*line badge.gsx:25:5*/ "bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20"
+	case /*line badge.gsx:26:9*/ "outline":
+		_gsxv1 = /*line badge.gsx:27:5*/ "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground"
+	case /*line badge.gsx:28:9*/ "ghost":
+		_gsxv1 = /*line badge.gsx:29:5*/ "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50"
+	case /*line badge.gsx:30:9*/ "link":
+		_gsxv1 = /*line badge.gsx:31:5*/ "text-primary underline-offset-4 hover:underline"
 	default:
-		_gsxv1 = "bg-primary text-primary-foreground [a]:hover:bg-primary/80"
+		_gsxv1 = /*line badge.gsx:33:5*/ "bg-primary text-primary-foreground [a]:hover:bg-primary/80"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
@@ -67,7 +67,7 @@ func _gsxrenderBadge(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string,
 	_gsxgw.BoolAttr("data-gsxui-slot-badge", true)
 	_gsxgw.S(">")
 //line badge.gsx:39:3
-	_gsxgw.Node(ctx, children)
+	_gsxgw.Node(ctx /*line badge.gsx:39:5*/, children)
 	_gsxgw.S("</span>")
 	return _gsxgw.Err()
 }

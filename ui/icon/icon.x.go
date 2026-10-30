@@ -55,7 +55,7 @@ func svgIcon(name string, inner gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.BoolAttr("data-gsxui-slot-icon", true)
 		_gsxgw.S(">")
 //line icon.gsx:25:3
-		_gsxgw.Node(ctx, inner)
+		_gsxgw.Node(ctx /*line icon.gsx:25:5*/, inner)
 		_gsxgw.S("</svg>")
 		return _gsxgw.Err()
 	})

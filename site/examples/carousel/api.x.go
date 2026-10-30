@@ -36,7 +36,7 @@ func Api() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CarouselContent("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line api.gsx:21:5
-				for _, n := range apiSlides {
+				for /*line api.gsx:21:11*/ _, n := range apiSlides {
 //line api.gsx:22:6
 					_gsxgw.Node(ctx, ui.CarouselItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
@@ -50,7 +50,7 @@ func Api() _gsxrt.Node {
 //line api.gsx:25:9
 								_gsxgw.S("<span class=\"text-4xl font-semibold\">")
 //line api.gsx:25:46
-								_gsxgw.IntInto(_gsxnum[:], int64(n))
+								_gsxgw.IntInto(_gsxnum[:], int64( /*line api.gsx:25:48*/ n))
 								_gsxgw.S("</span>")
 								return _gsxgw.Err()
 							}), _gsxrt.Attrs{{Key: "class", Value: "flex aspect-square items-center justify-center p-6"}}))

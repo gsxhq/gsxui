@@ -125,7 +125,7 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 		_gsxgw.S("<div")
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.AttrValue(string( /*line resizable.gsx:113:36*/ _gsxstd.Default(( /*line resizable.gsx:113:21*/ orientation) /*line resizable.gsx:113:44*/, "horizontal")))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
@@ -134,7 +134,7 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-panel-group", true)
 		_gsxgw.S(">")
 //line resizable.gsx:117:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line resizable.gsx:117:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -166,23 +166,23 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 		}
 //line resizable.gsx:141:2
 		_gsxgw.S("<div")
-		if minSize != "" {
+		if /*line resizable.gsx:142:8*/ minSize != "" {
 			if !attrs.Has("data-min-size") {
 				_gsxgw.S(" data-min-size=\"")
-				_gsxgw.AttrValue(string(minSize))
+				_gsxgw.AttrValue(string( /*line resizable.gsx:143:19*/ minSize))
 				_gsxgw.S("\"")
 			}
 		}
-		if maxSize != "" {
+		if /*line resizable.gsx:145:8*/ maxSize != "" {
 			if !attrs.Has("data-max-size") {
 				_gsxgw.S(" data-max-size=\"")
-				_gsxgw.AttrValue(string(maxSize))
+				_gsxgw.AttrValue(string( /*line resizable.gsx:146:19*/ maxSize))
 				_gsxgw.S("\"")
 			}
 		}
 		if !attrs.Has("style") {
 			_gsxgw.S(" style=\"flex: ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(grow)))
+			_gsxgw.AttrValue(_gsxrt.StyleValue(string( /*line resizable.gsx:148:21*/ grow)))
 			_gsxgw.S(" 1 0px\"")
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
@@ -191,7 +191,7 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-panel", true)
 		_gsxgw.S(">")
 //line resizable.gsx:152:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line resizable.gsx:152:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -255,24 +255,24 @@ func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxr
 		}
 		if !attrs.Has("aria-orientation") {
 			_gsxgw.S(" aria-orientation=\"")
-			_gsxgw.AttrValue(string(handleOrientation))
+			_gsxgw.AttrValue(string( /*line resizable.gsx:205:21*/ handleOrientation))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"0\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&>[data-gsxui-slot-resizable-handle-grip]]:rotate-90"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line resizable.gsx:208:4*/ "bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&>[data-gsxui-slot-resizable-handle-grip]]:rotate-90"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-resizable-handle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-handle", true)
 		_gsxgw.S(">")
 //line resizable.gsx:213:3
-		if withHandle {
+		if /*line resizable.gsx:213:8*/ withHandle {
 //line resizable.gsx:214:4
 			_gsxgw.S("<div class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border h-6 w-1 rounded-lg flex"))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line resizable.gsx:214:17*/ "bg-border h-6 w-1 rounded-lg flex"))
 			_gsxgw.S("\"")
 			_gsxgw.BoolAttr("data-gsxui-slot-resizable-handle-grip", true)
 			_gsxgw.S("></div>")

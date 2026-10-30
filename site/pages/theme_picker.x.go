@@ -65,20 +65,20 @@ func _gsxrenderThemePicker(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name, lab
 //line theme_picker.gsx:43:48
 			_gsxgw.S("<span class=\"text-xs text-muted-foreground\">")
 //line theme_picker.gsx:43:92
-			_gsxgw.Text(string(label))
+			_gsxgw.Text(string( /*line theme_picker.gsx:43:94*/ label))
 			_gsxgw.S("</span>")
 //line theme_picker.gsx:43:108
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-theme-selection-value", true)
 			_gsxgw.S(" class=\"truncate font-medium\">")
 //line theme_picker.gsx:43:170
-			_gsxgw.Text(string(themePickerSelectedTitle(choices, selected)))
+			_gsxgw.Text(string( /*line theme_picker.gsx:43:172*/ themePickerSelectedTitle(choices, selected)))
 			_gsxgw.S("</span></span>")
 //line theme_picker.gsx:44:4
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-theme-selection-swatch", true)
 			_gsxgw.S(" class=\"size-4 shrink-0 rounded-full border border-border bg-foreground/40\" style=\"")
-			_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(themePickerSelectedSwatchStyle(choices, selected))))
+			_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue( /*line theme_picker.gsx:44:121*/ themePickerSelectedSwatchStyle(choices, selected))))
 			_gsxgw.S("\"></span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-theme-picker-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "class", Value: "flex min-h-10 w-full items-center justify-between gap-3 rounded-md border border-input bg-transparent px-3 py-1.5 text-left text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"}})))
@@ -90,34 +90,34 @@ func _gsxrenderThemePicker(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name, lab
 //line theme_picker.gsx:48:5
 			_gsxgw.S("<legend class=\"sr-only\">")
 //line theme_picker.gsx:48:29
-			_gsxgw.Text(string(label))
+			_gsxgw.Text(string( /*line theme_picker.gsx:48:31*/ label))
 			_gsxgw.S("</legend>")
 //line theme_picker.gsx:49:5
-			for _, choice := range choices {
+			for /*line theme_picker.gsx:49:11*/ _, choice := range choices {
 //line theme_picker.gsx:50:6
 				_gsxgw.S("<label data-theme-choice=\"")
-				_gsxgw.AttrValue(string(name))
+				_gsxgw.AttrValue(string( /*line theme_picker.gsx:51:26*/ name))
 				_gsxgw.S("\" class=\"flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent\">")
 //line theme_picker.gsx:54:7
-				_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "name", Value: "theme-picker-" + name}}, _gsxrt.Attrs{{Key: "value", Value: choice.Value}}, _gsxrt.Attrs{{Key: "aria-label", Value: choice.Title}}, _gsxrt.Attrs{{Key: "checked", Value: choice.Value == selected}})))
+				_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "name", Value: /*line theme_picker.gsx:55:14*/ "theme-picker-" + name}}, _gsxrt.Attrs{{Key: "value", Value: /*line theme_picker.gsx:56:15*/ choice.Value}}, _gsxrt.Attrs{{Key: "aria-label", Value: /*line theme_picker.gsx:57:20*/ choice.Title}}, _gsxrt.Attrs{{Key: "checked", Value: /*line theme_picker.gsx:58:17*/ choice.Value == selected}})))
 //line theme_picker.gsx:60:7
 				_gsxgw.S("<span")
 				_gsxgw.BoolAttr("data-theme-choice-swatch", true)
 				_gsxgw.S(" class=\"size-4 shrink-0 rounded-full border border-border bg-foreground/40\" style=\"")
-				_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(themePickerSwatchStyle(choice))))
+				_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue( /*line theme_picker.gsx:60:121*/ themePickerSwatchStyle(choice))))
 				_gsxgw.S("\"></span>")
 //line theme_picker.gsx:61:7
 				_gsxgw.S("<span")
 				_gsxgw.BoolAttr("data-theme-choice-label", true)
 				_gsxgw.S(">")
 //line theme_picker.gsx:61:37
-				_gsxgw.Text(string(choice.Title))
+				_gsxgw.Text(string( /*line theme_picker.gsx:61:39*/ choice.Title))
 				_gsxgw.S("</span></label>")
 			}
 			_gsxgw.S("</fieldset>")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "max-h-80 w-72 overflow-y-auto p-3"}}))
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-theme-picker", Value: name}}, _gsxrt.Attrs{{Key: "class", Value: "min-w-[180px]"}})))
+	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-theme-picker", Value: /*line theme_picker.gsx:38:33*/ name}}, _gsxrt.Attrs{{Key: "class", Value: "min-w-[180px]"}})))
 	return _gsxgw.Err()
 }

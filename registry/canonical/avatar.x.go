@@ -26,14 +26,14 @@ func Avatar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line avatar.gsx:15:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(avatar.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line avatar.gsx:15:16*/ avatar.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar"})
 		_gsxgw.BoolAttr("data-gsxui-slot-avatar", true)
 		_gsxgw.S(">")
 //line avatar.gsx:16:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line avatar.gsx:16:5*/, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
@@ -47,16 +47,16 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<img")
 		if !attrs.Has("src") {
 			_gsxgw.S(" src=\"")
-			_gsxgw.URLImage(string(src))
+			_gsxgw.URLImage(string( /*line avatar.gsx:22:8*/ src))
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("alt") {
 			_gsxgw.S(" alt=\"")
-			_gsxgw.AttrValue(string(alt))
+			_gsxgw.AttrValue(string( /*line avatar.gsx:23:8*/ alt))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(avatar.Image()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line avatar.gsx:24:11*/ avatar.Image()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "img", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar-image"})
@@ -85,14 +85,14 @@ func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line avatar.gsx:42:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-full items-center justify-center"), _gsxrt.Class(avatar.Fallback()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line avatar.gsx:43:11*/ "size-full items-center justify-center"), _gsxrt.Class( /*line avatar.gsx:43:52*/ avatar.Fallback()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar-fallback"})
 		_gsxgw.BoolAttr("data-gsxui-slot-avatar-fallback", true)
 		_gsxgw.S(">")
 //line avatar.gsx:47:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line avatar.gsx:47:5*/, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})

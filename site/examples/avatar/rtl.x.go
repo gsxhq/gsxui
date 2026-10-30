@@ -28,7 +28,7 @@ func Rtl() _gsxrt.Node {
 		_gsxgw.Node(ctx, uirtl.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:14:4
-			_gsxgw.Node(ctx, uirtl.AvatarImage(_gsxstd.DataURL((avatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
+			_gsxgw.Node(ctx, uirtl.AvatarImage( /*line rtl.gsx:14:41*/ _gsxstd.DataURL(( /*line rtl.gsx:14:28*/ avatarSVG) /*line rtl.gsx:14:49*/, "image/svg+xml"), "Ada Lovelace", nil))
 //line rtl.gsx:15:4
 			_gsxgw.Node(ctx, uirtl.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -43,7 +43,7 @@ func Rtl() _gsxrt.Node {
 		_gsxgw.Node(ctx, uirtl.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:19:5
-			_gsxgw.Node(ctx, uirtl.AvatarImage(_gsxstd.DataURL((avatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
+			_gsxgw.Node(ctx, uirtl.AvatarImage( /*line rtl.gsx:19:42*/ _gsxstd.DataURL(( /*line rtl.gsx:19:29*/ avatarSVG) /*line rtl.gsx:19:50*/, "image/svg+xml"), "Ada Lovelace", nil))
 //line rtl.gsx:20:5
 			_gsxgw.Node(ctx, uirtl.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -81,7 +81,7 @@ func Rtl() _gsxrt.Node {
 			_gsxgw.Node(ctx, uirtl.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:27
-				_gsxgw.Text(string("+٣"))
+				_gsxgw.Text(string( /*line rtl.gsx:29:29*/ "+٣"))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()

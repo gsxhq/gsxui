@@ -31,7 +31,7 @@ func Vertical() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line vertical.gsx:15:3
-			_gsxgw.Node(ctx, ui.ResizableHandle("vertical", false, nil))
+			_gsxgw.Node(ctx, ui.ResizableHandle("vertical" /*line vertical.gsx:15:58*/, false, nil))
 //line vertical.gsx:16:3
 			_gsxgw.Node(ctx, ui.ResizablePanel("75%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)

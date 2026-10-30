@@ -49,25 +49,25 @@ func Form() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line form.gsx:20:7
-					_gsxgw.Node(ctx, ui.ComboboxItem("next.js", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("next.js" /*line form.gsx:20:50*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Next.js")
 						return _gsxgw.Err()
 					}), nil))
 //line form.gsx:21:7
-					_gsxgw.Node(ctx, ui.ComboboxItem("sveltekit", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("sveltekit" /*line form.gsx:21:52*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("SvelteKit")
 						return _gsxgw.Err()
 					}), nil))
 //line form.gsx:22:7
-					_gsxgw.Node(ctx, ui.ComboboxItem("nuxt.js", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("nuxt.js" /*line form.gsx:22:50*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Nuxt.js")
 						return _gsxgw.Err()
 					}), nil))
 //line form.gsx:23:7
-					_gsxgw.Node(ctx, ui.ComboboxItem("remix", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.ComboboxItem("remix" /*line form.gsx:23:48*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Remix")
 						return _gsxgw.Err()

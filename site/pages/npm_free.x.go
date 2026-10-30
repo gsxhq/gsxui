@@ -28,7 +28,7 @@ func (n NpmFree) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line npm_free.gsx:17:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "npm-free", "npm-free", layoutDocs, npmFreeTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "npm-free", "npm-free" /*line npm_free.gsx:17:55*/, layoutDocs /*line npm_free.gsx:17:72*/, npmFreeTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line npm_free.gsx:18:3
 			_gsxgw.S("<div data-doc=\"npm-free\" class=\"flex max-w-3xl flex-col gap-10 py-10\">")
@@ -42,7 +42,7 @@ func (n NpmFree) Page() _gsxrt.Node {
 			_gsxgw.S("<code>node_modules</code>. (The recommended setup is still the scaffold from ")
 //line npm_free.gsx:24:51
 			_gsxgw.S("<a")
-			_gsxv0, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
+			_gsxv0, _gsxerr := /*line npm_free.gsx:24:80*/ _gsxf0.URLFor(ctx, ( /*line npm_free.gsx:24:60*/ GettingStarted{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
@@ -52,7 +52,7 @@ func (n NpmFree) Page() _gsxrt.Node {
 //line npm_free.gsx:27:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line npm_free.gsx:28:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, npmFreeTOCItems[0], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line npm_free.gsx:28:23*/, npmFreeTOCItems[0], nil))
 //line npm_free.gsx:29:5
 			_gsxgw.S("<p>If ")
 //line npm_free.gsx:30:9
@@ -68,12 +68,12 @@ func (n NpmFree) Page() _gsxrt.Node {
 //line npm_free.gsx:34:10
 			_gsxgw.S("<code>")
 //line npm_free.gsx:34:16
-			_gsxgw.Node(ctx, hl.Node("snippets/nonvite-init.output"))
+			_gsxgw.Node(ctx /*line npm_free.gsx:34:18*/, hl.Node("snippets/nonvite-init.output"))
 			_gsxgw.S("</code></pre></section>")
 //line npm_free.gsx:36:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line npm_free.gsx:37:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, npmFreeTOCItems[1], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line npm_free.gsx:37:23*/, npmFreeTOCItems[1], nil))
 //line npm_free.gsx:38:5
 			_gsxgw.S("<p>You own serving and CSS building. Serve the vendored JS directory statically and load the barrel with one module script tag — no bundler required, any bundler welcome:</p>")
 //line npm_free.gsx:42:5
@@ -81,12 +81,12 @@ func (n NpmFree) Page() _gsxrt.Node {
 //line npm_free.gsx:42:10
 			_gsxgw.S("<code>")
 //line npm_free.gsx:42:16
-			_gsxgw.Node(ctx, hl.Node("snippets/nonvite-serve.go"))
+			_gsxgw.Node(ctx /*line npm_free.gsx:42:18*/, hl.Node("snippets/nonvite-serve.go"))
 			_gsxgw.S("</code></pre></section>")
 //line npm_free.gsx:44:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line npm_free.gsx:45:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, npmFreeTOCItems[2], nil))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line npm_free.gsx:45:23*/, npmFreeTOCItems[2], nil))
 //line npm_free.gsx:46:5
 			_gsxgw.S("<p>Build the CSS entry with any Tailwind v4 tool. The ")
 //line npm_free.gsx:48:10
@@ -100,7 +100,7 @@ func (n NpmFree) Page() _gsxrt.Node {
 //line npm_free.gsx:52:10
 			_gsxgw.S("<code>")
 //line npm_free.gsx:52:16
-			_gsxgw.Node(ctx, hl.Node("snippets/nonvite-css.sh"))
+			_gsxgw.Node(ctx /*line npm_free.gsx:52:18*/, hl.Node("snippets/nonvite-css.sh"))
 			_gsxgw.S("</code></pre></section></div>")
 			return _gsxgw.Err()
 		})))

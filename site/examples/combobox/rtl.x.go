@@ -48,12 +48,12 @@ func Rtl() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line rtl.gsx:25:6
-					for _, c := range categories {
+					for /*line rtl.gsx:25:12*/ _, c := range categories {
 //line rtl.gsx:26:7
-						_gsxgw.Node(ctx, uirtl.ComboboxItem(c.Value, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, uirtl.ComboboxItem( /*line rtl.gsx:26:34*/ c.Value /*line rtl.gsx:26:53*/, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:26:60
-							_gsxgw.Text(string(c.Label))
+							_gsxgw.Text(string( /*line rtl.gsx:26:62*/ c.Label))
 							return _gsxgw.Err()
 						}), nil))
 					}

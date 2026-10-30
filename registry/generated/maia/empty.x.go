@@ -23,14 +23,14 @@ func Empty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line empty.gsx:10:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 rounded-lg border-dashed p-12 flex flex-col w-full min-w-0 flex-1 items-center justify-center text-center text-balance"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line empty.gsx:12:4*/ "gap-4 rounded-lg border-dashed p-12 flex flex-col w-full min-w-0 flex-1 items-center justify-center text-center text-balance"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty", true)
 		_gsxgw.S(">")
 //line empty.gsx:17:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line empty.gsx:17:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -42,14 +42,14 @@ func EmptyHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line empty.gsx:22:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex flex-col max-w-sm items-center text-center"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line empty.gsx:22:15*/ "gap-2 flex flex-col max-w-sm items-center text-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-header", true)
 		_gsxgw.S(">")
 //line empty.gsx:23:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line empty.gsx:23:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -69,16 +69,16 @@ func EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 		_gsxgw.S("<div")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.AttrValue(string( /*line empty.gsx:33:28*/ _gsxstd.Default(( /*line empty.gsx:33:17*/ variant) /*line empty.gsx:33:36*/, "default")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "mb-2 flex shrink-0 items-center justify-center [&_svg]:shrink-0 [&_svg]:pointer-events-none"
+		_gsxv0 := /*line empty.gsx:35:4*/ "mb-2 flex shrink-0 items-center justify-center [&_svg]:shrink-0 [&_svg]:pointer-events-none"
 		var _gsxv1 string
-		switch variant {
-		case "icon":
-			_gsxv1 = "bg-muted text-foreground flex size-10 shrink-0 items-center justify-center rounded-lg [&_svg:not([class*='size-'])]:size-6"
+		switch /*line empty.gsx:36:11*/ variant {
+		case /*line empty.gsx:37:9*/ "icon":
+			_gsxv1 = /*line empty.gsx:38:5*/ "bg-muted text-foreground flex size-10 shrink-0 items-center justify-center rounded-lg [&_svg:not([class*='size-'])]:size-6"
 		default:
-			_gsxv1 = "bg-transparent"
+			_gsxv1 = /*line empty.gsx:40:5*/ "bg-transparent"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
@@ -88,7 +88,7 @@ func EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-icon", true)
 		_gsxgw.S(">")
 //line empty.gsx:46:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line empty.gsx:46:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -100,14 +100,14 @@ func EmptyTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line empty.gsx:51:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-lg font-medium tracking-tight"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line empty.gsx:51:15*/ "text-lg font-medium tracking-tight"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-title", true)
 		_gsxgw.S(">")
 //line empty.gsx:52:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line empty.gsx:52:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -126,14 +126,14 @@ func EmptyDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line empty.gsx:62:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line empty.gsx:63:11*/ "text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-description", true)
 		_gsxgw.S(">")
 //line empty.gsx:67:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line empty.gsx:67:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -145,14 +145,14 @@ func EmptyContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line empty.gsx:72:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 text-sm flex flex-col w-full max-w-sm min-w-0 items-center text-balance"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line empty.gsx:73:11*/ "gap-4 text-sm flex flex-col w-full max-w-sm min-w-0 items-center text-balance"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-content", true)
 		_gsxgw.S(">")
 //line empty.gsx:77:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line empty.gsx:77:5*/, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

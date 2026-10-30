@@ -25,7 +25,7 @@ func Directions() _gsxrt.Node {
 //line directions.gsx:13:2
 		_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
 //line directions.gsx:14:3
-		for _, dir := range []string{"bottom", "top", "left", "right"} {
+		for /*line directions.gsx:14:9*/ _, dir := range []string{"bottom", "top", "left", "right"} {
 //line directions.gsx:15:4
 			_gsxgw.Node(ctx, ui.Drawer(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -33,11 +33,11 @@ func Directions() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line directions.gsx:23:6
-					_gsxgw.Text(string(dir))
+					_gsxgw.Text(string( /*line directions.gsx:23:8*/ dir))
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-drawer-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
 //line directions.gsx:25:5
-				_gsxgw.Node(ctx, ui.DrawerContent(dir, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.DrawerContent( /*line directions.gsx:25:34*/ dir, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line directions.gsx:26:6
 					_gsxgw.Node(ctx, ui.DrawerHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -46,7 +46,7 @@ func Directions() _gsxrt.Node {
 						_gsxgw.Node(ctx, ui.DrawerTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line directions.gsx:27:42
-							_gsxgw.Text(string(dir))
+							_gsxgw.Text(string( /*line directions.gsx:27:44*/ dir))
 							_gsxgw.S(" drawer")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: "capitalize"}}))
@@ -55,7 +55,7 @@ func Directions() _gsxrt.Node {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Anchored to the ")
 //line directions.gsx:28:45
-							_gsxgw.Text(string(dir))
+							_gsxgw.Text(string( /*line directions.gsx:28:47*/ dir))
 							_gsxgw.S(" edge.")
 							return _gsxgw.Err()
 						}), nil))
@@ -64,7 +64,7 @@ func Directions() _gsxrt.Node {
 //line directions.gsx:30:6
 					_gsxgw.S("<div class=\"p-4 pt-0 text-sm text-muted-foreground\">The free edge is rounded and the panel slides in from the ")
 //line directions.gsx:31:65
-					_gsxgw.Text(string(dir))
+					_gsxgw.Text(string( /*line directions.gsx:31:67*/ dir))
 					_gsxgw.S(".</div>")
 //line directions.gsx:33:6
 					_gsxgw.Node(ctx, ui.DrawerFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {

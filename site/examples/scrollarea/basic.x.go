@@ -40,13 +40,13 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:29:4
 			_gsxgw.S("<h4 class=\"mb-4 text-sm leading-none font-medium\">Tags</h4>")
 //line basic.gsx:30:4
-			for _, tag := range tags {
+			for /*line basic.gsx:30:10*/ _, tag := range tags {
 //line basic.gsx:31:5
 				_gsxgw.S("<div>")
 //line basic.gsx:32:6
 				_gsxgw.S("<div class=\"text-sm\">")
 //line basic.gsx:32:27
-				_gsxgw.Text(string(tag))
+				_gsxgw.Text(string( /*line basic.gsx:32:29*/ tag))
 				_gsxgw.S("</div>")
 //line basic.gsx:33:6
 				_gsxgw.Node(ctx, ui.Separator("", _gsxrt.Attrs{{Key: "class", Value: "my-2"}}))

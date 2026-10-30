@@ -23,14 +23,14 @@ func Kbd(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line kbd.gsx:11:2
 		_gsxgw.S("<kbd class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(kbd.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line kbd.gsx:11:15*/ kbd.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd"})
 		_gsxgw.BoolAttr("data-gsxui-slot-kbd", true)
 		_gsxgw.S(">")
 //line kbd.gsx:12:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line kbd.gsx:12:5*/, children)
 		_gsxgw.S("</kbd>")
 		return _gsxgw.Err()
 	})
@@ -48,14 +48,14 @@ func KbdGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line kbd.gsx:21:2
 		_gsxgw.S("<kbd class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(kbd.Group()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class( /*line kbd.gsx:21:15*/ kbd.Group()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-kbd-group", true)
 		_gsxgw.S(">")
 //line kbd.gsx:22:3
-		_gsxgw.Node(ctx, children)
+		_gsxgw.Node(ctx /*line kbd.gsx:22:5*/, children)
 		_gsxgw.S("</kbd>")
 		return _gsxgw.Err()
 	})

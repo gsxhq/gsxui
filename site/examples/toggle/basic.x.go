@@ -54,7 +54,7 @@ func Basic() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle underline (large)"}}))
 //line basic.gsx:30:3
-		_gsxgw.Node(ctx, ui.Toggle(true, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Toggle( /*line basic.gsx:30:23*/ true, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:31:4
 			_gsxgw.Node(ctx, icon.Bold())

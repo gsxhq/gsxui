@@ -63,10 +63,10 @@ func Persisted() _gsxrt.Node {
 //line persisted.gsx:53:2
 		_gsxgw.S("<div>")
 //line persisted.gsx:54:3
-		_gsxgw.Node(ctx, ui.SidebarProvider(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.SidebarProvider( /*line persisted.gsx:54:29*/ true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line persisted.gsx:55:4
-			_gsxgw.Node(ctx, ui.Sidebar(true, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.Sidebar( /*line persisted.gsx:55:22*/ true, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line persisted.gsx:56:5
 				_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -88,7 +88,7 @@ func Persisted() _gsxrt.Node {
 							_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 //line persisted.gsx:63:9
-								_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw.Node(ctx, ui.SidebarMenuButton( /*line persisted.gsx:63:41*/ true, "", "", "Home", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line persisted.gsx:64:10
 									_gsxgw.Node(ctx, icon.House())
