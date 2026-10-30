@@ -751,11 +751,7 @@ var slotAttributeDrops = map[string][]string{
 	// The other half of the identical ButtonGroup-corner-rounding feature
 	// above, from Button's own side this time (in-data-[slot=button-group]:
 	// on button-size-xs/sm/icon-xs/icon-sm, confirmed against upstream
-	// style-nova.css) — translating it would introduce a BRAND NEW variant
-	// shape ([[data-gsxui-slot-button-group]_&]:) onto Button's recipe that
-	// internal/stylegen/generate.go's web/site-button.css fallback
-	// generator has never needed to express (it hard-errors: "has no
-	// site-fallback selector form"). Consistent with the button-group drop
+	// style-nova.css). Consistent with the button-group drop
 	// above: this whole feature lives in assets/css/styles/default.css's
 	// own @layer utilities escape hatch, deliberately outside BOTH
 	// components' own recipes, for the identical caller-override

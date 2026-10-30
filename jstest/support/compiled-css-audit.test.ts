@@ -64,7 +64,11 @@ for (const style of ["vega", "nova", "maia", "lyra", "mira", "luma", "sera", "rh
   });
 }
 
-test("compiled site Button fallback has the exact normal-site scope", () => {
+// Site CSS that styles the bare Button marker makes raw markup look right on
+// the site while a consumer app, which never receives web/, renders it
+// unstyled — how #51's unstyled Pagination and Calendar buttons went unnoticed.
+// Button's presentation comes only from its own compiled classes.
+test("compiled site CSS does not style the bare Button marker", () => {
   const result = spawnSync(
     join(repositoryRoot, "node_modules", ".bin", "tailwindcss"),
     ["-i", "web/site.css", "--cwd", repositoryRoot, "--silent"],
@@ -79,19 +83,12 @@ test("compiled site Button fallback has the exact normal-site scope", () => {
     `Tailwind failed to compile web/site.css:\n${result.stderr}`,
   );
 
-  const selectors = compiledButtonSelectors(result.stdout);
-  assert.notEqual(
-    selectors.length,
-    0,
-    "compiled site CSS has no Button fallback",
+  assert.deepEqual(
+    compiledButtonSelectors(result.stdout).map((selector) =>
+      selector.toString().trim(),
+    ),
+    [],
   );
-  for (const selector of selectors) {
-    assert.equal(
-      hasExactNormalSiteScope(selector) || hasExactPreviewSectionScope(selector),
-      true,
-      `Button fallback can escape both the normal-site scope and the theme-preview section scope: ${selector.toString()}`,
-    );
-  }
 });
 
 test("consumer composition selectors retain their owning marker specificity", () => {
@@ -243,78 +240,4 @@ function compiledButtonSelectors(css: string) {
     }
   });
   return selectors;
-}
-
-function hasExactNormalSiteScope(
-  selector: ReturnType<
-    ReturnType<typeof selectorParser>["astSync"]
-  >["nodes"][number],
-) {
-  const nodes = selector.nodes;
-  for (let index = 0; index + 1 < nodes.length; index++) {
-    const scope = nodes[index];
-    const descendant = nodes[index + 1];
-    if (
-      scope.type !== "pseudo" ||
-      scope.value.toLowerCase() !== ":where" ||
-      descendant.type !== "combinator" ||
-      descendant.value.trim() !== ""
-    ) {
-      continue;
-    }
-    const scopeSelectors = scope.nodes;
-    if (scopeSelectors?.length !== 1) continue;
-    const scopeNodes = scopeSelectors[0].nodes;
-    if (scopeNodes.length !== 2) continue;
-    const body = scopeNodes[0];
-    const exclusion = scopeNodes[1];
-    if (
-      body.type !== "tag" ||
-      body.value.toLowerCase() !== "body" ||
-      exclusion.type !== "pseudo" ||
-      exclusion.value.toLowerCase() !== ":not"
-    ) {
-      continue;
-    }
-    const exclusionSelectors = exclusion.nodes;
-    if (exclusionSelectors?.length !== 1) continue;
-    const exclusionNodes = exclusionSelectors[0].nodes;
-    if (exclusionNodes.length !== 1) continue;
-    const attribute = exclusionNodes[0];
-    if (
-      attribute.type === "attribute" &&
-      attribute.attribute.toLowerCase() === "data-theme-button-preview" &&
-      attribute.operator === undefined
-    ) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// hasExactPreviewSectionScope accepts web/theme-preview-button.css's shape: an
-// ancestor compound carrying [data-theme-preview-style="…"] followed by a
-// descendant combinator. Such elements exist only inside the theme-preview
-// document, so a rule scoped this way can no more escape into the normal site
-// than one carrying the body scope above.
-function hasExactPreviewSectionScope(
-  selector: ReturnType<
-    ReturnType<typeof selectorParser>["astSync"]
-  >["nodes"][number],
-) {
-  const nodes = selector.nodes;
-  for (let index = 0; index + 1 < nodes.length; index++) {
-    const scope = nodes[index];
-    const descendant = nodes[index + 1];
-    if (
-      scope.type === "attribute" &&
-      scope.attribute.toLowerCase() === "data-theme-preview-style" &&
-      scope.operator === "=" &&
-      descendant.type === "combinator" &&
-      descendant.value.trim() === ""
-    ) {
-      return true;
-    }
-  }
-  return false;
 }

@@ -3,7 +3,7 @@ const READY_MESSAGE = "gsxui:theme-preview-ready:v1";
 const APPLIED_MESSAGE = "gsxui:theme-preview-applied:v1";
 const ERROR_MESSAGE = "gsxui:theme-preview-error:v1";
 
-const previewDocument = document.querySelector("[data-theme-button-preview]");
+const previewDocument = document.querySelector("[data-theme-preview-tokens]");
 
 if (previewDocument) {
   const root = document.documentElement;

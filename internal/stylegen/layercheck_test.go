@@ -89,7 +89,7 @@ func TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet(t *testing.T) {
 	if !slices.Equal(found, listed) {
 		t.Errorf("layerCheckedStylesheets = %q, but the authored stylesheets are %q", listed, found)
 	}
-	for _, exemption := range repoExemptions(t) {
+	for _, exemption := range layerCheckExemptions {
 		if !slices.Contains(listed, exemption.key.file) {
 			t.Errorf("exemption %q names a stylesheet the gate does not list", exemption.key.file)
 		}
@@ -99,46 +99,32 @@ func TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet(t *testing.T) {
 	}
 }
 
-// repoExemptions builds the committed tree's exemption set, derived groups
-// included.
-func repoExemptions(t *testing.T) []layerCheckExemption {
+// fixtureViolations runs the gate's collection pass over a copy of the tree
+// with one deliberately losing rule spliced into foundation.css: Carousel's
+// recipe sets display on its previous control in every style, so a
+// zero-specificity components-layer `display` there is contested under each
+// one. The exemption tests need violations to exempt, and the committed tree
+// is meant to have none.
+func fixtureViolations(t *testing.T) []violation {
 	t.Helper()
-	exemptions, err := layerCheckExemptions(repoRoot(t))
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		`  :where([data-gsxui-slot-carousel-previous]) { display: block; }`)
+	found, err := allLayerViolations(root)
 	if err != nil {
 		t.Fatal(err)
 	}
-	return exemptions
+	if len(found) == 0 {
+		t.Fatal("fixture moved: the injected rule no longer loses the cascade")
+	}
+	return found
 }
 
-// handWrittenExemption returns a hand-written-shaped exemption (derived == "")
-// built from a REAL, currently-occurring violation, rather than requiring one
-// to already sit in the committed exemption list. The per-entry staleness
-// tests below are about hand-written entries: a derived group's entries are
-// arithmetic over a recipe, judged as a group instead (see
-// TestDerivedGroupStalenessIsJudgedWholeNotPerEntry) — that distinction is
-// what this helper's shape exercises, not any specific decision someone
-// happened to write down.
-//
-// It used to pick the first hand-written entry off repoExemptions(t)
-// directly. That stopped working once the last one — Sidebar's
-// collapsed-icon tooltip display gate — got fixed at the source (moved into
-// assets/css/foundation.css's own @layer utilities block) instead of staying
-// exempted: a healthy trend, not a fixture regression, and one this helper
-// should survive going all the way to zero. Synthesizing from a live
-// violation keeps the staleness mechanics covered independently of how many
-// hand-written exemptions the committed tree happens to carry at any moment.
-func handWrittenExemption(t *testing.T) layerCheckExemption {
-	t.Helper()
-	violations := repoViolations(t)
-	if len(violations) == 0 {
-		t.Fatal("no live violation left to synthesize a hand-written exemption from")
-	}
-	v := violations[0]
+// handWrittenExemption returns an exemption for the first of found, the shape
+// a committed entry would have.
+func handWrittenExemption(found []violation) layerCheckExemption {
 	return layerCheckExemption{
-		key: v.key,
-		reason: "synthesized for TestStaleExemptionFailsTheBuild/TestExemptionThatStillHoldsPassesAndSurfacesItsReason " +
-			"from a live violation (see handWrittenExemption's own doc comment); not a real committed decision. " +
-			"Pinned by internal/stylegen/layercheck_test.go.",
+		key:    found[0].key,
+		reason: "synthesized from fixtureViolations; not a real committed decision.",
 	}
 }
 
@@ -155,31 +141,23 @@ func repoViolations(t *testing.T) []violation {
 }
 
 // TestLayerCheckExemptionsAreAllStillLoadBearing is what makes an exemption
-// SELF-INVALIDATING. The old guard only demanded that web/site-button.css hold
-// at least one violation somewhere, so deleting the deliberate fallback and
-// replacing it with a different, genuinely wrong rule kept the guard green while
-// the exemption silently moved to cover the wrong rule. This asserts each
-// exemption key still names a violation that really occurs.
+// SELF-INVALIDATING: each exemption key must still name a violation that really
+// occurs, so an exemption cannot silently move to cover a different rule.
 func TestLayerCheckExemptionsAreAllStillLoadBearing(t *testing.T) {
 	t.Parallel()
 
-	if stale := staleExemptions(repoViolations(t), repoExemptions(t)); len(stale) != 0 {
+	if stale := staleExemptions(repoViolations(t), layerCheckExemptions); len(stale) != 0 {
 		t.Errorf("stale exemption(s):\n%s", strings.Join(stale, "\n\n"))
 	}
 }
 
-// TestExemptionsAreTheOnlyThingKeepingTheTreeGreen pins the other half: the
-// exemptions are load-bearing, not decorative. Without them the committed tree
-// fails the gate.
-func TestExemptionsAreTheOnlyThingKeepingTheTreeGreen(t *testing.T) {
+// TestCommittedTreeHasNoUnexemptedViolations pins the other half: every
+// violation on the committed tree is one an exemption names.
+func TestCommittedTreeHasNoUnexemptedViolations(t *testing.T) {
 	t.Parallel()
 
-	found := repoViolations(t)
-	if len(found) == 0 {
-		t.Fatal("no violations at all — web/site-button.css no longer contests compiled Button presentation")
-	}
-	exempt := exemptionIndex(repoExemptions(t))
-	for _, v := range found {
+	exempt := exemptionIndex(layerCheckExemptions)
+	for _, v := range repoViolations(t) {
 		if _, ok := exempt[v.key]; !ok {
 			t.Errorf("unexempted violation on the committed tree:\n%s", v.message)
 		}
@@ -193,10 +171,10 @@ func TestExemptionsAreTheOnlyThingKeepingTheTreeGreen(t *testing.T) {
 func TestStaleExemptionFailsTheBuild(t *testing.T) {
 	t.Parallel()
 
-	found := repoViolations(t)
+	found := fixtureViolations(t)
 
 	// Deleting the exempted rule: the selector no longer occurs at all.
-	deleted := handWrittenExemption(t)
+	deleted := handWrittenExemption(found)
 	deleted.key.selector = ":where([data-gsxui-slot-button]):this-rule-was-deleted"
 	stale := staleExemptions(found, []layerCheckExemption{deleted})
 	if len(stale) != 1 {
@@ -209,36 +187,22 @@ func TestStaleExemptionFailsTheBuild(t *testing.T) {
 	// Replacing the exempted rule with a different one under the SAME selector:
 	// a file-keyed exemption would still have called this live, which is exactly
 	// the hole this key closes.
-	replaced := handWrittenExemption(t)
+	replaced := handWrittenExemption(found)
 	replaced.key.contested = "bg-some-utility-nobody-wrote"
 	if stale := staleExemptions(found, []layerCheckExemption{replaced}); len(stale) != 1 {
 		t.Fatalf("staleExemptions() = %v, want the replaced rule reported", stale)
-	}
-
-	// And the real list is not stale, so the two above are not vacuous.
-	if stale := staleExemptions(found, repoExemptions(t)); len(stale) != 0 {
-		t.Fatalf("the committed exemptions are stale: %v", stale)
 	}
 }
 
 // TestExemptionThatStillHoldsPassesAndSurfacesItsReason is the positive case:
 // a live exemption is not reported, and its reason is the one the gate would
 // print if it ever went stale.
-//
-// Looks the reason up through exemptionIndex of the synthesized exemption
-// alone, not repoExemptions(t): handWrittenExemption's key matches a real,
-// currently-occurring violation, but that violation is covered by whichever
-// REAL (possibly derived) exemption the committed tree currently uses for
-// it — not by the synthetic reason handWrittenExemption itself made up. The
-// mechanism under test is exemptionIndex's key->reason lookup, which is
-// equally well exercised either way; asserting against the synthetic
-// exemption's own reason keeps this test independent of which real
-// exemption happens to cover that key today.
 func TestExemptionThatStillHoldsPassesAndSurfacesItsReason(t *testing.T) {
 	t.Parallel()
 
-	live := handWrittenExemption(t)
-	if stale := staleExemptions(repoViolations(t), []layerCheckExemption{live}); len(stale) != 0 {
+	found := fixtureViolations(t)
+	live := handWrittenExemption(found)
+	if stale := staleExemptions(found, []layerCheckExemption{live}); len(stale) != 0 {
 		t.Fatalf("a live exemption was reported stale: %v", stale)
 	}
 	reason, ok := exemptionIndex([]layerCheckExemption{live})[live.key]
@@ -715,7 +679,7 @@ func TestEveryStyleIsChecked(t *testing.T) {
 		t.Fatalf("styleNames() = %q — this test needs more than one style to mean anything", styles)
 	}
 	checked := map[string]struct{}{}
-	for _, v := range repoViolations(t) {
+	for _, v := range fixtureViolations(t) {
 		checked[v.key.style] = struct{}{}
 	}
 	for _, style := range styles {
@@ -729,8 +693,7 @@ func TestEveryStyleIsChecked(t *testing.T) {
 // contested property occur under BOTH nova and maia — the shape
 // TestExemptionForOneStyleDoesNotExemptAnother needs to prove a per-style
 // exemption does not leak to a sibling style. handWrittenExemption's plain
-// "first violation" pick carries no such guarantee (most violations are
-// genuinely per-style, not shared across styles), so this scans
+// "first violation" pick carries no such guarantee, so this scans
 // independently rather than reusing it.
 func styleInvariantViolationKey(t *testing.T, found []violation) exemptionKey {
 	t.Helper()
@@ -755,14 +718,13 @@ func styleInvariantViolationKey(t *testing.T, found []violation) exemptionKey {
 }
 
 // TestExemptionForOneStyleDoesNotExemptAnother is the consequence of putting the
-// style in the key, exercised. web/site-button.css contests the same utilities
-// under both styles today; an exemption written for Nova alone must leave the
-// Maia violation reported, or the exemption list quietly reintroduces exactly
-// the blind spot P1b describes.
+// style in the key, exercised. The fixture rule is contested under every style;
+// an exemption written for Nova alone must leave the Maia violation reported, or
+// the exemption list quietly reintroduces exactly the blind spot P1b describes.
 func TestExemptionForOneStyleDoesNotExemptAnother(t *testing.T) {
 	t.Parallel()
 
-	found := repoViolations(t)
+	found := fixtureViolations(t)
 	novaOnly := layerCheckExemption{key: styleInvariantViolationKey(t, found), reason: "test fixture"}
 	if !slices.ContainsFunc(found, func(v violation) bool { return v.key == novaOnly.key }) {
 		t.Fatalf("fixture moved: %v is no longer a violation under nova", novaOnly.key)
@@ -788,9 +750,9 @@ func TestExemptionForOneStyleDoesNotExemptAnother(t *testing.T) {
 func TestStaleExemptionIsPerStyle(t *testing.T) {
 	t.Parallel()
 
-	found := repoViolations(t)
+	found := fixtureViolations(t)
 	for _, style := range []string{"no-such-style", ""} {
-		invented := handWrittenExemption(t)
+		invented := handWrittenExemption(found)
 		invented.key.style = style
 		stale := staleExemptions(found, []layerCheckExemption{invented})
 		if len(stale) != 1 {
@@ -1001,91 +963,5 @@ func TestSelectorSpecificity(t *testing.T) {
 		if got := selectorSpecificity(tt.selector); got != tt.want {
 			t.Errorf("selectorSpecificity(%q) = %v, want %v", tt.selector, got, tt.want)
 		}
-	}
-}
-
-// TestSiteButtonExemptionsAreDerivedFromButtonsRecipe pins the property that
-// replaced 112 hand-copied entries: every violation the generated fallback
-// commits is forgiven, and the forgiveness comes from Button's own recipe rather
-// than from a list anyone maintains. Change Button's recipe and this stays true
-// with no edit here — which is the whole point.
-func TestSiteButtonExemptionsAreDerivedFromButtonsRecipe(t *testing.T) {
-	t.Parallel()
-
-	exempt := exemptionIndex(repoExemptions(t))
-	var covered int
-	for _, v := range repoViolations(t) {
-		if v.key.file != siteButtonPath {
-			continue
-		}
-		covered++
-		reason, ok := exempt[v.key]
-		if !ok {
-			t.Errorf("the generated fallback commits a violation nothing derived forgives:\n%s", v.message)
-			continue
-		}
-		if !strings.Contains(reason, "GENERATED") {
-			t.Errorf("a %s violation is forgiven by a hand-written reason: %q", siteButtonPath, reason)
-		}
-	}
-	if covered == 0 {
-		t.Fatalf("no %s violations at all — the fallback no longer contests compiled Button presentation", siteButtonPath)
-	}
-}
-
-// TestSiteButtonExemptionsRefuseToDescribeADriftedFile is what keeps deriving
-// the exemptions from being a blanket file waiver. The derivation describes the
-// generator's output; if the committed file is not that output, it describes
-// something that is not on disk, and forgiving it would be exactly the
-// "everything in this file is fine" hole a file-keyed exemption opens.
-func TestSiteButtonExemptionsRefuseToDescribeADriftedFile(t *testing.T) {
-	t.Parallel()
-
-	root := injectCSS(t, siteButtonPath, "@layer components {",
-		"  :where(body) :where([data-gsxui-slot-button]) {\n    @apply rounded-full;\n  }")
-	if err := CheckLayerPrecedence(root); err == nil {
-		t.Fatal("a hand-edited web/site-button.css was accepted")
-	} else if !strings.Contains(err.Error(), "drifted") {
-		t.Errorf("the diagnostic must name the drift, got %v", err)
-	}
-}
-
-// TestDerivedGroupStalenessIsJudgedWholeNotPerEntry pins the one way derived
-// entries differ from written ones. A derived entry that forgives nothing is
-// arithmetic, not a decision that lost its subject; a derived GROUP that
-// forgives nothing is a mechanism that should be deleted, and is reported.
-func TestDerivedGroupStalenessIsJudgedWholeNotPerEntry(t *testing.T) {
-	t.Parallel()
-
-	found := repoViolations(t)
-	occurring := map[exemptionKey]struct{}{}
-	for _, v := range found {
-		occurring[v.key] = struct{}{}
-	}
-	var derived layerCheckExemption
-	for _, exemption := range repoExemptions(t) {
-		if _, ok := occurring[exemption.key]; ok && exemption.derived != "" {
-			derived = exemption
-			break
-		}
-	}
-	if derived.derived == "" {
-		t.Fatal("fixture moved: no derived exemption forgives anything")
-	}
-
-	dead := derived
-	dead.key.contested = "bg-some-utility-nobody-wrote"
-	if stale := staleExemptions(found, []layerCheckExemption{derived, dead}); len(stale) != 0 {
-		t.Errorf("a derived entry was reported stale on its own: %v", stale)
-	}
-
-	orphan := derived
-	orphan.key.selector = ":where([data-gsxui-slot-button]):this-rule-was-deleted"
-	stale := staleExemptions(found, []layerCheckExemption{orphan})
-	if len(stale) != 1 {
-		t.Fatalf("staleExemptions() = %v, want the group with nothing left to forgive reported", stale)
-	}
-	if !strings.Contains(stale[0], siteButtonDerivedGroup) {
-		t.Errorf("the diagnostic must name the group, got %q", stale[0])
 	}
 }

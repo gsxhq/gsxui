@@ -876,7 +876,7 @@ func TestThemePreviewRoute(t *testing.T) {
 		body := rec.Body.String()
 		for _, marker := range []string{
 			`<!DOCTYPE html>`,
-			`data-theme-button-preview`,
+			`data-theme-preview-tokens=`,
 			`src="/__vite/@vite/client"`,
 			`src="/__vite/web/preview.js"`,
 			`data-theme-preview-style="nova"`,

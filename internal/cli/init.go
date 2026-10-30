@@ -53,7 +53,7 @@ const fontAssetsSourceDir = "assets/fonts"
 // (rather than hardcoding six font names) means a future font added to
 // assets/fonts/ vendors automatically, with no matching edit needed here.
 // Kept separate from cssAssetTargets, whose exact 4-entry shape
-// TestCSSAssetTargetsExcludeSiteButtonFallback pins.
+// TestCSSAssetTargets pins.
 func fontAssetTargets(fsys fs.FS, entry string) ([]cssAssetTarget, error) {
 	entries, err := fs.ReadDir(fsys, fontAssetsSourceDir)
 	if err != nil {
