@@ -135,7 +135,7 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 					return nil, err
 				}
 				if strings.HasSuffix(fname, ".gsx") || strings.HasSuffix(fname, ".go") {
-					src, err = RewriteGsx(src, module, cfg.UI)
+					src, err = RewriteGsx(fname, src, module, cfg.UI)
 					if err != nil {
 						return nil, fmt.Errorf("rewrite %s/%s: %w", name, fname, err)
 					}
