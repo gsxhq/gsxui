@@ -13,6 +13,7 @@ var i18nTOCItems = []docTOCItem{
 	{ID: "get-started", Title: "Get started", Depth: 2},
 	{ID: "how-it-works", Title: "How it works", Depth: 2},
 	{ID: "calendar", Title: "Calendar", Depth: 2},
+	{ID: "calendar-from-cldr", Title: "Filling the locale from CLDR", Depth: 3},
 	{ID: "leftover-english", Title: "Finding leftover English", Depth: 2},
 	{ID: "not-translated", Title: "Not translated", Depth: 2},
 }
@@ -113,12 +114,54 @@ component (p I18n) Page() {
 			<section class="flex flex-col gap-3">
 				<docHeading item={i18nTOCItems[3]}/>
 				<p>
+					Every field is CLDR data, so the server can fill it from a CLDR source instead of a typed table. With{ " " }
+					<code>Intl</code> on the server (a Cloudflare Worker has V8's), each field is one call; every date format also
+					takes <code>{ `calendar: "gregory", timeZone: "UTC"` }</code>:
+				</p>
+				<ul class="list-disc space-y-2 pl-6">
+					<li>
+						<code>Months</code>: the <code>month</code> part of <code>formatToParts</code> for{ " " }
+						<code>{ `{month: "long", year: "numeric"}` }</code>, the caption's own form: Russian <code>июнь</code>,
+						Japanese <code>6</code> (its <code>月</code> is in <code>Caption</code>).
+					</li>
+					<li>
+						<code>MonthsFormat</code>: the <code>month</code> part for the day label's{ " " }
+						<code>{ `{weekday: "long", month: "long", day: "numeric", year: "numeric"}` }</code>: Russian{ " " }
+						<code>июня</code>.
+					</li>
+					<li><code>MonthsShort</code>: <code>{ `{month: "short"}` }</code>.</li>
+					<li>
+						<code>Weekdays</code> and <code>WeekdaysShort</code>: <code>{ `{weekday: "long"}` }</code> and{ " " }
+						<code>{ `{weekday: "narrow"}` }</code> on seven days from a Sunday. Narrow names can repeat (Russian{ " " }
+						<code>В П В С Ч П С</code>); type the header row by hand where they do.
+					</li>
+					<li>
+						<code>Caption</code> and <code>DayLabel</code>: the same two formats' parts, with each{ " " }
+						<code>month</code>, <code>year</code>, <code>weekday</code> and <code>day</code> part replaced by its
+						placeholder. Russian's caption is <code>{ "{month} {year} г." }</code>
+					</li>
+					<li>
+						<code>Digits</code>:{ " " }
+						<code>{ `new Intl.NumberFormat(lang, {useGrouping: false}).format(1234567890)` }</code> with its last digit
+						moved to the front; empty when that is ASCII. Plain <code>ar</code> gives
+						ASCII; <code>ar-EG</code> or{ " " }
+						<code>ar-u-nu-arab</code> gives <code>٠١٢٣٤٥٦٧٨٩</code>.
+					</li>
+					<li>
+						<code>weekStartsOn</code>, a <code>Calendar</code> argument:{ " " }
+						<code>new Intl.Locale(lang).maximize().getWeekInfo().firstDay % 7</code>.
+					</li>
+				</ul>
+			</section>
+			<section class="flex flex-col gap-3">
+				<docHeading item={i18nTOCItems[4]}/>
+				<p>
 					Register a translator that wraps every message in markers, render each page, and search the output for English
 					outside the markers. Anything found is text a caller passed in, or a gsxui bug worth an issue.
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
-				<docHeading item={i18nTOCItems[4]}/>
+				<docHeading item={i18nTOCItems[5]}/>
 				<p>
 					When no <code>ui.Toaster</code> is mounted, <code>toaster.js</code> creates its own region with an
 					English <code>aria-label</code>. Mount <code>ui.Toaster</code> and the landmark is a message like the rest.
