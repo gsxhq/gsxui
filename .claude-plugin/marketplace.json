@@ -1,0 +1,17 @@
+{
+  "name": "gsxui",
+  "owner": {
+    "name": "Jackie Li"
+  },
+  "description": "Marketplace for the gsxui Claude Code plugin",
+  "plugins": [
+    {
+      "name": "gsxui",
+      "source": "./",
+      "description": "Skill for designing with gsxui components, themes and presets",
+      "homepage": "https://ui.gsxhq.dev",
+      "repository": "https://github.com/gsxhq/gsxui",
+      "license": "MIT"
+    }
+  ]
+}

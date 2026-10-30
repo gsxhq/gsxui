@@ -115,6 +115,16 @@ The slot attribute carries both the styling role and the behavior/ARIA
 contract. Project selectors use the exact presence selector, for example
 `[data-gsxui-slot-button]`.
 
+## Agent skill
+
+This repo is a Claude Code plugin with a skill for designing with gsxui
+([`skills/gsxui`](skills/gsxui/SKILL.md)):
+
+    /plugin marketplace add gsxhq/gsxui
+    /plugin install gsxui@gsxui
+
+Other agents can load `skills/gsxui/SKILL.md` directly.
+
 ## Contributing
 
     npm install                       # once
