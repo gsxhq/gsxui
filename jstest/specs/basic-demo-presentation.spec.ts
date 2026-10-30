@@ -160,22 +160,3 @@ test("Button variants and sizes keep Nova presentation in normal site scope", as
     defaultButton.backgroundColor,
   );
 });
-
-test("Button fallback cannot style a theme-preview body", async ({ page }) => {
-  // The fallback stylesheet (web/site-button.css) still owns every element
-  // that carries Button's marker without rendering through ui.Button —
-  // PaginationLink and Calendar's nav/day buttons author no class at all.
-  // ui.Button itself is no longer a witness for this: it ships concrete
-  // utilities compiled from its style recipe, so its inline-flex is intrinsic
-  // and no body-level scope can switch it off. A PaginationLink is the
-  // element whose presentation the fallback still supplies.
-  const response = await page.goto("/x/pagination/basic");
-  expect(response?.status(), "pagination/basic fixture response").toBe(200);
-
-  const link = page.locator("[data-gsxui-slot-pagination-link]").first();
-  await expect(link).toHaveCSS("display", "inline-flex");
-  await page.locator("body").evaluate((body) => {
-    body.setAttribute("data-theme-button-preview", "");
-  });
-  await expect(link).not.toHaveCSS("display", "inline-flex");
-});

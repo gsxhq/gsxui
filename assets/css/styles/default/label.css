@@ -12,8 +12,8 @@
      each would then compete on ordinary specificity instead, at (0,2,0) and
      permanently beat a caller's plain `opacity-*`. See
      docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
-     section 10b, and assets/css/styles/default/pagination.css and
-     assets/css/styles/default/card.css for the identical prior fix.
+     section 10b, and assets/css/styles/default/card.css for the identical
+     prior fix.
 
      `pointer-events-none` (ancestor case) and `cursor-not-allowed` (sibling
      case) are NOT here — those two stayed on the migrated recipe in

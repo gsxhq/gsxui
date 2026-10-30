@@ -57,18 +57,12 @@ func TestDefaultStyleRetainsComposedComponentButtonPresentation(t *testing.T) {
 
 	var (
 		buttonGroupSizeRule bool
-		paginationPrevious  bool
-		paginationNext      bool
 		inputGroupRules     int
 	)
 	for _, rule := range rules {
 		attrs := rule.attributes
 		buttonGroupSizeRule = buttonGroupSizeRule ||
 			(attrs["data-gsxui-slot-button-group"] && attrs["data-size"] && rule.directChild)
-		paginationPrevious = paginationPrevious ||
-			(attrs["data-gsxui-slot-pagination-link"] && attrs["data-gsxui-slot-pagination-previous"])
-		paginationNext = paginationNext ||
-			(attrs["data-gsxui-slot-pagination-link"] && attrs["data-gsxui-slot-pagination-next"])
 		if attrs["data-gsxui-slot-input-group-button"] {
 			inputGroupRules++
 		}
@@ -76,13 +70,6 @@ func TestDefaultStyleRetainsComposedComponentButtonPresentation(t *testing.T) {
 
 	if !buttonGroupSizeRule {
 		t.Error("consumer style lost ButtonGroup direct-child size presentation")
-	}
-	if !paginationPrevious || !paginationNext {
-		t.Errorf(
-			"consumer style lost Pagination edge presentation: previous=%t next=%t",
-			paginationPrevious,
-			paginationNext,
-		)
 	}
 	if inputGroupRules != 9 {
 		t.Errorf("consumer style has %d InputGroupButton presentation rules, want 9", inputGroupRules)

@@ -553,14 +553,6 @@ var slotOverrides = map[string]map[string]slotOverride{
 		"cn-navigation-menu-positioner": {ok: false},
 		"cn-navigation-menu-popup":      {ok: false},
 	},
-	// gsxui's Pagination shape only declares previous-label/next-label
-	// (sr-only accessible text spans); the previous/next control itself
-	// composes <ui.Button> directly and takes Button's own recipe, not a
-	// Pagination-owned rule.
-	"pagination": {
-		"cn-pagination-previous": {ok: false},
-		"cn-pagination-next":     {ok: false},
-	},
 	// Same naming mismatch as native-select's icon: gsxui's shape calls this
 	// slot "handle-grip" (registry/canonical/shapes/resizable.go); content is
 	// otherwise identical in kind to registry/styles/nova/resizable.css's own

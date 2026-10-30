@@ -265,7 +265,7 @@ func StyleContractFixture() _gsxrt.Node {
 //line style_contract.gsx:89:4
 		_gsxgw.Node(ctx, ui.PaginationNext("#", _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-next"}}))
 //line style_contract.gsx:90:4
-		_gsxgw.Node(ctx, ui.PaginationPrevious("#", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "pl-12"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-previous-caller"}})))
+		_gsxgw.Node(ctx, ui.PaginationPrevious("#", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "has-[>svg]:pl-12"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-previous-caller"}})))
 		_gsxgw.S("</div>")
 //line style_contract.gsx:92:3
 		_gsxgw.S("<div class=\"flex gap-2\">")

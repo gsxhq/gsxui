@@ -8,9 +8,8 @@ import (
 
 // Pagination and its parts are the shadcn/ui Pagination
 // (registry/new-york-v4/ui/pagination.tsx) — no Radix primitive underneath;
-// every part is already a plain styled element (nav/ul/li/a/span). The one
-// real dependency is PaginationLink, which composes Button's stable styling
-// token and reflected variant/size axes instead of duplicating presentation.
+// every part is a plain styled element (nav/ul/li/span) except
+// PaginationLink, which renders through Button as upstream's does.
 // ChevronLeft/ChevronRight/Ellipsis
 // (Lucide's MoreHorizontal, see breadcrumb.gsx) come from ui/icon — the
 // pagination -> icon dependency, also derived and pinned.
@@ -36,15 +35,16 @@ component PaginationItem(children gsx.Node, attrs gsx.Attrs) {
 	<li { attrs... } data-gsxui-slot-pagination-item>{ children }</li>
 }
 
-// PaginationLink renders the shadcn/ui PaginationLink onto a real <a>,
-// composed from Button's token and axes. isActive
-// selects the "outline" variant (else "ghost") and stamps data-active plus,
-// when true, aria-current="page" — the conditional-attribute mechanism
-// (see docs/guide "conditional attributes") standing in for shadcn's
+// PaginationLink is the shadcn/ui PaginationLink: a Button rendered as its
+// <a>, as upstream's `<Button asChild>` is. isActive selects the "outline"
+// variant (else "ghost") and stamps data-active plus, when true,
+// aria-current="page" — the conditional-attribute mechanism (see docs/guide
+// "conditional attributes") standing in for shadcn's
 // `aria-current={isActive ? "page" : undefined}`, an attribute entirely
 // absent when false, not merely empty. size defaults to "icon"
 // (PaginationLinkProps' own `size = "icon"` default), distinct from
-// Button's own "default" zero-value size.
+// Button's own "default" zero-value size. An empty href renders Button's
+// <button> instead.
 component PaginationLink(href string, isActive bool, size string, children gsx.Node, attrs gsx.Attrs) {
 	{{
 		variant := "ghost"
@@ -55,20 +55,19 @@ component PaginationLink(href string, isActive bool, size string, children gsx.N
 			size = "icon"
 		}
 	}}
-	<a
+	<Button
+		href={href}
+		variant={variant}
+		size={size}
 		{ if isActive {
 			aria-current="page"
 		} }
 		data-active={isActive}
-		data-variant={variant}
-		data-size={size}
-		href={href}
 		{ attrs... }
 		data-gsxui-slot-pagination-link
-		data-gsxui-slot-button
 	>
 		{ children }
-	</a>
+	</Button>
 }
 
 // PaginationPrevious/PaginationNext hardcode their own content (icon + a
@@ -80,6 +79,7 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 		href={href}
 		size="default"
 		aria-label={i18n.T("Go to previous page")}
+		class={ "pl-1.5 has-[>svg]:pl-1.5" }
 		{ attrs... }
 		data-gsxui-slot-pagination-previous
 	>
@@ -93,6 +93,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 		href={href}
 		size="default"
 		aria-label={i18n.T("Go to next page")}
+		class={ "pr-1.5 has-[>svg]:pr-1.5" }
 		{ attrs... }
 		data-gsxui-slot-pagination-next
 	>

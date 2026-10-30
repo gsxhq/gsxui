@@ -87,7 +87,7 @@ component StyleContractFixture() {
 		<div class="flex gap-2">
 			<ui.PaginationPrevious href="#" data-style-contract="pagination-previous"/>
 			<ui.PaginationNext href="#" data-style-contract="pagination-next"/>
-			<ui.PaginationPrevious href="#" class="pl-12" data-style-contract="pagination-previous-caller"/>
+			<ui.PaginationPrevious href="#" class="has-[>svg]:pl-12" data-style-contract="pagination-previous-caller"/>
 		</div>
 		<div class="flex gap-2">
 			<ui.Input class="text-lg" data-style-contract="input-caller-text-size"/>

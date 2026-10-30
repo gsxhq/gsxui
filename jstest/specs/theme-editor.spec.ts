@@ -845,12 +845,9 @@ test("CSS import ignores valid unrelated implicit nesting", async ({ page }) => 
   await expect.poll(() => iframeVariable(page, "primary")).toBe("green");
 });
 
-// The preview body scope-disables web/site-button.css, so raw slot-button
-// markup inside the gallery (Calendar day/nav buttons) gets its Button chrome
-// from the generated web/theme-preview-button.css instead — the NOVA section
-// from Nova's Button recipe, the MAIA section from Maia's. All of it is
-// measured against the /x/calendar/basic fixture, which renders under the
-// normal site-button fallback, never assumed.
+// Calendar's day and nav buttons render through each style's own Button, so
+// the NOVA section carries Nova's Button recipe and the MAIA section Maia's.
+// Nova is measured against the /x/calendar/basic fixture, never assumed.
 test("preview calendar day buttons keep per-style Button chrome in both sections", async ({
   page,
 }) => {

@@ -6,6 +6,8 @@ Notable changes to gsxui's component set, newest first.
 
 ### Fixed
 
+- **pagination**, **calendar** — `PaginationLink` and Calendar's previous/next and day buttons render through `Button`, so an app gets Button's sizing, centering, radius and hover; before, they carried only the `data-gsxui-slot-button` marker and rendered as plain text and blocks (a pagination link measured 7×19 px). `PaginationPrevious`/`PaginationNext` take upstream's per-style edge padding (`pl-2`/`pr-2` in vega, maia, mira, luma and sera; `pl-1.5`/`pr-1.5` in nova, lyra and rhea). A caller overrides it with `has-[>svg]:pl-*`, since a plain `pl-*` loses to Button's `has-[>svg]:px-*` (#51).
+
 - **cli** — `gsxui add` and `gsxui apply` format each file whose imports they rewrite, so `gsx fmt` and `gofmt` leave vendored components unchanged when the app's module path sorts before `github.com/gsxhq/gsx` (`example.com/…`, `codeberg.org/…`). Before, formatting such a file made the next `gsxui add` stop with "differs from the gsxui version" (#50).
 
 ## 2026-10-21

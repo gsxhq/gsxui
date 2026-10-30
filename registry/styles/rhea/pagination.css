@@ -13,9 +13,17 @@
     @apply gap-1 flex items-center;
   }
 
+  .gsxui-recipe-pagination-previous {
+    @apply pl-1.5 has-[>svg]:pl-1.5;
+  }
+
   /* carried: no upstream counterpart */
   .gsxui-recipe-pagination-previous-label {
     @apply hidden sm:block;
+  }
+
+  .gsxui-recipe-pagination-next {
+    @apply pr-1.5 has-[>svg]:pr-1.5;
   }
 
   /* carried: no upstream counterpart */

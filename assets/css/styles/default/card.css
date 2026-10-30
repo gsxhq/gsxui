@@ -13,8 +13,7 @@
      plain utility ((0,2,0) vs (0,1,0)), so the caller would permanently
      lose. See
      docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
-     section 10b, and assets/css/styles/default/pagination.css for the
-     identical prior fix on a different component.
+     section 10b.
 
      The 8-style port's mechanical re-port put `[.border-b]:pb-(--card-
      spacing)` / `[.border-t]:pt-(--card-spacing)` directly onto the
