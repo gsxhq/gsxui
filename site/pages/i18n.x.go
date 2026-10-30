@@ -206,138 +206,146 @@ func (p I18n) Page() _gsxrt.Node {
 //line i18n.gsx:117:107
 			_gsxgw.Text(string(" "))
 //line i18n.gsx:118:6
-			_gsxgw.S("<code>Intl</code> on the server (a Cloudflare Worker has V8's), each field is one call on a date in the Gregorian calendar and UTC:</p>")
-//line i18n.gsx:121:5
+			_gsxgw.S("<code>Intl</code> on the server (a Cloudflare Worker has V8's), each field is one")
+//line i18n.gsx:118:87
+			_gsxgw.Text(string(" "))
+//line i18n.gsx:119:6
+			_gsxgw.S("<code>Intl.DateTimeFormat</code> call with ")
+//line i18n.gsx:119:49
+			_gsxgw.S("<code>")
+//line i18n.gsx:119:55
+			_gsxgw.Text(string(`calendar: "gregory", timeZone: "UTC"`))
+			_gsxgw.S("</code> added to the options below:</p>")
+//line i18n.gsx:122:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
-//line i18n.gsx:122:6
+//line i18n.gsx:123:6
 			_gsxgw.S("<li>")
-//line i18n.gsx:123:7
-			_gsxgw.S("<code>Months</code>: the ")
-//line i18n.gsx:123:32
-			_gsxgw.S("<code>month</code> part of ")
-//line i18n.gsx:123:59
-			_gsxgw.S("<code>formatToParts</code> for")
-//line i18n.gsx:123:89
-			_gsxgw.Text(string(" "))
 //line i18n.gsx:124:7
+			_gsxgw.S("<code>Months</code>: the ")
+//line i18n.gsx:124:32
+			_gsxgw.S("<code>month</code> part of ")
+//line i18n.gsx:124:59
+			_gsxgw.S("<code>formatToParts</code> for")
+//line i18n.gsx:124:89
+			_gsxgw.Text(string(" "))
+//line i18n.gsx:125:7
 			_gsxgw.S("<code>")
-//line i18n.gsx:124:13
+//line i18n.gsx:125:13
 			_gsxgw.Text(string(`{month: "long", year: "numeric"}`))
-			_gsxgw.S("</code>, the caption's own form: Russian")
-//line i18n.gsx:124:91
-			_gsxgw.Text(string(" "))
-//line i18n.gsx:124:98
+			_gsxgw.S("</code>, the caption's own form: Russian ")
+//line i18n.gsx:125:92
 			_gsxgw.S("<code>июнь</code>, Japanese ")
-//line i18n.gsx:125:18
+//line i18n.gsx:126:16
 			_gsxgw.S("<code>6</code> (its ")
-//line i18n.gsx:125:38
+//line i18n.gsx:126:36
 			_gsxgw.S("<code>月</code> is in ")
-//line i18n.gsx:125:61
+//line i18n.gsx:126:59
 			_gsxgw.S("<code>Caption</code>).</li>")
-//line i18n.gsx:127:6
+//line i18n.gsx:128:6
 			_gsxgw.S("<li>")
-//line i18n.gsx:128:7
-			_gsxgw.S("<code>MonthsFormat</code>: the ")
-//line i18n.gsx:128:38
-			_gsxgw.S("<code>month</code> part for the day label's")
-//line i18n.gsx:128:81
-			_gsxgw.Text(string(" "))
 //line i18n.gsx:129:7
-			_gsxgw.S("<code>")
-//line i18n.gsx:129:13
-			_gsxgw.Text(string(`{weekday: "long", month: "long", day: "numeric", year: "numeric"}`))
-			_gsxgw.S("</code>: Russian")
-//line i18n.gsx:129:100
+			_gsxgw.S("<code>MonthsFormat</code>: the ")
+//line i18n.gsx:129:38
+			_gsxgw.S("<code>month</code> part for the day label's")
+//line i18n.gsx:129:81
 			_gsxgw.Text(string(" "))
 //line i18n.gsx:130:7
-			_gsxgw.S("<code>июня</code>.</li>")
-//line i18n.gsx:132:6
-			_gsxgw.S("<li>")
-//line i18n.gsx:132:10
-			_gsxgw.S("<code>MonthsShort</code>: ")
-//line i18n.gsx:132:36
 			_gsxgw.S("<code>")
-//line i18n.gsx:132:42
-			_gsxgw.Text(string(`{month: "short"}`))
-			_gsxgw.S("</code>.</li>")
+//line i18n.gsx:130:13
+			_gsxgw.Text(string(`{weekday: "long", month: "long", day: "numeric", year: "numeric"}`))
+			_gsxgw.S("</code>: Russian")
+//line i18n.gsx:130:100
+			_gsxgw.Text(string(" "))
+//line i18n.gsx:131:7
+			_gsxgw.S("<code>июня</code>.</li>")
 //line i18n.gsx:133:6
 			_gsxgw.S("<li>")
-//line i18n.gsx:134:7
-			_gsxgw.S("<code>Weekdays</code> and ")
-//line i18n.gsx:134:33
-			_gsxgw.S("<code>WeekdaysShort</code>: ")
-//line i18n.gsx:134:61
+//line i18n.gsx:133:10
+			_gsxgw.S("<code>MonthsShort</code>: ")
+//line i18n.gsx:133:36
 			_gsxgw.S("<code>")
-//line i18n.gsx:134:67
+//line i18n.gsx:133:42
+			_gsxgw.Text(string(`{month: "short"}`))
+			_gsxgw.S("</code>.</li>")
+//line i18n.gsx:134:6
+			_gsxgw.S("<li>")
+//line i18n.gsx:135:7
+			_gsxgw.S("<code>Weekdays</code> and ")
+//line i18n.gsx:135:33
+			_gsxgw.S("<code>WeekdaysShort</code>: ")
+//line i18n.gsx:135:61
+			_gsxgw.S("<code>")
+//line i18n.gsx:135:67
 			_gsxgw.Text(string(`{weekday: "long"}`))
 			_gsxgw.S("</code> and")
-//line i18n.gsx:134:101
+//line i18n.gsx:135:101
 			_gsxgw.Text(string(" "))
-//line i18n.gsx:135:7
+//line i18n.gsx:136:7
 			_gsxgw.S("<code>")
-//line i18n.gsx:135:13
-			_gsxgw.Text(string(`{weekday: "narrow"}`))
-			_gsxgw.S("</code>.</li>")
-//line i18n.gsx:137:6
+//line i18n.gsx:136:13
+			_gsxgw.Text(string(`{weekday: "short"}`))
+			_gsxgw.S("</code> on seven days from a Sunday.</li>")
+//line i18n.gsx:138:6
 			_gsxgw.S("<li>")
-//line i18n.gsx:138:7
+//line i18n.gsx:139:7
 			_gsxgw.S("<code>Caption</code> and ")
-//line i18n.gsx:138:32
-			_gsxgw.S("<code>DayLabel</code>: the same two formats' parts, with each ")
-//line i18n.gsx:138:94
-			_gsxgw.S("<code>month</code>,")
-//line i18n.gsx:139:8
+//line i18n.gsx:139:32
+			_gsxgw.S("<code>DayLabel</code>: the same two formats' parts, with each")
+//line i18n.gsx:139:93
 			_gsxgw.Text(string(" "))
 //line i18n.gsx:140:7
+			_gsxgw.S("<code>month</code>, ")
+//line i18n.gsx:140:27
 			_gsxgw.S("<code>year</code>, ")
-//line i18n.gsx:140:26
+//line i18n.gsx:140:46
 			_gsxgw.S("<code>weekday</code> and ")
-//line i18n.gsx:140:51
+//line i18n.gsx:140:71
 			_gsxgw.S("<code>day</code> part replaced by its placeholder. Russian's caption is ")
-//line i18n.gsx:141:18
+//line i18n.gsx:141:41
 			_gsxgw.S("<code>")
-//line i18n.gsx:141:24
+//line i18n.gsx:141:47
 			_gsxgw.Text(string("{month} {year} г."))
-			_gsxgw.S("</code></li>")
+			_gsxgw.S("</code>.</li>")
 //line i18n.gsx:143:6
 			_gsxgw.S("<li>")
 //line i18n.gsx:144:7
-			_gsxgw.S("<code>Digits</code>: ")
-//line i18n.gsx:145:9
-			_gsxgw.S("<code>")
-//line i18n.gsx:145:15
-			_gsxgw.Text(string(`new Intl.NumberFormat(lang, {useGrouping: false}).format(1234567890)`))
-			_gsxgw.S("</code>")
-//line i18n.gsx:145:96
+			_gsxgw.S("<code>Digits</code>:")
+//line i18n.gsx:144:27
 			_gsxgw.Text(string(" "))
-			_gsxgw.S("with its last digit moved to the front; empty when that is ASCII.</li>")
+//line i18n.gsx:145:7
+			_gsxgw.S("<code>")
+//line i18n.gsx:145:13
+			_gsxgw.Text(string(`new Intl.NumberFormat(lang, {useGrouping: false}).format(1234567890)`))
+			_gsxgw.S("</code> with its last digit moved to the front; empty when that is ASCII.</li>")
 //line i18n.gsx:148:6
 			_gsxgw.S("<li>")
 //line i18n.gsx:149:7
-			_gsxgw.S("<code>weekStartsOn</code>: ")
-//line i18n.gsx:149:34
-			_gsxgw.S("<code>new Intl.Locale(lang).maximize().getWeekInfo().firstDay</code>, where 7 is Sunday.</li></ul>")
-//line i18n.gsx:153:5
-			_gsxgw.S("<p>Taking each name from the pattern it goes into keeps name and pattern consistent in every language, and a locale filled from the server's own data follows CLDR as it changes.</p></section>")
-//line i18n.gsx:158:4
+			_gsxgw.S("<code>weekStartsOn</code>, a ")
+//line i18n.gsx:149:36
+			_gsxgw.S("<code>Calendar</code> argument:")
+//line i18n.gsx:149:67
+			_gsxgw.Text(string(" "))
+//line i18n.gsx:150:7
+			_gsxgw.S("<code>new Intl.Locale(lang).maximize().getWeekInfo().firstDay % 7</code>.</li></ul></section>")
+//line i18n.gsx:154:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:159:5
+//line i18n.gsx:155:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[4], nil))
-//line i18n.gsx:160:5
+//line i18n.gsx:156:5
 			_gsxgw.S("<p>Register a translator that wraps every message in markers, render each page, and search the output for English outside the markers. Anything found is text a caller passed in, or a gsxui bug worth an issue.</p></section>")
-//line i18n.gsx:165:4
+//line i18n.gsx:161:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line i18n.gsx:166:5
+//line i18n.gsx:162:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, i18nTOCItems[5], nil))
-//line i18n.gsx:167:5
+//line i18n.gsx:163:5
 			_gsxgw.S("<p>When no ")
-//line i18n.gsx:168:14
+//line i18n.gsx:164:14
 			_gsxgw.S("<code>ui.Toaster</code> is mounted, ")
-//line i18n.gsx:168:50
+//line i18n.gsx:164:50
 			_gsxgw.S("<code>toaster.js</code> creates its own region with an English ")
-//line i18n.gsx:169:14
+//line i18n.gsx:165:14
 			_gsxgw.S("<code>aria-label</code>. Mount ")
-//line i18n.gsx:169:45
+//line i18n.gsx:165:45
 			_gsxgw.S("<code>ui.Toaster</code> and the landmark is a message like the rest.</p></section></div>")
 			return _gsxgw.Err()
 		})))

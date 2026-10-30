@@ -115,14 +115,15 @@ component (p I18n) Page() {
 				<docHeading item={i18nTOCItems[3]}/>
 				<p>
 					Every field is CLDR data, so the server can fill it from a CLDR source instead of a typed table. With{ " " }
-					<code>Intl</code> on the server (a Cloudflare Worker has V8's), each field is one call on a date in the
-					Gregorian calendar and UTC:
+					<code>Intl</code> on the server (a Cloudflare Worker has V8's), each field is one{ " " }
+					<code>Intl.DateTimeFormat</code> call with <code>{ `calendar: "gregory", timeZone: "UTC"` }</code> added to
+					the options below:
 				</p>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
 						<code>Months</code>: the <code>month</code> part of <code>formatToParts</code> for{ " " }
-						<code>{ `{month: "long", year: "numeric"}` }</code>, the caption's own form: Russian{ " " }<code>июнь</code>
-						, Japanese <code>6</code> (its <code>月</code> is in <code>Caption</code>).
+						<code>{ `{month: "long", year: "numeric"}` }</code>, the caption's own form: Russian <code>июнь</code>,
+						Japanese <code>6</code> (its <code>月</code> is in <code>Caption</code>).
 					</li>
 					<li>
 						<code>MonthsFormat</code>: the <code>month</code> part for the day label's{ " " }
@@ -132,28 +133,23 @@ component (p I18n) Page() {
 					<li><code>MonthsShort</code>: <code>{ `{month: "short"}` }</code>.</li>
 					<li>
 						<code>Weekdays</code> and <code>WeekdaysShort</code>: <code>{ `{weekday: "long"}` }</code> and{ " " }
-						<code>{ `{weekday: "narrow"}` }</code>.
+						<code>{ `{weekday: "short"}` }</code> on seven days from a Sunday.
 					</li>
 					<li>
-						<code>Caption</code> and <code>DayLabel</code>: the same two formats' parts, with each <code>month</code>
-						,{ " " }
-						<code>year</code>, <code>weekday</code> and <code>day</code> part replaced by its placeholder. Russian's
-						caption is <code>{ "{month} {year} г." }</code>
+						<code>Caption</code> and <code>DayLabel</code>: the same two formats' parts, with each{ " " }
+						<code>month</code>, <code>year</code>, <code>weekday</code> and <code>day</code> part replaced by its
+						placeholder. Russian's caption is <code>{ "{month} {year} г." }</code>.
 					</li>
 					<li>
-						<code>Digits</code>
-						: <code>{ `new Intl.NumberFormat(lang, {useGrouping: false}).format(1234567890)` }</code>{ " " }with its
-						last digit moved to the front; empty when that is ASCII.
+						<code>Digits</code>:{ " " }
+						<code>{ `new Intl.NumberFormat(lang, {useGrouping: false}).format(1234567890)` }</code> with its last digit
+						moved to the front; empty when that is ASCII.
 					</li>
 					<li>
-						<code>weekStartsOn</code>: <code>new Intl.Locale(lang).maximize().getWeekInfo().firstDay</code>, where 7 is
-						Sunday.
+						<code>weekStartsOn</code>, a <code>Calendar</code> argument:{ " " }
+						<code>new Intl.Locale(lang).maximize().getWeekInfo().firstDay % 7</code>.
 					</li>
 				</ul>
-				<p>
-					Taking each name from the pattern it goes into keeps name and pattern consistent in every language, and a
-					locale filled from the server's own data follows CLDR as it changes.
-				</p>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={i18nTOCItems[4]}/>
