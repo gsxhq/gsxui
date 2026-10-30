@@ -123,14 +123,9 @@ test("combobox/basic does not render a disconnected value label", async ({
   ).toHaveCount(0);
 });
 
-test("Button variants and sizes keep Nova presentation in normal site scope", async ({
-  page,
-}) => {
+test("Button variants and sizes keep Nova presentation", async ({ page }) => {
   const response = await page.goto("/x/button/variants");
   expect(response?.status(), "button/variants fixture response").toBe(200);
-  await expect(page.locator("body")).not.toHaveAttribute(
-    "data-theme-button-preview",
-  );
 
   const box = async (name: string) =>
     page.getByRole("button", { name, exact: true }).evaluate((element) => {

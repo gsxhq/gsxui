@@ -72,7 +72,6 @@ func resolveAll(root string) ([]generatedSource, error) {
 	declared := shapes.All()
 
 	shapesByComponent := make(map[string]recipe.Shape, len(components))
-	parsedButtonByStyle := make(map[string]recipe.Style, len(styles))
 	resolvedByStyle := make(map[string]map[string]recipe.Resolved, len(styles))
 	for _, style := range styles {
 		resolvedByStyle[style] = make(map[string]recipe.Resolved, len(components))
@@ -124,11 +123,6 @@ func resolveAll(root string) ([]generatedSource, error) {
 				return nil, fmt.Errorf("check %s %s recipe: %w", style, component, err)
 			}
 			resolvedByStyle[style][component] = resolved
-			if component == siteButtonComponent {
-				// Every style's Button recipe also feeds the theme-preview
-				// fallback, emitted once after the loop.
-				parsedButtonByStyle[style] = parsed
-			}
 			desugared, err := Resolve(canonicalPath, src, resolved)
 			if err != nil {
 				return nil, fmt.Errorf("resolve %s %s: %w", style, component, err)
@@ -174,39 +168,8 @@ func resolveAll(root string) ([]generatedSource, error) {
 					relativePath: filepath.Join("site", "uirtl", component+".gsx"),
 					content:      uirtl,
 				})
-				// The site's Button fallback is the default style's Button recipe
-				// restated against the slot marker, for docs markup that never goes
-				// through <ui.Button>. It is generated for the same reason ui/ is:
-				// hand-maintaining a second copy of a recipe guarantees it drifts.
-				// The site ships one style, so only the default style emits it.
-				if component == siteButtonComponent {
-					fallback, _, err := siteButtonStylesheet(shape, parsed)
-					if err != nil {
-						return nil, fmt.Errorf("generate %s site fallback: %w", component, err)
-					}
-					outputs = append(outputs, generatedSource{
-						relativePath: filepath.FromSlash(siteButtonPath),
-						content:      fallback,
-					})
-				}
 			}
 		}
-	}
-
-	// The theme preview scope-disables web/site-button.css (the maia section
-	// must not receive Nova's chrome), so raw slot-button markup inside the
-	// gallery gets its Button chrome from a second generated fallback instead:
-	// every style's Button recipe restated inside that style's own
-	// [data-theme-preview-style] section.
-	if buttonShape, ok := shapesByComponent[siteButtonComponent]; ok {
-		previewFallback, _, err := previewButtonStylesheet(buttonShape, styles, parsedButtonByStyle)
-		if err != nil {
-			return nil, fmt.Errorf("generate theme-preview button fallback: %w", err)
-		}
-		outputs = append(outputs, generatedSource{
-			relativePath: filepath.FromSlash(previewButtonPath),
-			content:      previewFallback,
-		})
 	}
 
 	// The gallery composition is authored once (site/stylepreview/gallery.gsx.src)

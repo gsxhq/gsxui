@@ -34,7 +34,6 @@ component (preview ThemePreview) Page() {
 	<html lang="en">
 		<siteHead title="Theme preview" entry="web/preview.js"/>
 		<body
-			data-theme-button-preview
 			data-theme-preview-tokens={themePreviewTokenNames()}
 			class="min-h-svh overflow-auto bg-background text-foreground antialiased"
 		>

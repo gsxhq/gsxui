@@ -370,10 +370,9 @@ func subjectConditions(complex string, remove func(string) (string, bool)) (ance
 
 // scopeAncestors keeps the ancestor compounds that can actually change whether a
 // rule applies to a given element in a given state — those naming a class or an
-// id, such as `.dark`. A pure scoping ancestor like
-// `:where(body:not([data-theme-button-preview]))` narrows WHICH documents the
-// rule reaches, not which state of the element it targets, and both sides of the
-// comparison would otherwise never line up.
+// id, such as `.dark`. A pure scoping ancestor like `:where(body)` narrows
+// WHICH documents the rule reaches, not which state of the element it targets,
+// and both sides of the comparison would otherwise never line up.
 func scopeAncestors(compounds []string) []string {
 	var out []string
 	for _, compound := range compounds {

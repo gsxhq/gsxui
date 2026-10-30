@@ -112,9 +112,6 @@ func TestInitWritesEverything(t *testing.T) {
 			len(styleCSS), len(composed),
 		)
 	}
-	if _, err := os.Stat(filepath.Join(dir, "web/gsxui/site-button.css")); !os.IsNotExist(err) {
-		t.Errorf("init vendored the site-only Button fallback: %v", err)
-	}
 	// dependency commands went through the seam
 	joined := ""
 	for _, c := range *commands {
@@ -769,7 +766,7 @@ func TestInitVendorsCSSAssetsBesideCustomEntry(t *testing.T) {
 	}
 }
 
-func TestCSSAssetTargetsExcludeSiteButtonFallback(t *testing.T) {
+func TestCSSAssetTargets(t *testing.T) {
 	targets := cssAssetTargets("web/styles/brand.css")
 	got := make(map[string]string, len(targets))
 	for _, target := range targets {
@@ -794,7 +791,7 @@ func TestCSSAssetTargetsExcludeSiteButtonFallback(t *testing.T) {
 // TestFontAssetTargetsLandBesideCustomCSSPath asserts the font bundle
 // vendors into a "fonts" subdirectory next to wherever a project configures
 // its CSS entry — not hardcoded to the default web/gsxui/ layout — mirroring
-// TestCSSAssetTargetsExcludeSiteButtonFallback's own custom-path coverage
+// TestCSSAssetTargets's own custom-path coverage
 // for cssAssetTargets.
 func TestFontAssetTargetsLandBesideCustomCSSPath(t *testing.T) {
 	targets, err := fontAssetTargets(gsxui.Files, "web/styles/brand.css")

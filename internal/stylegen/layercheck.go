@@ -163,8 +163,6 @@ var layerCheckedStylesheets = []string{
 	"assets/css/styles/default.css",
 	"assets/css/themes/default.css",
 	"web/site.css",
-	"web/site-button.css",
-	"web/theme-preview-button.css",
 }
 
 // layerCheckedStylesheetDirs is every directory whose ENTIRE .css contents are
@@ -248,21 +246,7 @@ type exemptionKey struct {
 type layerCheckExemption struct {
 	key    exemptionKey
 	reason string
-	// derived names the group an entry was DERIVED from source rather than
-	// written down, and is "" for hand-written entries. It changes only how
-	// staleness is judged: a hand-written entry that stops matching is a decision
-	// whose subject moved, and must be re-taken; a derived entry that stops
-	// matching means the generator emitted a declaration nothing happens to
-	// contest, which nobody decided and nobody should have to re-decide. Derived
-	// GROUPS are still checked for staleness as a whole (see staleExemptions), so
-	// a group that stops forgiving anything at all still fails.
-	derived string
 }
-
-// siteButtonDerivedGroup names the one derived exemption group. It is a
-// constant rather than a bare string so the group name in the diagnostic and the
-// name on each entry cannot drift apart.
-const siteButtonDerivedGroup = "web/site-button.css (generated from Button's recipe)"
 
 // layerCheckExemptions names the individual components-layer violations that are
 // deliberate. Nothing else is exempt: a rule that loses the cascade by accident
@@ -289,27 +273,13 @@ const siteButtonDerivedGroup = "web/site-button.css (generated from Button's rec
 // collapsed-icon tooltip's `display`), then to none: see
 // sidebarFoundationMechanicsExemptions's own comment (now just a historical
 // marker, the function itself is gone) for how that last entry resolved.
-// The chain is slices.Concat rather than nested appends: every migration wave
-// adds a group here, and a nested append chain put each addition on the same
-// two lines, so every wave collided with every other one.
 //
-// Groups whose subject is a GENERATED file are derived from the same source the
-// generator reads instead of being written out — see
-// siteButtonFallbackExemptions — so they take root and can fail.
-func layerCheckExemptions(root string) ([]layerCheckExemption, error) {
-	siteButton, err := siteButtonFallbackExemptions(root)
-	if err != nil {
-		return nil, err
-	}
-	previewButton, err := previewButtonFallbackExemptions(root)
-	if err != nil {
-		return nil, err
-	}
-	return slices.Concat(
-		siteButton,
-		previewButton,
-	), nil
-}
+// The two generated Button fallbacks (web/site-button.css and
+// web/theme-preview-button.css) and their derived groups went last, once
+// Pagination and Calendar rendered through <ui.Button> and no raw
+// [data-gsxui-slot-button] markup was left for them to style. Nothing is exempt
+// today.
+var layerCheckExemptions []layerCheckExemption
 
 // exemptionIndex maps each exempted violation to its reason. Building it here
 // rather than declaring a map literal keeps the reason mandatory at the type
@@ -333,16 +303,8 @@ func staleExemptions(found []violation, exemptions []layerCheckExemption) []stri
 		occurring[v.key] = struct{}{}
 	}
 	var stale []string
-	// Derived groups are judged whole: "did this derivation still forgive
-	// anything" is the decision, and the individual keys are arithmetic.
-	derivedSeen := map[string]bool{}
 	for _, exemption := range exemptions {
-		_, occurs := occurring[exemption.key]
-		if exemption.derived != "" {
-			derivedSeen[exemption.derived] = derivedSeen[exemption.derived] || occurs
-			continue
-		}
-		if occurs {
+		if _, ok := occurring[exemption.key]; ok {
 			continue
 		}
 		stale = append(stale, fmt.Sprintf(
@@ -352,21 +314,6 @@ func staleExemptions(found []violation, exemptions []layerCheckExemption) []stri
 				"  Its reason was: %s",
 			exemption.key.file, exemption.key.style, exemption.key.selector, exemption.key.contested,
 			exemption.key.style, exemption.reason))
-	}
-	groups := make([]string, 0, len(derivedSeen))
-	for group := range derivedSeen {
-		groups = append(groups, group)
-	}
-	sort.Strings(groups)
-	for _, group := range groups {
-		if derivedSeen[group] {
-			continue
-		}
-		stale = append(stale, fmt.Sprintf(
-			"%s: the derived exemption group forgives nothing any more — not one of the\n"+
-				"  rules it covers still loses the cascade. The fallback it describes has stopped\n"+
-				"  restating the component it was generated from, so delete the group.",
-			group))
 	}
 	return stale
 }
@@ -397,11 +344,7 @@ func CheckLayerPrecedence(root string) error {
 	if err != nil {
 		return err
 	}
-	exemptions, err := layerCheckExemptions(root)
-	if err != nil {
-		return err
-	}
-	exempt := exemptionIndex(exemptions)
+	exempt := exemptionIndex(layerCheckExemptions)
 	var reported []string
 	for _, v := range found {
 		if _, ok := exempt[v.key]; ok {
@@ -409,7 +352,7 @@ func CheckLayerPrecedence(root string) error {
 		}
 		reported = append(reported, v.message)
 	}
-	reported = append(reported, staleExemptions(found, exemptions)...)
+	reported = append(reported, staleExemptions(found, layerCheckExemptions)...)
 	if len(reported) == 0 {
 		return nil
 	}
