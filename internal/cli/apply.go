@@ -268,7 +268,7 @@ func selectedStyledArtifact(module string, cfg Config, name string, style preset
 	if err != nil {
 		return artifact{}, err
 	}
-	rewritten, err := RewriteGsx(source, module, cfg.UI)
+	rewritten, err := RewriteGsx(sourcePath, source, module, cfg.UI)
 	if err != nil {
 		return artifact{}, fmt.Errorf("rewrite %s: %w", sourcePath, err)
 	}

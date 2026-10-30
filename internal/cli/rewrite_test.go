@@ -2,8 +2,14 @@ package cli
 
 import (
 	"bytes"
+	"go/format"
 	"strings"
 	"testing"
+
+	"github.com/gsxhq/gsx/gen"
+
+	"github.com/gsxhq/gsxui/internal/preset"
+	"github.com/gsxhq/gsxui/internal/registry"
 )
 
 func TestRewriteGsxRewritesOnlyExactUIImports(t *testing.T) {
@@ -22,7 +28,7 @@ component Example() {
 }
 `)
 
-	got, err := RewriteGsx(in, "example.com/app", "components/ui")
+	got, err := RewriteGsx("ui.gsx", in, "example.com/app", "components/ui")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,7 +58,7 @@ import (
 )
 `)
 
-	got, err := RewriteGsx(in, "example.com/app", "ui")
+	got, err := RewriteGsx("ui.gsx", in, "example.com/app", "ui")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,7 +76,7 @@ func TestRewriteGsxDecodesRawAndEscapedExactImports(t *testing.T) {
 		")\n\n" +
 		"const unrelated = `github.com/gsxhq/gsxui/ui/icon`\n")
 
-	once, err := RewriteGsx(in, "example.com/app", "components/ui")
+	once, err := RewriteGsx("ui.gsx", in, "example.com/app", "components/ui")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -85,7 +91,7 @@ func TestRewriteGsxDecodesRawAndEscapedExactImports(t *testing.T) {
 		}
 	}
 
-	twice, err := RewriteGsx(once, "example.com/app", "components/ui")
+	twice, err := RewriteGsx("ui.gsx", once, "example.com/app", "components/ui")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -104,11 +110,11 @@ import (
 )
 `)
 
-	once, err := RewriteGsx(in, "example.com/app", "ui")
+	once, err := RewriteGsx("ui.gsx", in, "example.com/app", "ui")
 	if err != nil {
 		t.Fatal(err)
 	}
-	twice, err := RewriteGsx(once, "example.com/app", "ui")
+	twice, err := RewriteGsx("ui.gsx", once, "example.com/app", "ui")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,7 +134,7 @@ component Broken( {
 		[]byte("package ui\n\nimport \"github.com/gsxhq/gsxui/u\\q\"\n"),
 	}
 	for _, in := range tests {
-		if _, err := RewriteGsx(in, "example.com/app", "ui"); err == nil {
+		if _, err := RewriteGsx("ui.gsx", in, "example.com/app", "ui"); err == nil {
 			t.Fatalf("RewriteGsx accepted malformed GSX:\n%s", in)
 		}
 	}
@@ -153,7 +159,7 @@ func TestRewriteGsxRejectsInvalidDestination(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if _, err := RewriteGsx([]byte("package ui\n"), tt.module, tt.uiDir); err == nil {
+			if _, err := RewriteGsx("ui.gsx", []byte("package ui\n"), tt.module, tt.uiDir); err == nil {
 				t.Fatal("RewriteGsx accepted invalid destination")
 			}
 		})
@@ -179,5 +185,97 @@ export * from "./gsxui.js";
 `
 	if got != want {
 		t.Fatalf("got:\n%s", got)
+	}
+}
+
+// A module path that sorts before github.com/gsxhq/gsx moves the rewritten
+// imports ahead of it; the output must already be what `gsx fmt` writes, or
+// the user's first format makes the file differ from the recorded version.
+func TestRewriteGsxFormatsReorderedImports(t *testing.T) {
+	in := []byte(`package ui
+
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/i18n"
+	"github.com/gsxhq/gsxui/ui/icon"
+)
+
+component Example(attrs gsx.Attrs) {
+	<span { attrs... }>{ i18n.T("More") }{ icon.Ellipsis() }</span>
+}
+`)
+
+	got, err := RewriteGsx("pagination.gsx", in, "example.com/shop", "ui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "import (\n\t\"example.com/shop/ui/i18n\"\n\t\"example.com/shop/ui/icon\"\n\t\"github.com/gsxhq/gsx\"\n)"
+	if !strings.Contains(string(got), want) {
+		t.Fatalf("imports not in gsx fmt order:\n%s", got)
+	}
+	formatted, err := gen.Format("pagination.gsx", got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(formatted, got) {
+		t.Fatalf("gsx fmt changes the rewritten file:\n%s\nwant:\n%s", formatted, got)
+	}
+}
+
+// Plain Go files in directory packages are held to gofmt instead.
+func TestRewriteGsxFormatsReorderedGoImports(t *testing.T) {
+	in := []byte("package icon\n\nimport (\n\t\"github.com/gsxhq/gsx\"\n\t\"github.com/gsxhq/gsxui/ui/i18n\"\n)\n\nvar _ gsx.Node\n\nvar _ = i18n.T\n")
+
+	got, err := RewriteGsx("icon.go", in, "example.com/shop", "ui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	formatted, err := format.Source(got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(formatted, got) {
+		t.Fatalf("gofmt changes the rewritten file:\n%s\nwant:\n%s", formatted, got)
+	}
+}
+
+// Every file `gsxui add` vendors into a module that sorts before
+// github.com/gsxhq/gsx is already formatted, in every style and with RTL on
+// or off (issue #50).
+func TestAddArtifactsAreFormattedForEarlySortingModule(t *testing.T) {
+	components, err := registry.Components()
+	if err != nil {
+		t.Fatal(err)
+	}
+	resolved, err := registry.Resolve(components)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, style := range preset.Styles() {
+		for _, rtl := range []bool{false, true} {
+			cfg := DefaultConfig()
+			cfg.RTL = rtl
+			artifacts, err := addArtifacts(t.TempDir(), "example.com/shop", cfg, preset.Default(style), resolved)
+			if err != nil {
+				t.Fatalf("%s rtl=%v: %v", style, rtl, err)
+			}
+			for _, a := range artifacts {
+				var formatted []byte
+				switch {
+				case strings.HasSuffix(a.RelativePath, ".gsx"):
+					formatted, err = gen.Format(a.RelativePath, a.Content)
+				case strings.HasSuffix(a.RelativePath, ".go"):
+					formatted, err = format.Source(a.Content)
+				default:
+					continue
+				}
+				if err != nil {
+					t.Fatalf("%s rtl=%v %s: %v", style, rtl, a.RelativePath, err)
+				}
+				if !bytes.Equal(formatted, a.Content) {
+					t.Errorf("%s rtl=%v: formatting changes %s", style, rtl, a.RelativePath)
+				}
+			}
+		}
 	}
 }

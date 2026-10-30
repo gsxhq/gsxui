@@ -2,6 +2,12 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-10-30
+
+### Fixed
+
+- **cli** — `gsxui add` and `gsxui apply` format each file whose imports they rewrite, so `gsx fmt` and `gofmt` leave vendored components unchanged when the app's module path sorts before `github.com/gsxhq/gsx` (`example.com/…`, `codeberg.org/…`). Before, formatting such a file made the next `gsxui add` stop with "differs from the gsxui version" (#50).
+
 ## 2026-10-21
 
 ### Fixed

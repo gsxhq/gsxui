@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	goast "go/ast"
+	goformat "go/format"
 	goparser "go/parser"
 	"go/token"
 	"path"
@@ -11,6 +12,7 @@ import (
 	"strings"
 
 	gsxast "github.com/gsxhq/gsx/ast"
+	"github.com/gsxhq/gsx/gen"
 	gsxparser "github.com/gsxhq/gsx/parser"
 	gomodule "golang.org/x/mod/module"
 )
@@ -27,8 +29,11 @@ type importLiteralEdit struct {
 // the GSX file and the Go chunks that can own import declarations, then edits
 // only import-path BasicLits identified by their token positions. Comments,
 // ordinary string literals, and decoded lookalike paths are not rewrite
-// candidates.
-func RewriteGsx(src []byte, modulePath, uiDir string) ([]byte, error) {
+// candidates. A rewritten file is formatted — gofmt for name ending in .go,
+// gsx fmt otherwise — because the new paths can sort before
+// github.com/gsxhq/gsx, and the vendored copy must already be what the user's
+// formatter writes.
+func RewriteGsx(name string, src []byte, modulePath, uiDir string) ([]byte, error) {
 	destination, err := rewriteDestination(modulePath, uiDir)
 	if err != nil {
 		return nil, err
@@ -60,7 +65,13 @@ func RewriteGsx(src []byte, modulePath, uiDir string) ([]byte, error) {
 	if _, err := gsxparser.ParseFile(token.NewFileSet(), "rewrite.gsx", rewritten, 0); err != nil {
 		return nil, err
 	}
-	return rewritten, nil
+	if len(edits) == 0 {
+		return rewritten, nil
+	}
+	if strings.HasSuffix(name, ".go") {
+		return goformat.Source(rewritten)
+	}
+	return gen.Format(name, rewritten)
 }
 
 func rewriteDestination(modulePath, uiDir string) (string, error) {
