@@ -868,10 +868,9 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 	>
 		<div class={ calendar.Months() } data-gsxui-slot-calendar-months>
 			<nav class={ calendar.Nav() } data-gsxui-slot-calendar-nav>
-				<button
-					type="button"
-					data-variant="ghost"
-					data-size="icon"
+				<Button
+					variant="ghost"
+					size="icon"
 					aria-label={i18n.T("Previous month")}
 					{ if prevDisabled {
 						aria-disabled="true"
@@ -880,14 +879,12 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					class={ calendar.NavButton() }
 					data-gsxui-slot-calendar-previous
 					data-gsxui-slot-calendar-nav-button
-					data-gsxui-slot-button
 				>
 					<icon.ChevronLeft class={ "rtl:rotate-180" }/>
-				</button>
-				<button
-					type="button"
-					data-variant="ghost"
-					data-size="icon"
+				</Button>
+				<Button
+					variant="ghost"
+					size="icon"
 					aria-label={i18n.T("Next month")}
 					{ if nextDisabled {
 						aria-disabled="true"
@@ -896,10 +893,9 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					class={ calendar.NavButton() }
 					data-gsxui-slot-calendar-next
 					data-gsxui-slot-calendar-nav-button
-					data-gsxui-slot-button
 				>
 					<icon.ChevronRight class={ "rtl:rotate-180" }/>
-				</button>
+				</Button>
 			</nav>
 			<div class={ calendar.MonthCaption() } data-gsxui-slot-calendar-month-caption>
 				{ if dropdownLayout {
@@ -1017,10 +1013,10 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 									class={ calendar.Day() }
 									data-gsxui-slot-calendar-day
 								>
-									<button
-										type="button"
-										data-variant="ghost"
-										data-size="icon"
+									<Button
+										variant="ghost"
+										size="icon"
+										disabled={(dayDis && !tabStopDisabled) || hiddenDay}
 										data-date={d.Format("2006-01-02")}
 										tabindex={tabindex}
 										aria-label={loc.dayLabel(d)}
@@ -1034,13 +1030,11 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 										data-range-start={boolStr(rStart)}
 										data-range-middle={boolStr(rMiddle)}
 										data-range-end={boolStr(rEnd)}
-										disabled={(dayDis && !tabStopDisabled) || hiddenDay}
 										class={ calendar.DayButton() }
 										data-gsxui-slot-calendar-day-button
-										data-gsxui-slot-button
 									>
 										{ dayText }
-									</button>
+									</Button>
 								</td>
 							} }
 						</tr>

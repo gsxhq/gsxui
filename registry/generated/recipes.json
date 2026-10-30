@@ -1110,7 +1110,15 @@
           "base": true,
           "dimensions": {}
         },
+        "next": {
+          "base": true,
+          "dimensions": {}
+        },
         "next-label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "previous": {
           "base": true,
           "dimensions": {}
         },
@@ -4890,10 +4898,24 @@
             ],
             "dimensions": {}
           },
+          "next": {
+            "base": [
+              "pr-2",
+              "has-[\u003esvg]:pr-2"
+            ],
+            "dimensions": {}
+          },
           "next-label": {
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous": {
+            "base": [
+              "pl-2",
+              "has-[\u003esvg]:pl-2"
             ],
             "dimensions": {}
           },
@@ -9640,10 +9662,24 @@
             ],
             "dimensions": {}
           },
+          "next": {
+            "base": [
+              "pr-1.5",
+              "has-[\u003esvg]:pr-1.5"
+            ],
+            "dimensions": {}
+          },
           "next-label": {
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous": {
+            "base": [
+              "pl-1.5",
+              "has-[\u003esvg]:pl-1.5"
             ],
             "dimensions": {}
           },
@@ -14394,10 +14430,24 @@
             ],
             "dimensions": {}
           },
+          "next": {
+            "base": [
+              "pr-2",
+              "has-[\u003esvg]:pr-2"
+            ],
+            "dimensions": {}
+          },
           "next-label": {
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous": {
+            "base": [
+              "pl-2",
+              "has-[\u003esvg]:pl-2"
             ],
             "dimensions": {}
           },
@@ -19169,10 +19219,24 @@
             ],
             "dimensions": {}
           },
+          "next": {
+            "base": [
+              "pr-2",
+              "has-[\u003esvg]:pr-2"
+            ],
+            "dimensions": {}
+          },
           "next-label": {
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous": {
+            "base": [
+              "pl-2",
+              "has-[\u003esvg]:pl-2"
             ],
             "dimensions": {}
           },
@@ -23959,10 +24023,24 @@
             ],
             "dimensions": {}
           },
+          "next": {
+            "base": [
+              "pr-1.5",
+              "has-[\u003esvg]:pr-1.5"
+            ],
+            "dimensions": {}
+          },
           "next-label": {
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous": {
+            "base": [
+              "pl-1.5",
+              "has-[\u003esvg]:pl-1.5"
             ],
             "dimensions": {}
           },
@@ -28751,10 +28829,24 @@
             ],
             "dimensions": {}
           },
+          "next": {
+            "base": [
+              "pr-1.5",
+              "has-[\u003esvg]:pr-1.5"
+            ],
+            "dimensions": {}
+          },
           "next-label": {
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous": {
+            "base": [
+              "pl-1.5",
+              "has-[\u003esvg]:pl-1.5"
             ],
             "dimensions": {}
           },
@@ -33578,10 +33670,24 @@
             ],
             "dimensions": {}
           },
+          "next": {
+            "base": [
+              "pr-2",
+              "has-[\u003esvg]:pr-2"
+            ],
+            "dimensions": {}
+          },
           "next-label": {
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous": {
+            "base": [
+              "pl-2",
+              "has-[\u003esvg]:pl-2"
             ],
             "dimensions": {}
           },
@@ -38337,10 +38443,24 @@
             ],
             "dimensions": {}
           },
+          "next": {
+            "base": [
+              "pr-2",
+              "has-[\u003esvg]:pr-2"
+            ],
+            "dimensions": {}
+          },
           "next-label": {
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous": {
+            "base": [
+              "pl-2",
+              "has-[\u003esvg]:pl-2"
             ],
             "dimensions": {}
           },

@@ -13,6 +13,10 @@ func (r paginationRecipe) Content() string { return r.c.SlotClass("content") }
 
 func (r paginationRecipe) Ellipsis() string { return r.c.SlotClass("ellipsis") }
 
+func (r paginationRecipe) Next() string { return r.c.SlotClass("next") }
+
 func (r paginationRecipe) NextLabel() string { return r.c.SlotClass("next-label") }
+
+func (r paginationRecipe) Previous() string { return r.c.SlotClass("previous") }
 
 func (r paginationRecipe) PreviousLabel() string { return r.c.SlotClass("previous-label") }
