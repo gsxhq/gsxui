@@ -115,9 +115,8 @@ component (p I18n) Page() {
 				<docHeading item={i18nTOCItems[3]}/>
 				<p>
 					Every field is CLDR data, so the server can fill it from a CLDR source instead of a typed table. With{ " " }
-					<code>Intl</code> on the server (a Cloudflare Worker has V8's), each field is one{ " " }
-					<code>Intl.DateTimeFormat</code> call with <code>{ `calendar: "gregory", timeZone: "UTC"` }</code> added to
-					the options below:
+					<code>Intl</code> on the server (a Cloudflare Worker has V8's), each field is one call; every date format also
+					takes <code>{ `calendar: "gregory", timeZone: "UTC"` }</code>:
 				</p>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
@@ -133,17 +132,20 @@ component (p I18n) Page() {
 					<li><code>MonthsShort</code>: <code>{ `{month: "short"}` }</code>.</li>
 					<li>
 						<code>Weekdays</code> and <code>WeekdaysShort</code>: <code>{ `{weekday: "long"}` }</code> and{ " " }
-						<code>{ `{weekday: "short"}` }</code> on seven days from a Sunday.
+						<code>{ `{weekday: "narrow"}` }</code> on seven days from a Sunday. Narrow names can repeat (Russian{ " " }
+						<code>В П В С Ч П С</code>); type the header row by hand where they do.
 					</li>
 					<li>
 						<code>Caption</code> and <code>DayLabel</code>: the same two formats' parts, with each{ " " }
 						<code>month</code>, <code>year</code>, <code>weekday</code> and <code>day</code> part replaced by its
-						placeholder. Russian's caption is <code>{ "{month} {year} г." }</code>.
+						placeholder. Russian's caption is <code>{ "{month} {year} г." }</code>
 					</li>
 					<li>
 						<code>Digits</code>:{ " " }
 						<code>{ `new Intl.NumberFormat(lang, {useGrouping: false}).format(1234567890)` }</code> with its last digit
-						moved to the front; empty when that is ASCII.
+						moved to the front; empty when that is ASCII. Plain <code>ar</code> gives
+						ASCII; <code>ar-EG</code> or{ " " }
+						<code>ar-u-nu-arab</code> gives <code>٠١٢٣٤٥٦٧٨٩</code>.
 					</li>
 					<li>
 						<code>weekStartsOn</code>, a <code>Calendar</code> argument:{ " " }
