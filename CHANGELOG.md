@@ -2,6 +2,20 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-11-02
+
+### Fixed
+
+- **dialog**, **sheet** — the close button `DialogContent`/`SheetContent` inject now
+  carries upstream's chrome: `rounded-xs`, a 70% resting opacity that goes to full on
+  hover, and a focus ring. Before, it had only its per-style position, so the X sat at
+  full opacity with square corners, no hover feedback and no visible keyboard focus
+  indicator in any of the eight styles (in luma, rhea and sera, whose packs add
+  `bg-secondary`, a hard-cornered block behind the glyph). Fixed in
+  `registry/styles/<style>/{dialog,sheet}.css`; each style's own positioning is
+  unchanged. A caller who was overriding the close button's radius or opacity with a
+  plain utility now contends with these, and should scope the override the same way.
+
 ## 2026-10-30
 
 ### Fixed

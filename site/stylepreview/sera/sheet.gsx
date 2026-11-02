@@ -58,7 +58,9 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 		{ if !hideCloseButton {
 			<button
 				type="button"
-				class={ "absolute top-4 end-4 bg-secondary" }
+				class={
+					"absolute top-4 end-4 bg-secondary rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+				}
 				data-gsxui-dialog-close
 				data-gsxui-slot-sheet-close-button
 				data-gsxui-slot-sheet-close
