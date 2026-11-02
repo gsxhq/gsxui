@@ -3159,7 +3159,17 @@
               "absolute",
               "top-4",
               "end-4",
-              "bg-secondary"
+              "bg-secondary",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -5238,7 +5248,17 @@
               "absolute",
               "top-4",
               "end-4",
-              "bg-secondary"
+              "bg-secondary",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -7937,7 +7957,17 @@
             "base": [
               "absolute",
               "top-2",
-              "end-2"
+              "end-2",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -10005,7 +10035,17 @@
             "base": [
               "absolute",
               "top-3",
-              "end-3"
+              "end-3",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -12700,7 +12740,17 @@
             "base": [
               "absolute",
               "top-4",
-              "end-4"
+              "end-4",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -14770,7 +14820,17 @@
             "base": [
               "absolute",
               "top-4",
-              "end-4"
+              "end-4",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -17483,7 +17543,17 @@
             "base": [
               "absolute",
               "top-2",
-              "end-2"
+              "end-2",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -19559,7 +19629,17 @@
             "base": [
               "absolute",
               "top-4",
-              "end-4"
+              "end-4",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -22279,7 +22359,17 @@
             "base": [
               "absolute",
               "top-2",
-              "end-2"
+              "end-2",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -24367,7 +24457,17 @@
             "base": [
               "absolute",
               "top-3",
-              "end-3"
+              "end-3",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -27085,7 +27185,17 @@
               "absolute",
               "top-4",
               "end-4",
-              "bg-secondary"
+              "bg-secondary",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -29170,7 +29280,17 @@
               "absolute",
               "top-4",
               "end-4",
-              "bg-secondary"
+              "bg-secondary",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -31914,7 +32034,17 @@
               "absolute",
               "top-5",
               "end-5",
-              "bg-secondary"
+              "bg-secondary",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -34006,7 +34136,17 @@
               "absolute",
               "top-4",
               "end-4",
-              "bg-secondary"
+              "bg-secondary",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -36713,7 +36853,17 @@
             "base": [
               "absolute",
               "top-4",
-              "end-4"
+              "end-4",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },
@@ -38786,7 +38936,17 @@
             "base": [
               "absolute",
               "top-4",
-              "end-4"
+              "end-4",
+              "rounded-xs",
+              "opacity-70",
+              "ring-offset-background",
+              "transition-opacity",
+              "hover:opacity-100",
+              "focus:ring-2",
+              "focus:ring-ring",
+              "focus:ring-offset-2",
+              "focus:outline-hidden",
+              "disabled:pointer-events-none"
             ],
             "dimensions": {}
           },

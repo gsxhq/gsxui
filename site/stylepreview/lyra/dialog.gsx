@@ -36,7 +36,9 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 		{ if !hideCloseButton {
 			<button
 				type="button"
-				class={ "absolute top-2 end-2" }
+				class={
+					"absolute top-2 end-2 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+				}
 				data-gsxui-dialog-close
 				data-gsxui-slot-dialog-close-button
 				data-gsxui-slot-dialog-close

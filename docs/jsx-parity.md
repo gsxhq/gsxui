@@ -340,6 +340,50 @@ The Base UI (`@base-ui/react`) filtered listbox (`registry/new-york-v4/ui/combob
 - ADAPT: DialogContent uses `open:grid` instead of shadcn's `grid` — content stays in the DOM when closed (no Radix unmount), so an ungated display utility would override the UA's closed-dialog `display:none`.
 - ADAPT: `text-foreground` added to DialogContent's classes — native <dialog> gets UA `color: CanvasText` and does not inherit the themed body color (Radix's <div> content does); without it dark mode renders wrong text color.
 - ADAPT: close button drops shadcn's `data-[state=open]:bg-accent data-[state=open]:text-muted-foreground` — we stamp `data-state` on the <dialog> element, not the close button, so those selectors are dead in this DOM.
+- FIX (injected close button carried no chrome at all, 2026-11-02 — a real drift, not
+  a ledgered divergence): `.gsxui-recipe-dialog-close-button` and
+  `.gsxui-recipe-sheet-close-button` carried ONLY their per-style positioning
+  (`absolute top-2 end-2` in nova, `absolute top-4 end-4 bg-secondary` in luma, and so
+  on) in all eight styles. Those tokens are exactly `.cn-dialog-close`/`.cn-sheet-close`
+  from `apps/v4/registry/styles/style-<name>.css` — byte-faithful, modulo this port's
+  `right-*` → `end-*` translation — but the porter's CARRY half never ran for this slot,
+  so new-york-v4's own base chrome on the same element
+  (`apps/v4/registry/new-york-v4/ui/dialog.tsx`'s `DialogPrimitive.Close`, and
+  `ui/sheet.tsx`'s `SheetPrimitive.Close`) was dropped: `rounded-xs opacity-70
+  ring-offset-background transition-opacity hover:opacity-100 focus:ring-2
+  focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none`.
+  The X therefore rendered at FULL opacity instead of upstream's 70%, with square
+  corners, no hover feedback and — since `assets/css/foundation.css` has no global
+  focus rule and the button composes nothing — no visible keyboard focus indicator
+  anywhere, in every style. In luma, rhea and sera, whose style packs add
+  `bg-secondary`, that was a hard-cornered secondary-coloured rectangle hugging the
+  16px glyph. Same blind spot as `## native-select`'s own `bg-[Canvas]` FIX and the
+  2026-09-14 progress FIX it names: the tokens live in the BASE component's class
+  string, not in the per-style `.cn-*` subset `stylegen port` reads, so no re-port or
+  pin bump could ever have surfaced it — it is only visible by diffing the base
+  `*.tsx` against the recipe. Fixed at the source
+  (`registry/styles/<style>/{dialog,sheet}.css`), appended after each style's own
+  positioning in the porter's style-pack-then-carried order; every style's existing
+  tokens are untouched. `focus:` is kept verbatim rather than normalised to this
+  codebase's usual `focus-visible:` — upstream's own selector is `focus:`, and the
+  point of the entry is parity, not improvement. The two `data-[state=open]:*` tokens
+  stay dropped (ADAPT above), and `[&_svg]:pointer-events-none [&_svg]:shrink-0
+  [&_svg:not([class*='size-'])]:size-4` stay off the button because the separate
+  `close-icon` recipe already carries that geometry directly on the glyph.
+  `TestSheetCSSOnlyContract`/`TestSheetInjectedCloseParts` re-pinned via
+  `ui/sheet_test.go`'s `sheetCloseButtonClass`.
+- NOTE (bases renders this close button as a `<Button variant="ghost" size="icon-sm">`,
+  deliberately NOT followed): `apps/v4/registry/bases/radix/ui/{dialog,sheet}.tsx` wrap
+  the close in `asChild` + `Button`, which is why `.cn-dialog-close` is positioning-only
+  upstream. Porting THAT shape would give the X a ghost button's hover fill and a
+  `size-7` box, change the DOM (a `data-gsxui-slot-button` marker plus
+  `data-variant`/`data-size` stamps) and move `registry.Deps("dialog")`/`("sheet")`
+  onto button. new-york-v4 is this port's declared STRUCTURAL reference (`## nova
+  density`'s own DECISION), and it keeps the close button a plain element carrying its
+  chrome inline, so the FIX above ports new-york-v4's string and leaves the composition
+  alone. The two upstream trees genuinely disagree here, the same maintainer-call shape
+  as `ItemTitle`'s `line-clamp-1` and `ButtonGroupSeparator`'s `m-0!` in the 2026-10-26
+  VERIFIED entry; revisit only if new-york-v4 itself moves to the Button composition.
 - CONVENTION (decided 2026-07-22): gsx keeps Go zero-value semantics — no default parameter values in the language (designs using exported consts and an init-time registry were considered and rejected: exported-symbol pollution vs. runtime lookup, neither worth it). Name parameters so the zero value is the shadcn default: bools invert (`hideCloseButton`), numerics document "0 means the default" (e.g. upcoming `sideOffset`), strings use `""` = default.
 - MECHANISM (decided 2026-07-22, completed for the CSS-only style contract 2026-07-27): `asChild`/Slot is not ported and not needed for behavior attachment — the `data-gsxui-*` attributes are each interactive component's PUBLIC behavior contract, and fallthrough attrs deliver them to any element or component. A composed control also carries the logical trigger slot and its static ARIA attributes: `<ui.Button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger aria-haspopup="dialog" aria-expanded="false">Open</ui.Button>`. Ordinary attribute forwarding keeps this caller marker alongside Button's own marker, so the output is one DOM button with `data-gsxui-slot-button data-gsxui-slot-dialog-trigger`: one element, both style roles, no cloning, wrapper, or slot helper. Document this idiom prominently per interactive component; only tag-swapping remains a (narrow, accepted) gap.
 - FINDING (2026-07-24, fixed): nesting `<ui.Button>` inside `<ui.DialogTrigger>` — the shape shadcn's `asChild` invites — is invalid HTML (button in button): the parser hoists the inner button out as a SIBLING, so the wired trigger renders empty/unclickable and the visible button is orphaned. The landing page shipped this and its dialog silently never opened. The data-attribute idiom above is not just nicer, it is the only correct form for a styled trigger. `TestNoNestedButtons` renders every page and fails on any button-in-button markup; DialogTrigger's doc comment now warns its children must be phrasing content. (Same emit-what-the-parser-rejects family as self-closed non-voids, gsxhq/gsx#144 — a nested-interactive-content lint could catch both upstream.)
@@ -467,6 +511,14 @@ The Base UI (`@base-ui/react`) filtered listbox (`registry/new-york-v4/ui/combob
   `orientation` only needs to stamp the attribute.
 
 ## sheet
+- FIX (injected close button chrome, 2026-11-02): `SheetContent`'s own injected close
+  button had the identical drift `## dialog`'s FIX describes and is fixed the same way,
+  from `apps/v4/registry/new-york-v4/ui/sheet.tsx`'s `SheetPrimitive.Close`. Sheet's
+  upstream string differs from dialog's in one token only — its dead state selector is
+  `data-[state=open]:bg-secondary`, not dialog's `bg-accent`/`text-muted-foreground`
+  pair — and it is dropped for the same reason (`data-state` is stamped on the
+  `<dialog>`, never on the close button). See `## dialog` for the full derivation,
+  including why the `bases` Button composition is not followed.
 - WIN: `Sheet`/`SheetTrigger` compose `ui.Dialog` directly / mirror
   `AlertDialogTrigger`'s own doc-comment idiom (see `## alert-dialog`) —
   `Sheet` overrides the composed `data-slot` (`"dialog"`→`"sheet"`) via the
