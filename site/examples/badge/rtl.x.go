@@ -50,14 +50,14 @@ func Rtl() _gsxrt.Node {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:18:4
 			_gsxgw.Node(ctx, uiicon.BadgeCheck())
-			_gsxgw.S("متحقق")
+			_gsxgw.S(" متحقق")
 			return _gsxgw.Err()
 		}), nil))
-//line rtl.gsx:21:3
+//line rtl.gsx:20:3
 		_gsxgw.Node(ctx, uirtl.Badge("outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-			_gsxgw.S("إشارة مرجعية")
-//line rtl.gsx:23:4
+			_gsxgw.S("إشارة مرجعية ")
+//line rtl.gsx:21:28
 			_gsxgw.Node(ctx, uiicon.Bookmark())
 			return _gsxgw.Err()
 		}), nil))

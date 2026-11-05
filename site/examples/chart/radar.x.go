@@ -77,11 +77,11 @@ func Radar() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line radar.gsx:40:4
-				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line radar.gsx:42:5
+				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month ")
+//line radar.gsx:41:36
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line radar.gsx:44:4
+//line radar.gsx:43:4
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none text-muted-foreground\">January - June 2024</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex-col gap-2 text-sm"}}))

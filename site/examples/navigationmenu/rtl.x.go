@@ -96,23 +96,23 @@ func Rtl() _gsxrt.Node {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:45:9
 							_gsxgw.Node(ctx, icon.CircleAlert())
-							_gsxgw.S("قائمة الانتظار")
+							_gsxgw.S(" قائمة الانتظار")
 							return _gsxgw.Err()
 						}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "href", Value: "#"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-row items-center gap-2"}})))
-//line rtl.gsx:48:8
+//line rtl.gsx:47:8
 						_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:49:9
+//line rtl.gsx:48:9
 							_gsxgw.Node(ctx, icon.CircleDashed())
-							_gsxgw.S("المهام")
+							_gsxgw.S(" المهام")
 							return _gsxgw.Err()
 						}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "href", Value: "#"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-row items-center gap-2"}})))
-//line rtl.gsx:52:8
+//line rtl.gsx:50:8
 						_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:53:9
+//line rtl.gsx:51:9
 							_gsxgw.Node(ctx, icon.CircleCheck())
-							_gsxgw.S("منجز")
+							_gsxgw.S(" منجز")
 							return _gsxgw.Err()
 						}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "href", Value: "#"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-row items-center gap-2"}})))
 						_gsxgw.S("</div>")
@@ -120,10 +120,10 @@ func Rtl() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line rtl.gsx:59:5
+//line rtl.gsx:56:5
 				_gsxgw.Node(ctx, uirtl.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:60:6
+//line rtl.gsx:57:6
 					_gsxgw.Node(ctx, uirtl.NavigationMenuLink(false, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("الوثائق")
@@ -131,7 +131,7 @@ func Rtl() _gsxrt.Node {
 					}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 					return _gsxgw.Err()
 				}), nil))
-//line rtl.gsx:62:5
+//line rtl.gsx:59:5
 				_gsxgw.Node(ctx, uirtl.NavigationMenuIndicator(nil))
 				return _gsxgw.Err()
 			}), nil))

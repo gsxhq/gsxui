@@ -37,24 +37,24 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:16:3
 		_gsxgw.Node(ctx, uirtl.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-			_gsxgw.S("إرسال")
-//line rtl.gsx:18:4
+			_gsxgw.S("إرسال ")
+//line rtl.gsx:17:15
 			_gsxgw.Node(ctx, uiicon.ArrowRight(_gsxrt.Attrs{{Key: "class", Value: "rtl:rotate-180"}}...))
 			return _gsxgw.Err()
 		}), nil))
-//line rtl.gsx:20:3
+//line rtl.gsx:19:3
 		_gsxgw.Node(ctx, uirtl.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:21:4
+//line rtl.gsx:20:4
 			_gsxgw.Node(ctx, uiicon.Plus())
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Add"}}))
-//line rtl.gsx:23:3
+//line rtl.gsx:22:3
 		_gsxgw.Node(ctx, uirtl.Button("secondary", "", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line rtl.gsx:24:4
+//line rtl.gsx:23:4
 			_gsxgw.Node(ctx, uirtl.Spinner(nil))
-			_gsxgw.S("جاري التحميل")
+			_gsxgw.S(" جاري التحميل")
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")

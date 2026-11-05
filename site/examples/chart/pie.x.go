@@ -81,11 +81,11 @@ func Pie() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line pie.gsx:46:4
-				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line pie.gsx:48:5
+				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month ")
+//line pie.gsx:47:36
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line pie.gsx:50:4
+//line pie.gsx:49:4
 				_gsxgw.S("<div class=\"leading-none text-muted-foreground\">Showing total visitors for the last 6 months</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex-col gap-2 text-sm"}}))

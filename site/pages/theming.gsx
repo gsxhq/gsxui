@@ -62,8 +62,9 @@ component (t Theming) Page() {
 				<p>
 					To restyle a part from your own CSS, target its marker: every semantic part carries one bare{ " " }
 					<code>data-gsxui-slot-&lt;name&gt;</code> attribute. A composed part carries every role it plays —
-					AlertDialog's action renders a Button whose element has both <code>data-gsxui-slot-button</code>{ " " }
-					and <code>data-gsxui-slot-alert-dialog-action</code> — so each role stays targetable:
+					AlertDialog's action renders a Button whose element has
+					both <code>data-gsxui-slot-button</code>{ " " }and <code>data-gsxui-slot-alert-dialog-action</code> — so each
+					role stays targetable:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-slot.css") }</code></pre>
 				<p>
@@ -79,8 +80,8 @@ component (t Theming) Page() {
 				<p>Two mechanisms make that hold:</p>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
-						Utilities a component carries in its own markup are settled by the vendored class merger (
-						<code>ui/merge/merge.go</code>): your <code>h-12</code> replaces the component's own height utility instead
+						Utilities a component carries in its own markup are settled by the vendored class merger
+						(<code>ui/merge/merge.go</code>): your <code>h-12</code> replaces the component's own height utility instead
 						of conflicting with it.
 					</li>
 					<li>

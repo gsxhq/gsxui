@@ -15,12 +15,10 @@ component Rtl() {
 		<uirtl.Badge variant="destructive">مدمر</uirtl.Badge>
 		<uirtl.Badge variant="outline">مخطط</uirtl.Badge>
 		<uirtl.Badge variant="secondary">
-			<uiicon.BadgeCheck/>
-			متحقق
+			<uiicon.BadgeCheck/> متحقق
 		</uirtl.Badge>
 		<uirtl.Badge variant="outline">
-			إشارة مرجعية
-			<uiicon.Bookmark/>
+			إشارة مرجعية <uiicon.Bookmark/>
 		</uirtl.Badge>
 	</div>
 }

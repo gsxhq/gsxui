@@ -42,16 +42,13 @@ component Rtl() {
 					<uirtl.NavigationMenuContent>
 						<div class="grid w-48 gap-1">
 							<uirtl.NavigationMenuLink href="#" class="flex-row items-center gap-2">
-								<icon.CircleAlert/>
-								قائمة الانتظار
+								<icon.CircleAlert/> قائمة الانتظار
 							</uirtl.NavigationMenuLink>
 							<uirtl.NavigationMenuLink href="#" class="flex-row items-center gap-2">
-								<icon.CircleDashed/>
-								المهام
+								<icon.CircleDashed/> المهام
 							</uirtl.NavigationMenuLink>
 							<uirtl.NavigationMenuLink href="#" class="flex-row items-center gap-2">
-								<icon.CircleCheck/>
-								منجز
+								<icon.CircleCheck/> منجز
 							</uirtl.NavigationMenuLink>
 						</div>
 					</uirtl.NavigationMenuContent>

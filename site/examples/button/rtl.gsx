@@ -14,15 +14,13 @@ component Rtl() {
 		<uirtl.Button variant="outline">زر</uirtl.Button>
 		<uirtl.Button variant="destructive">حذف</uirtl.Button>
 		<uirtl.Button variant="outline">
-			إرسال
-			<uiicon.ArrowRight class="rtl:rotate-180"/>
+			إرسال <uiicon.ArrowRight class="rtl:rotate-180"/>
 		</uirtl.Button>
 		<uirtl.Button variant="outline" size="icon" aria-label="Add">
 			<uiicon.Plus/>
 		</uirtl.Button>
 		<uirtl.Button variant="secondary" disabled>
-			<uirtl.Spinner/>
-			جاري التحميل
+			<uirtl.Spinner/> جاري التحميل
 		</uirtl.Button>
 	</div>
 }

@@ -38,8 +38,8 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:18:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("New Tab")
-//line basic.gsx:20:6
+						_gsxgw.S("New Tab ")
+//line basic.gsx:19:14
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘T")
@@ -47,11 +47,11 @@ func Basic() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:22:5
+//line basic.gsx:21:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("New Window")
-//line basic.gsx:24:6
+						_gsxgw.S("New Window ")
+//line basic.gsx:22:17
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘N")
@@ -59,13 +59,13 @@ func Basic() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:26:5
+//line basic.gsx:24:5
 					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line basic.gsx:27:5
+//line basic.gsx:25:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("Print...")
-//line basic.gsx:29:6
+						_gsxgw.S("Print... ")
+//line basic.gsx:26:15
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘P")
@@ -77,23 +77,23 @@ func Basic() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:33:3
+//line basic.gsx:30:3
 			_gsxgw.Node(ctx, ui.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:34:4
+//line basic.gsx:31:4
 				_gsxgw.Node(ctx, ui.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Edit")
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:35:4
+//line basic.gsx:32:4
 				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:36:5
+//line basic.gsx:33:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("Undo")
-//line basic.gsx:38:6
+						_gsxgw.S("Undo ")
+//line basic.gsx:34:11
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘Z")
@@ -101,11 +101,11 @@ func Basic() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:40:5
+//line basic.gsx:36:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("Redo")
-//line basic.gsx:42:6
+						_gsxgw.S("Redo ")
+//line basic.gsx:37:11
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⇧⌘Z")
@@ -113,21 +113,21 @@ func Basic() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:44:5
+//line basic.gsx:39:5
 					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line basic.gsx:45:5
+//line basic.gsx:40:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Cut")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:46:5
+//line basic.gsx:41:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Copy")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:47:5
+//line basic.gsx:42:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Paste")

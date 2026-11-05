@@ -29,41 +29,41 @@ func Basic() _gsxrt.Node {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:18:4
 			_gsxgw.Node(ctx, icon.Bold())
-			_gsxgw.S("Bold")
+			_gsxgw.S(" Bold")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
-//line basic.gsx:21:3
+//line basic.gsx:20:3
 		_gsxgw.Node(ctx, ui.Toggle(false, "outline", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:22:4
+//line basic.gsx:21:4
 			_gsxgw.Node(ctx, icon.Italic())
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle italic"}}))
-//line basic.gsx:24:3
+//line basic.gsx:23:3
 		_gsxgw.Node(ctx, ui.Toggle(false, "", "sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:25:4
+//line basic.gsx:24:4
 			_gsxgw.Node(ctx, icon.Underline())
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle underline (small)"}}))
-//line basic.gsx:27:3
+//line basic.gsx:26:3
 		_gsxgw.Node(ctx, ui.Toggle(false, "", "lg", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:28:4
+//line basic.gsx:27:4
 			_gsxgw.Node(ctx, icon.Underline())
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle underline (large)"}}))
-//line basic.gsx:30:3
-		_gsxgw.Node(ctx, ui.Toggle( /*line basic.gsx:30:23*/ true, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line basic.gsx:29:3
+		_gsxgw.Node(ctx, ui.Toggle( /*line basic.gsx:29:23*/ true, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:31:4
+//line basic.gsx:30:4
 			_gsxgw.Node(ctx, icon.Bold())
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold (pressed)"}}))
-//line basic.gsx:33:3
+//line basic.gsx:32:3
 		_gsxgw.Node(ctx, ui.Toggle(false, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:34:4
+//line basic.gsx:33:4
 			_gsxgw.Node(ctx, icon.Bold())
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold (disabled)"}})))

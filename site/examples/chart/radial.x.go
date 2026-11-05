@@ -77,11 +77,11 @@ func Radial() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line radial.gsx:42:4
-				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line radial.gsx:44:5
+				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month ")
+//line radial.gsx:43:36
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line radial.gsx:46:4
+//line radial.gsx:45:4
 				_gsxgw.S("<div class=\"leading-none text-muted-foreground\">Showing total visitors for the last 6 months</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex-col gap-2 text-sm"}}))

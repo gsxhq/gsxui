@@ -18,12 +18,10 @@ component Rtl() {
 				<uirtl.MenubarContent>
 					<uirtl.MenubarGroup>
 						<uirtl.MenubarItem>
-							علامة تبويب جديدة
-							<uirtl.MenubarShortcut>⌘T</uirtl.MenubarShortcut>
+							علامة تبويب جديدة <uirtl.MenubarShortcut>⌘T</uirtl.MenubarShortcut>
 						</uirtl.MenubarItem>
 						<uirtl.MenubarItem>
-							نافذة جديدة
-							<uirtl.MenubarShortcut>⌘N</uirtl.MenubarShortcut>
+							نافذة جديدة <uirtl.MenubarShortcut>⌘N</uirtl.MenubarShortcut>
 						</uirtl.MenubarItem>
 						<uirtl.MenubarItem aria-disabled="true" data-disabled="true">
 							نافذة التصفح المتخفي الجديدة
@@ -39,8 +37,7 @@ component Rtl() {
 					</uirtl.MenubarSub>
 					<uirtl.MenubarSeparator/>
 					<uirtl.MenubarItem>
-						طباعة...
-						<uirtl.MenubarShortcut>⌘P</uirtl.MenubarShortcut>
+						طباعة... <uirtl.MenubarShortcut>⌘P</uirtl.MenubarShortcut>
 					</uirtl.MenubarItem>
 				</uirtl.MenubarContent>
 			</uirtl.MenubarMenu>
@@ -48,12 +45,10 @@ component Rtl() {
 				<uirtl.MenubarTrigger>تعديل</uirtl.MenubarTrigger>
 				<uirtl.MenubarContent>
 					<uirtl.MenubarItem>
-						تراجع
-						<uirtl.MenubarShortcut>⌘Z</uirtl.MenubarShortcut>
+						تراجع <uirtl.MenubarShortcut>⌘Z</uirtl.MenubarShortcut>
 					</uirtl.MenubarItem>
 					<uirtl.MenubarItem>
-						إعادة
-						<uirtl.MenubarShortcut>⇧⌘Z</uirtl.MenubarShortcut>
+						إعادة <uirtl.MenubarShortcut>⇧⌘Z</uirtl.MenubarShortcut>
 					</uirtl.MenubarItem>
 					<uirtl.MenubarSeparator/>
 					<uirtl.MenubarSub>
@@ -79,12 +74,10 @@ component Rtl() {
 					<uirtl.MenubarCheckboxItem checked={false} value="full-urls">عناوين URL الكاملة</uirtl.MenubarCheckboxItem>
 					<uirtl.MenubarSeparator/>
 					<uirtl.MenubarItem aria-disabled="true" data-disabled="true">
-						إعادة تحميل
-						<uirtl.MenubarShortcut>⌘R</uirtl.MenubarShortcut>
+						إعادة تحميل <uirtl.MenubarShortcut>⌘R</uirtl.MenubarShortcut>
 					</uirtl.MenubarItem>
 					<uirtl.MenubarItem aria-disabled="true" data-disabled="true">
-						إعادة تحميل قسري
-						<uirtl.MenubarShortcut>⇧⌘R</uirtl.MenubarShortcut>
+						إعادة تحميل قسري <uirtl.MenubarShortcut>⇧⌘R</uirtl.MenubarShortcut>
 					</uirtl.MenubarItem>
 				</uirtl.MenubarContent>
 			</uirtl.MenubarMenu>

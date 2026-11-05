@@ -610,8 +610,7 @@ component themeEditor(previewURL string, workspace bool) {
 						<ui.Button data-theme-copy="url" variant="outline" size="sm">Copy share URL</ui.Button>
 					</div>
 					<label class="flex flex-col gap-1.5 text-xs text-muted-foreground">
-						New project
-						<textarea
+						New project <textarea
 							data-theme-command="init"
 							readonly
 							rows="3"
@@ -619,8 +618,7 @@ component themeEditor(previewURL string, workspace bool) {
 						></textarea>
 					</label>
 					<label class="flex flex-col gap-1.5 text-xs text-muted-foreground">
-						Initialized project
-						<textarea
+						Initialized project <textarea
 							data-theme-command="apply"
 							readonly
 							rows="3"

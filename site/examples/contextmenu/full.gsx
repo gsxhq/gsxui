@@ -21,17 +21,14 @@ component Full() {
 		<ui.ContextMenuContent class="w-52">
 			<ui.ContextMenuGroup>
 				<ui.ContextMenuItem data-inset="true">
-					Back
-					<ui.ContextMenuShortcut>⌘[</ui.ContextMenuShortcut>
+					Back <ui.ContextMenuShortcut>⌘[</ui.ContextMenuShortcut>
 				</ui.ContextMenuItem>
 			</ui.ContextMenuGroup>
 			<ui.ContextMenuItem aria-disabled="true" data-disabled="true" data-inset="true">
-				Forward
-				<ui.ContextMenuShortcut>⌘]</ui.ContextMenuShortcut>
+				Forward <ui.ContextMenuShortcut>⌘]</ui.ContextMenuShortcut>
 			</ui.ContextMenuItem>
 			<ui.ContextMenuItem data-inset="true">
-				Reload
-				<ui.ContextMenuShortcut>⌘R</ui.ContextMenuShortcut>
+				Reload <ui.ContextMenuShortcut>⌘R</ui.ContextMenuShortcut>
 			</ui.ContextMenuItem>
 			<ui.ContextMenuSub>
 				<ui.ContextMenuSubTrigger data-inset="true">More Tools</ui.ContextMenuSubTrigger>

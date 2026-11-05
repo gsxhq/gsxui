@@ -57,8 +57,8 @@ component (p I18n) Page() {
 						component that uses it.
 					</li>
 					<li>
-						The English text is the message id: <code>i18n.T("Close")</code>, <code>i18n.T("Next slide")</code>
-						, <code>i18n.T("Toggle Sidebar")</code>.
+						The English text is the message
+						id: <code>i18n.T("Close")</code>, <code>i18n.T("Next slide")</code>, <code>i18n.T("Toggle Sidebar")</code>.
 					</li>
 					<li>Without a renderer, a message renders as its English text.</li>
 					<li>With one, gsx calls your function everywhere a message renders, in text and in attributes.</li>
@@ -81,9 +81,8 @@ component (p I18n) Page() {
 				</p>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
-						<code>Caption</code> and <code>DayLabel</code> substitute <code>{ "{month}" }</code>
-						, <code>{ "{year}" }</code>, <code>{ "{weekday}" }</code> and <code>{ "{day}" }</code>. Other text is
-						literal.
+						<code>Caption</code> and <code>DayLabel</code> substitute <code>{ "{month}" }</code>, <code>{ "{year}" }</code>, <code>{ "{weekday}" }</code> and <code>{ "{day}" }</code>.
+						Other text is literal.
 					</li>
 					<li>
 						<code>Digits</code> is ten runes replacing 0-9 in visible text. Form values and data attributes stay ASCII.

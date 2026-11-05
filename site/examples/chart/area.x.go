@@ -112,11 +112,11 @@ func Area() _gsxrt.Node {
 //line area.gsx:72:5
 				_gsxgw.S("<div class=\"grid gap-2\">")
 //line area.gsx:73:6
-				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line area.gsx:75:7
+				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month ")
+//line area.gsx:74:38
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line area.gsx:77:6
+//line area.gsx:76:6
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none text-muted-foreground\">January - June 2024</div></div></div>")
 				return _gsxgw.Err()
 			}), nil))

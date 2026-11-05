@@ -37,8 +37,8 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:21:5
 				_gsxgw.Node(ctx, uirtl.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("رجوع")
-//line rtl.gsx:23:6
+					_gsxgw.S("رجوع ")
+//line rtl.gsx:22:15
 					_gsxgw.Node(ctx, uirtl.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘[")
@@ -46,11 +46,11 @@ func Rtl() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line rtl.gsx:25:5
+//line rtl.gsx:24:5
 				_gsxgw.Node(ctx, uirtl.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("تقدم")
-//line rtl.gsx:27:6
+					_gsxgw.S("تقدم ")
+//line rtl.gsx:25:15
 					_gsxgw.Node(ctx, uirtl.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘]")
@@ -58,11 +58,11 @@ func Rtl() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
-//line rtl.gsx:29:5
+//line rtl.gsx:27:5
 				_gsxgw.Node(ctx, uirtl.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("إعادة تحميل")
-//line rtl.gsx:31:6
+					_gsxgw.S("إعادة تحميل ")
+//line rtl.gsx:28:28
 					_gsxgw.Node(ctx, uirtl.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘R")
@@ -70,9 +70,9 @@ func Rtl() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line rtl.gsx:33:5
+//line rtl.gsx:30:5
 				_gsxgw.Node(ctx, uirtl.ContextMenuSeparator(nil))
-//line rtl.gsx:34:5
+//line rtl.gsx:31:5
 				_gsxgw.Node(ctx, uirtl.ContextMenuItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("حذف")

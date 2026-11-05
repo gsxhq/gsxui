@@ -19,16 +19,13 @@ component Rtl() {
 			</uirtl.ContextMenuTrigger>
 			<uirtl.ContextMenuContent class="w-52">
 				<uirtl.ContextMenuItem>
-					رجوع
-					<uirtl.ContextMenuShortcut>⌘[</uirtl.ContextMenuShortcut>
+					رجوع <uirtl.ContextMenuShortcut>⌘[</uirtl.ContextMenuShortcut>
 				</uirtl.ContextMenuItem>
 				<uirtl.ContextMenuItem aria-disabled="true" data-disabled="true">
-					تقدم
-					<uirtl.ContextMenuShortcut>⌘]</uirtl.ContextMenuShortcut>
+					تقدم <uirtl.ContextMenuShortcut>⌘]</uirtl.ContextMenuShortcut>
 				</uirtl.ContextMenuItem>
 				<uirtl.ContextMenuItem>
-					إعادة تحميل
-					<uirtl.ContextMenuShortcut>⌘R</uirtl.ContextMenuShortcut>
+					إعادة تحميل <uirtl.ContextMenuShortcut>⌘R</uirtl.ContextMenuShortcut>
 				</uirtl.ContextMenuItem>
 				<uirtl.ContextMenuSeparator/>
 				<uirtl.ContextMenuItem variant="destructive">حذف</uirtl.ContextMenuItem>

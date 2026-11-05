@@ -310,8 +310,7 @@ component galleryCalendarCard(idp string) {
 					aria-expanded="false"
 					class="w-[220px] justify-start text-left font-normal text-muted-foreground"
 				>
-					<icon.Calendar/>
-					Pick a date
+					<icon.Calendar/> Pick a date
 				</Button>
 				<PopoverContent class="w-auto p-0">
 					<Calendar
@@ -340,12 +339,10 @@ component galleryMenusCard() {
 					<MenubarTrigger>File</MenubarTrigger>
 					<MenubarContent>
 						<MenubarItem>
-							New Tab
-							<MenubarShortcut>⌘T</MenubarShortcut>
+							New Tab <MenubarShortcut>⌘T</MenubarShortcut>
 						</MenubarItem>
 						<MenubarItem>
-							New Window
-							<MenubarShortcut>⌘N</MenubarShortcut>
+							New Window <MenubarShortcut>⌘N</MenubarShortcut>
 						</MenubarItem>
 						<MenubarSeparator/>
 						{/* data-inset mirrors upstream's menubar demo and gives every
@@ -353,8 +350,7 @@ component galleryMenusCard() {
 						    preview document (menus stay closed there, but computed
 						    style still resolves — theme-editor.spec.ts pins it). */}
 						<MenubarItem data-inset="true">
-							Print...
-							<MenubarShortcut>⌘P</MenubarShortcut>
+							Print... <MenubarShortcut>⌘P</MenubarShortcut>
 						</MenubarItem>
 					</MenubarContent>
 				</MenubarMenu>
@@ -397,12 +393,10 @@ component galleryMenusCard() {
 				</ContextMenuTrigger>
 				<ContextMenuContent class="w-52">
 					<ContextMenuItem>
-						Back
-						<ContextMenuShortcut>⌘[</ContextMenuShortcut>
+						Back <ContextMenuShortcut>⌘[</ContextMenuShortcut>
 					</ContextMenuItem>
 					<ContextMenuItem>
-						Reload
-						<ContextMenuShortcut>⌘R</ContextMenuShortcut>
+						Reload <ContextMenuShortcut>⌘R</ContextMenuShortcut>
 					</ContextMenuItem>
 					<ContextMenuSeparator/>
 					<ContextMenuItem variant="destructive">Delete</ContextMenuItem>
@@ -448,12 +442,10 @@ component galleryFeedbackCard() {
 				<Spinner/>
 			</div>
 			<div class="flex items-center gap-3 text-sm text-muted-foreground">
-				Press
-				<KbdGroup>
+				Press <KbdGroup>
 					<Kbd>⌘</Kbd>
 					<Kbd>K</Kbd>
-				</KbdGroup>
-				to open the command palette
+				</KbdGroup> to open the command palette
 			</div>
 			<ul class="list-none">
 				<Toast
@@ -1204,12 +1196,10 @@ component galleryPricingCard() {
 				</CardHeader>
 				<CardContent class="flex flex-1 flex-col gap-2 text-sm text-muted-foreground">
 					<span class="flex items-start gap-1.5">
-						<icon.Check class="mt-0.5 size-3.5 shrink-0"/>
-						5 projects
+						<icon.Check class="mt-0.5 size-3.5 shrink-0"/> 5 projects
 					</span>
 					<span class="flex items-start gap-1.5">
-						<icon.Check class="mt-0.5 size-3.5 shrink-0"/>
-						Community support
+						<icon.Check class="mt-0.5 size-3.5 shrink-0"/> Community support
 					</span>
 					<div class="mt-auto pt-2"><Button variant="outline" class="w-full">Get started</Button></div>
 				</CardContent>
@@ -1224,16 +1214,13 @@ component galleryPricingCard() {
 				</CardHeader>
 				<CardContent class="flex flex-1 flex-col gap-2 text-sm">
 					<span class="flex items-start gap-1.5">
-						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>
-						Unlimited projects
+						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/> Unlimited projects
 					</span>
 					<span class="flex items-start gap-1.5">
-						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>
-						Priority support
+						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/> Priority support
 					</span>
 					<span class="flex items-start gap-1.5">
-						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>
-						Single sign-on
+						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/> Single sign-on
 					</span>
 					<div class="mt-auto pt-2"><Button class="w-full">Start trial</Button></div>
 				</CardContent>
@@ -1245,12 +1232,10 @@ component galleryPricingCard() {
 				</CardHeader>
 				<CardContent class="flex flex-1 flex-col gap-2 text-sm text-muted-foreground">
 					<span class="flex items-start gap-1.5">
-						<icon.Check class="mt-0.5 size-3.5 shrink-0"/>
-						Dedicated support
+						<icon.Check class="mt-0.5 size-3.5 shrink-0"/> Dedicated support
 					</span>
 					<span class="flex items-start gap-1.5">
-						<icon.Check class="mt-0.5 size-3.5 shrink-0"/>
-						Audit logs
+						<icon.Check class="mt-0.5 size-3.5 shrink-0"/> Audit logs
 					</span>
 					<div class="mt-auto pt-2"><Button variant="outline" class="w-full">Contact sales</Button></div>
 				</CardContent>
@@ -1272,32 +1257,28 @@ component galleryStatsCard() {
 				<span class="text-xs text-muted-foreground">MRR</span>
 				<span class="text-xl font-semibold">$48,230</span>
 				<span class="flex items-center gap-1 text-xs text-primary">
-					<icon.TrendingUp class="size-3.5"/>
-					12.4%
+					<icon.TrendingUp class="size-3.5"/> 12.4%
 				</span>
 			</div>
 			<div class="flex flex-col gap-1">
 				<span class="text-xs text-muted-foreground">Active users</span>
 				<span class="text-xl font-semibold">8,412</span>
 				<span class="flex items-center gap-1 text-xs text-primary">
-					<icon.TrendingUp class="size-3.5"/>
-					3.1%
+					<icon.TrendingUp class="size-3.5"/> 3.1%
 				</span>
 			</div>
 			<div class="flex flex-col gap-1">
 				<span class="text-xs text-muted-foreground">Churn</span>
 				<span class="text-xl font-semibold">1.8%</span>
 				<span class="flex items-center gap-1 text-xs text-destructive">
-					<icon.TrendingDown class="size-3.5"/>
-					0.4%
+					<icon.TrendingDown class="size-3.5"/> 0.4%
 				</span>
 			</div>
 			<div class="flex flex-col gap-1">
 				<span class="text-xs text-muted-foreground">NPS</span>
 				<span class="text-xl font-semibold">62</span>
 				<span class="flex items-center gap-1 text-xs text-primary">
-					<icon.TrendingUp class="size-3.5"/>
-					5
+					<icon.TrendingUp class="size-3.5"/> 5
 				</span>
 			</div>
 		</CardContent>

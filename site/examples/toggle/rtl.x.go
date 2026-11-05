@@ -25,7 +25,7 @@ func Rtl() _gsxrt.Node {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:13:4
 			_gsxgw.Node(ctx, icon.Bookmark())
-			_gsxgw.S("إشارة مرجعية")
+			_gsxgw.S(" إشارة مرجعية")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bookmark"}}))
 		_gsxgw.S("</div>")
