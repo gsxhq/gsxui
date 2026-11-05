@@ -253,34 +253,77 @@ func TestPlanScaffoldIntegrationRecognizesExactDocumentsIndependently(t *testing
 }
 
 func TestSupportedScaffoldDocumentFingerprintsArePinned(t *testing.T) {
-	want := map[string]struct {
-		pristine   string
-		integrated string
-	}{
+	type pair struct{ pristine, integrated string }
+	want := map[string][]pair{
 		"vite.config.ts": {
-			pristine:   "e7bccf275de4ab9210c168503022de4868f3186977d245a9c1b7e06bf65241d0",
-			integrated: "ea4df2b92c4f9327b6365353d36b6ab7cca439f9bef207a61cf9ba35608529ca",
+			{ // gsx-v1
+				pristine:   "e7bccf275de4ab9210c168503022de4868f3186977d245a9c1b7e06bf65241d0",
+				integrated: "ea4df2b92c4f9327b6365353d36b6ab7cca439f9bef207a61cf9ba35608529ca",
+			},
+			{ // gsx-v2
+				pristine:   "6471dd565e7a0d97e665de5343ffeb5a93793a3704ac90632697d0fc48ce6e29",
+				integrated: "66725613fa32a8606353a1fbec27c9a441b1a844c9713a2010aeec8e46573307",
+			},
 		},
 		"web/main.js": {
-			pristine:   "441ab2eca4fef1f817cab40d7db56a85ab6efc66ebfc4793b968455abb507b10",
-			integrated: "cc572e73a839016d5b52943d1f0bb79048f28ab7a38e55a52dabcad5924d4e1f",
+			{ // gsx-v1
+				pristine:   "441ab2eca4fef1f817cab40d7db56a85ab6efc66ebfc4793b968455abb507b10",
+				integrated: "cc572e73a839016d5b52943d1f0bb79048f28ab7a38e55a52dabcad5924d4e1f",
+			},
 		},
 	}
 	for _, document := range supportedScaffoldDocuments() {
-		fingerprints, ok := want[document.target]
+		pairs, ok := want[document.target]
 		if !ok {
 			t.Fatalf("unpinned scaffold document %q", document.target)
 		}
-		if got := contentHash(document.pristine); got != fingerprints.pristine {
-			t.Errorf("%s pristine fingerprint = %s, want %s", document.target, got, fingerprints.pristine)
+		if len(document.revisions) != len(pairs) {
+			t.Fatalf("%s has %d revisions, want %d", document.target, len(document.revisions), len(pairs))
 		}
-		if got := contentHash(document.integrated); got != fingerprints.integrated {
-			t.Errorf("%s integrated fingerprint = %s, want %s", document.target, got, fingerprints.integrated)
+		for i, revision := range document.revisions {
+			if got := contentHash(revision.pristine); got != pairs[i].pristine {
+				t.Errorf("%s revision %d pristine fingerprint = %s, want %s", document.target, i, got, pairs[i].pristine)
+			}
+			if got := contentHash(revision.integrated); got != pairs[i].integrated {
+				t.Errorf("%s revision %d integrated fingerprint = %s, want %s", document.target, i, got, pairs[i].integrated)
+			}
 		}
 		delete(want, document.target)
 	}
 	if len(want) != 0 {
 		t.Fatalf("missing supported scaffold documents: %v", want)
+	}
+}
+
+// Every revision's pristine document integrates to that revision's own
+// integrated document, and an integrated document of any revision is left alone.
+func TestPlanScaffoldIntegrationRecognizesEveryRevision(t *testing.T) {
+	documents := supportedScaffoldDocuments()
+	vite, main := documents[0], documents[1]
+	if vite.target != "vite.config.ts" || main.target != "web/main.js" {
+		t.Fatalf("unexpected document order: %s, %s", vite.target, main.target)
+	}
+	for i, revision := range vite.revisions {
+		t.Run(fmt.Sprintf("vite revision %d", i), func(t *testing.T) {
+			dir := writeScaffoldFixture(t, string(revision.pristine), testGSXMainIntegrated)
+			artifacts, err := planScaffoldIntegration(dir, DefaultConfig())
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(artifacts) != 1 || artifacts[0].RelativePath != "vite.config.ts" ||
+				!bytes.Equal(artifacts[0].Content, revision.integrated) {
+				t.Fatalf("artifacts = %#v, want this revision's integrated vite.config.ts", artifacts)
+			}
+
+			dir = writeScaffoldFixture(t, string(revision.integrated), testGSXMainIntegrated)
+			artifacts, err = planScaffoldIntegration(dir, DefaultConfig())
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(artifacts) != 0 {
+				t.Fatalf("integrated revision planned %#v", artifacts)
+			}
+		})
 	}
 }
 

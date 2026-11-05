@@ -45,11 +45,22 @@ serve the gsxui JS directory statically, load index.js with one
 <script type="module"> tag, and build index.css with any Tailwind v4 tool
 (e.g. npx @tailwindcss/cli -i web/gsxui/index.css -o dist.css).`
 
-//go:embed scaffold/gsx-v1/*
+// scaffoldDocuments holds one directory per gsx init scaffold revision. A
+// revision directory carries only the documents that changed in it.
+//
+//go:embed scaffold
 var scaffoldDocuments embed.FS
 
+// scaffoldDocument is one consumer file gsxui integrates into, with every gsx
+// scaffold revision of it that init recognizes.
 type scaffoldDocument struct {
-	target           string
+	target    string
+	revisions []scaffoldRevision
+}
+
+// scaffoldRevision is the exact before/after pair for one gsx scaffold
+// revision of a document.
+type scaffoldRevision struct {
 	pristine         []byte
 	integrated       []byte
 	pristineDigest   [sha256.Size]byte
@@ -91,24 +102,29 @@ func planScaffoldIntegration(dir string, cfg Config) ([]artifact, error) {
 	return artifacts, nil
 }
 
+// supportedScaffoldDocuments lists, per document, every gsx scaffold revision
+// init integrates: gsx-v1 is gsx init through v0.4.4; gsx-v2 (v0.4.5+) changed
+// only vite.config.ts.
 func supportedScaffoldDocuments() []scaffoldDocument {
 	return []scaffoldDocument{
-		newScaffoldDocument(
-			"vite.config.ts",
-			mustScaffoldDocument("scaffold/gsx-v1/vite.config.ts"),
-			mustScaffoldDocument("scaffold/gsx-v1/vite.gsxui.config.ts"),
+		newScaffoldDocument("vite.config.ts",
+			newScaffoldRevision("gsx-v1/vite.config.ts", "gsx-v1/vite.gsxui.config.ts"),
+			newScaffoldRevision("gsx-v2/vite.config.ts", "gsx-v2/vite.gsxui.config.ts"),
 		),
-		newScaffoldDocument(
-			"web/main.js",
-			mustScaffoldDocument("scaffold/gsx-v1/main.js"),
-			mustScaffoldDocument("scaffold/gsx-v1/main.gsxui.js"),
+		newScaffoldDocument("web/main.js",
+			newScaffoldRevision("gsx-v1/main.js", "gsx-v1/main.gsxui.js"),
 		),
 	}
 }
 
-func newScaffoldDocument(target string, pristine, integrated []byte) scaffoldDocument {
-	return scaffoldDocument{
-		target:           target,
+func newScaffoldDocument(target string, revisions ...scaffoldRevision) scaffoldDocument {
+	return scaffoldDocument{target: target, revisions: revisions}
+}
+
+func newScaffoldRevision(pristineName, integratedName string) scaffoldRevision {
+	pristine := mustScaffoldDocument(pristineName)
+	integrated := mustScaffoldDocument(integratedName)
+	return scaffoldRevision{
 		pristine:         pristine,
 		integrated:       integrated,
 		pristineDigest:   sha256.Sum256(pristine),
@@ -117,7 +133,7 @@ func newScaffoldDocument(target string, pristine, integrated []byte) scaffoldDoc
 }
 
 func mustScaffoldDocument(name string) []byte {
-	content, err := fs.ReadFile(scaffoldDocuments, name)
+	content, err := fs.ReadFile(scaffoldDocuments, "scaffold/"+name)
 	if err != nil {
 		panic(err)
 	}
@@ -134,23 +150,24 @@ func planScaffoldDocument(dir string, document scaffoldDocument) (*artifact, err
 		return nil, fmt.Errorf("%s is not a recognized gsx scaffold document: %w", document.target, err)
 	}
 	digest := sha256.Sum256(content)
-	switch digest {
-	case document.integratedDigest:
-		if !bytes.Equal(content, document.integrated) {
-			return nil, fmt.Errorf("%s did not match its integrated fingerprint", document.target)
+	for _, revision := range document.revisions {
+		switch digest {
+		case revision.integratedDigest:
+			if !bytes.Equal(content, revision.integrated) {
+				return nil, fmt.Errorf("%s did not match its integrated fingerprint", document.target)
+			}
+			return nil, nil
+		case revision.pristineDigest:
+			if !bytes.Equal(content, revision.pristine) {
+				return nil, fmt.Errorf("%s did not match its pristine fingerprint", document.target)
+			}
+			return &artifact{
+				RelativePath: document.target,
+				Content:      revision.integrated,
+			}, nil
 		}
-		return nil, nil
-	case document.pristineDigest:
-		if !bytes.Equal(content, document.pristine) {
-			return nil, fmt.Errorf("%s did not match its pristine fingerprint", document.target)
-		}
-		return &artifact{
-			RelativePath: document.target,
-			Content:      document.integrated,
-		}, nil
-	default:
-		return nil, fmt.Errorf("%s is not an exact supported gsx scaffold document", document.target)
 	}
+	return nil, fmt.Errorf("%s is not an exact supported gsx scaffold document", document.target)
 }
 
 func validateScaffoldPackage(dir string) error {
