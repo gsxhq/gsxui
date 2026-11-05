@@ -44,8 +44,7 @@ component Pie() {
 		</ui.CardContent>
 		<ui.CardFooter class="flex-col gap-2 text-sm">
 			<div class="flex items-center gap-2 leading-none font-medium">
-				Trending up by 5.2% this month
-				<uiicon.TrendingUp class="size-4"/>
+				Trending up by 5.2% this month <uiicon.TrendingUp class="size-4"/>
 			</div>
 			<div class="leading-none text-muted-foreground">
 				Showing total visitors for the last 6 months

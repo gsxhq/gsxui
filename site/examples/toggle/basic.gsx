@@ -15,8 +15,7 @@ import (
 component Basic() {
 	<div class="flex flex-wrap items-center gap-4">
 		<ui.Toggle aria-label="Toggle bold" aria-invalid="true">
-			<icon.Bold/>
-			Bold
+			<icon.Bold/> Bold
 		</ui.Toggle>
 		<ui.Toggle variant="outline" aria-label="Toggle italic">
 			<icon.Italic/>

@@ -10,8 +10,7 @@ import (
 component Rtl() {
 	<div dir="rtl" lang="ar">
 		<uirtl.Toggle variant="outline" size="sm" aria-label="Toggle bookmark">
-			<icon.Bookmark/>
-			إشارة مرجعية
+			<icon.Bookmark/> إشارة مرجعية
 		</uirtl.Toggle>
 	</div>
 }

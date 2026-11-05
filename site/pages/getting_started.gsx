@@ -57,8 +57,9 @@ component (g GettingStarted) Page() {
 					</p>
 					<pre><code>{ hl.Node("snippets/manual-integration") }</code></pre>
 					<p>
-						Not using Vite — or npm — at all? See <a href={NpmFree{} |> url}>npm-free</a>
-						: <code>gsxui init</code>{ " " }detects the missing scaffold and initializes without either.
+						Not using Vite — or npm — at all?
+						See <a href={NpmFree{} |> url}>npm-free</a>: <code>gsxui init</code>{ " " }detects the missing scaffold and
+						initializes without either.
 					</p>
 				</div>
 			</section>

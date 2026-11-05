@@ -21,12 +21,10 @@ component Full() {
 				<ui.MenubarGroup>
 					<ui.MenubarLabel>File actions</ui.MenubarLabel>
 					<ui.MenubarItem>
-						New Tab
-						<ui.MenubarShortcut>⌘T</ui.MenubarShortcut>
+						New Tab <ui.MenubarShortcut>⌘T</ui.MenubarShortcut>
 					</ui.MenubarItem>
 					<ui.MenubarItem>
-						New Window
-						<ui.MenubarShortcut>⌘N</ui.MenubarShortcut>
+						New Window <ui.MenubarShortcut>⌘N</ui.MenubarShortcut>
 					</ui.MenubarItem>
 					<ui.MenubarItem variant="destructive" aria-disabled="true" data-disabled="true">
 						New Incognito Window
@@ -42,8 +40,7 @@ component Full() {
 				</ui.MenubarSub>
 				<ui.MenubarSeparator/>
 				<ui.MenubarItem>
-					Print...
-					<ui.MenubarShortcut>⌘P</ui.MenubarShortcut>
+					Print... <ui.MenubarShortcut>⌘P</ui.MenubarShortcut>
 				</ui.MenubarItem>
 			</ui.MenubarContent>
 		</ui.MenubarMenu>
@@ -51,12 +48,10 @@ component Full() {
 			<ui.MenubarTrigger>Edit</ui.MenubarTrigger>
 			<ui.MenubarContent>
 				<ui.MenubarItem>
-					Undo
-					<ui.MenubarShortcut>⌘Z</ui.MenubarShortcut>
+					Undo <ui.MenubarShortcut>⌘Z</ui.MenubarShortcut>
 				</ui.MenubarItem>
 				<ui.MenubarItem>
-					Redo
-					<ui.MenubarShortcut>⇧⌘Z</ui.MenubarShortcut>
+					Redo <ui.MenubarShortcut>⇧⌘Z</ui.MenubarShortcut>
 				</ui.MenubarItem>
 				<ui.MenubarSeparator/>
 				<ui.MenubarSub>
@@ -82,12 +77,10 @@ component Full() {
 				<ui.MenubarCheckboxItem checked={false} value="full-urls">Always Show Full URLs</ui.MenubarCheckboxItem>
 				<ui.MenubarSeparator/>
 				<ui.MenubarItem aria-disabled="true" data-disabled="true" data-inset="true">
-					Reload
-					<ui.MenubarShortcut>⌘R</ui.MenubarShortcut>
+					Reload <ui.MenubarShortcut>⌘R</ui.MenubarShortcut>
 				</ui.MenubarItem>
 				<ui.MenubarItem aria-disabled="true" data-disabled="true" data-inset="true">
-					Force Reload
-					<ui.MenubarShortcut>⇧⌘R</ui.MenubarShortcut>
+					Force Reload <ui.MenubarShortcut>⇧⌘R</ui.MenubarShortcut>
 				</ui.MenubarItem>
 			</ui.MenubarContent>
 		</ui.MenubarMenu>

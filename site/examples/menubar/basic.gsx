@@ -16,17 +16,14 @@ component Basic() {
 			<ui.MenubarTrigger>File</ui.MenubarTrigger>
 			<ui.MenubarContent>
 				<ui.MenubarItem>
-					New Tab
-					<ui.MenubarShortcut>⌘T</ui.MenubarShortcut>
+					New Tab <ui.MenubarShortcut>⌘T</ui.MenubarShortcut>
 				</ui.MenubarItem>
 				<ui.MenubarItem>
-					New Window
-					<ui.MenubarShortcut>⌘N</ui.MenubarShortcut>
+					New Window <ui.MenubarShortcut>⌘N</ui.MenubarShortcut>
 				</ui.MenubarItem>
 				<ui.MenubarSeparator/>
 				<ui.MenubarItem>
-					Print...
-					<ui.MenubarShortcut>⌘P</ui.MenubarShortcut>
+					Print... <ui.MenubarShortcut>⌘P</ui.MenubarShortcut>
 				</ui.MenubarItem>
 			</ui.MenubarContent>
 		</ui.MenubarMenu>
@@ -34,12 +31,10 @@ component Basic() {
 			<ui.MenubarTrigger>Edit</ui.MenubarTrigger>
 			<ui.MenubarContent>
 				<ui.MenubarItem>
-					Undo
-					<ui.MenubarShortcut>⌘Z</ui.MenubarShortcut>
+					Undo <ui.MenubarShortcut>⌘Z</ui.MenubarShortcut>
 				</ui.MenubarItem>
 				<ui.MenubarItem>
-					Redo
-					<ui.MenubarShortcut>⇧⌘Z</ui.MenubarShortcut>
+					Redo <ui.MenubarShortcut>⇧⌘Z</ui.MenubarShortcut>
 				</ui.MenubarItem>
 				<ui.MenubarSeparator/>
 				<ui.MenubarItem>Cut</ui.MenubarItem>

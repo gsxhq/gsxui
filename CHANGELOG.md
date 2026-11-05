@@ -2,6 +2,20 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-11-05
+
+### Fixed
+
+- **cli** — `gsxui init` integrates the `vite.config.ts` that `gsx init` scaffolds
+  since gsx v0.4.5. Before, it refused that file as "not an exact supported gsx
+  scaffold document" and fell back to manual integration instructions.
+
+### Changed
+
+- Built with gsx v0.5.0. The site's prose is migrated to its whitespace rule (a
+  newline beside text renders one space) with `gsx fix whitespace` and `gsx fmt`;
+  components under `ui/` render unchanged.
+
 ## 2026-11-02
 
 ### Fixed

@@ -137,91 +137,91 @@ func (g GettingStarted) Page() _gsxrt.Node {
 			_gsxgw.S("</code></pre>")
 //line getting_started.gsx:59:6
 			_gsxgw.S("<p>Not using Vite — or npm — at all? See ")
-//line getting_started.gsx:60:49
+//line getting_started.gsx:61:11
 			_gsxgw.S("<a")
-			_gsxv2, _gsxerr := /*line getting_started.gsx:60:71*/ _gsxf0.URLFor(ctx, ( /*line getting_started.gsx:60:58*/ NpmFree{}))
+			_gsxv2, _gsxerr := /*line getting_started.gsx:61:33*/ _gsxf0.URLFor(ctx, ( /*line getting_started.gsx:61:20*/ NpmFree{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
 			_gsxgw.S(" href=\"")
 			_gsxgw.URL(string(_gsxv2))
 			_gsxgw.S("\">npm-free</a>: ")
-//line getting_started.gsx:61:9
+//line getting_started.gsx:61:52
 			_gsxgw.S("<code>gsxui init</code>")
-//line getting_started.gsx:61:32
-			_gsxgw.Text(string( /*line getting_started.gsx:61:34*/ " "))
+//line getting_started.gsx:61:75
+			_gsxgw.Text(string( /*line getting_started.gsx:61:77*/ " "))
 			_gsxgw.S("detects the missing scaffold and initializes without either.</p></div></section>")
-//line getting_started.gsx:65:4
+//line getting_started.gsx:66:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line getting_started.gsx:66:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line getting_started.gsx:66:23*/, gettingStartedTOCItems[3], nil))
 //line getting_started.gsx:67:5
-			_gsxgw.S("<pre>")
-//line getting_started.gsx:67:10
-			_gsxgw.S("<code>")
-//line getting_started.gsx:67:16
-			_gsxgw.Node(ctx /*line getting_started.gsx:67:18*/, hl.Node("snippets/add.sh"))
-			_gsxgw.S("</code></pre>")
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line getting_started.gsx:67:23*/, gettingStartedTOCItems[3], nil))
 //line getting_started.gsx:68:5
 			_gsxgw.S("<pre>")
 //line getting_started.gsx:68:10
 			_gsxgw.S("<code>")
 //line getting_started.gsx:68:16
-			_gsxgw.Node(ctx /*line getting_started.gsx:68:18*/, hl.Node("snippets/add.output"))
+			_gsxgw.Node(ctx /*line getting_started.gsx:68:18*/, hl.Node("snippets/add.sh"))
 			_gsxgw.S("</code></pre>")
 //line getting_started.gsx:69:5
+			_gsxgw.S("<pre>")
+//line getting_started.gsx:69:10
+			_gsxgw.S("<code>")
+//line getting_started.gsx:69:16
+			_gsxgw.Node(ctx /*line getting_started.gsx:69:18*/, hl.Node("snippets/add.output"))
+			_gsxgw.S("</code></pre>")
+//line getting_started.gsx:70:5
 			_gsxgw.S("<p>Dependencies come along automatically — ")
-//line getting_started.gsx:70:48
+//line getting_started.gsx:71:48
 			_gsxgw.S("<code>gsxui add native-select</code> also vendors ")
-//line getting_started.gsx:70:98
+//line getting_started.gsx:71:98
 			_gsxgw.S("<code>icon</code>. You own every file this writes: ")
-//line getting_started.gsx:71:38
+//line getting_started.gsx:72:38
 			_gsxgw.S("<code>gsxui add</code> never touches a file you've modified unless you pass ")
-//line getting_started.gsx:72:11
+//line getting_started.gsx:73:11
 			_gsxgw.S("<code>--overwrite</code>, which is also how you refresh components after upgrading the ")
-//line getting_started.gsx:73:10
+//line getting_started.gsx:74:10
 			_gsxgw.S("<code>gsxui</code> binary (discarding local edits to those files).</p></section>")
-//line getting_started.gsx:76:4
+//line getting_started.gsx:77:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line getting_started.gsx:77:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line getting_started.gsx:77:23*/, gettingStartedTOCItems[4], nil))
 //line getting_started.gsx:78:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line getting_started.gsx:78:23*/, gettingStartedTOCItems[4], nil))
+//line getting_started.gsx:79:5
 			_gsxgw.S("<p>")
-//line getting_started.gsx:79:6
+//line getting_started.gsx:80:6
 			_gsxgw.S("<code>gsx init</code> already scaffolded a working app. Replace the ")
-//line getting_started.gsx:79:74
+//line getting_started.gsx:80:74
 			_gsxgw.S("<code>Index</code> component in ")
-//line getting_started.gsx:80:9
+//line getting_started.gsx:81:9
 			_gsxgw.S("<code>app.gsx</code> with a ")
-//line getting_started.gsx:80:37
+//line getting_started.gsx:81:37
 			_gsxgw.S("<code>Card</code> around a ")
-//line getting_started.gsx:80:64
+//line getting_started.gsx:81:64
 			_gsxgw.S("<code>Button</code>, adding the ")
-//line getting_started.gsx:81:10
+//line getting_started.gsx:82:10
 			_gsxgw.S("<code>ui</code> import:</p>")
-//line getting_started.gsx:83:5
-			_gsxgw.S("<pre>")
-//line getting_started.gsx:83:10
-			_gsxgw.S("<code>")
-//line getting_started.gsx:83:16
-			_gsxgw.Node(ctx /*line getting_started.gsx:83:18*/, hl.Node("snippets/first-page.gsx"))
-			_gsxgw.S("</code></pre>")
 //line getting_started.gsx:84:5
-			_gsxgw.S("<p>Then start the development loop:</p>")
-//line getting_started.gsx:85:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:85:10
+//line getting_started.gsx:84:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:85:16
-			_gsxgw.Node(ctx /*line getting_started.gsx:85:18*/, hl.Node("snippets/dev.sh"))
+//line getting_started.gsx:84:16
+			_gsxgw.Node(ctx /*line getting_started.gsx:84:18*/, hl.Node("snippets/first-page.gsx"))
 			_gsxgw.S("</code></pre>")
+//line getting_started.gsx:85:5
+			_gsxgw.S("<p>Then start the development loop:</p>")
 //line getting_started.gsx:86:5
+			_gsxgw.S("<pre>")
+//line getting_started.gsx:86:10
+			_gsxgw.S("<code>")
+//line getting_started.gsx:86:16
+			_gsxgw.Node(ctx /*line getting_started.gsx:86:18*/, hl.Node("snippets/dev.sh"))
+			_gsxgw.S("</code></pre>")
+//line getting_started.gsx:87:5
 			_gsxgw.S("<p>")
-//line getting_started.gsx:87:6
+//line getting_started.gsx:88:6
 			_gsxgw.S("<code>gsx dev</code> watches your sources, rebuilds the server, and reloads the browser on save. Open the printed URL to see your Card and Button in gsxui's default theme. Next: ")
-//line getting_started.gsx:89:12
+//line getting_started.gsx:90:12
 			_gsxgw.S("<a")
-			_gsxv3, _gsxerr := /*line getting_started.gsx:89:34*/ _gsxf0.URLFor(ctx, ( /*line getting_started.gsx:89:21*/ Theming{}))
+			_gsxv3, _gsxerr := /*line getting_started.gsx:90:34*/ _gsxf0.URLFor(ctx, ( /*line getting_started.gsx:90:21*/ Theming{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}

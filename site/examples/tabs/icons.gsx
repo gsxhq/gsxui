@@ -10,12 +10,10 @@ component Icons() {
 	<ui.Tabs value="grid">
 		<ui.TabsList>
 			<ui.TabsTrigger value="grid" selected>
-				<icon.LayoutGrid class="size-4"/>
-				Grid
+				<icon.LayoutGrid class="size-4"/> Grid
 			</ui.TabsTrigger>
 			<ui.TabsTrigger value="list">
-				<icon.List class="size-4"/>
-				List
+				<icon.List class="size-4"/> List
 			</ui.TabsTrigger>
 		</ui.TabsList>
 		<ui.TabsContent value="grid" selected>Items shown as a grid.</ui.TabsContent>

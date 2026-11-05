@@ -38,10 +38,10 @@ func (h Home) Page() _gsxrt.Node {
 			_gsxgw.Text(string( /*line home.gsx:23:48*/ " "))
 //line home.gsx:24:5
 			_gsxgw.S("<a href=\"https://gsxhq.github.io/\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">gsx</a>: copy-in, type-checked, server-rendered. Own the code, style it with Tailwind, ship it.</p>")
-//line home.gsx:34:4
+//line home.gsx:33:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-center gap-3 pt-2\">")
-//line home.gsx:35:5
-			_gsxa0, _gsxerr := /*line home.gsx:35:43*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:35:32*/ Theme{}))
+//line home.gsx:34:5
+			_gsxa0, _gsxerr := /*line home.gsx:34:43*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:34:32*/ Theme{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
@@ -50,8 +50,8 @@ func (h Home) Page() _gsxrt.Node {
 				_gsxgw.S("Create")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:36:5
-			_gsxa1, _gsxerr := /*line home.gsx:36:70*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:36:50*/ GettingStarted{}))
+//line home.gsx:35:5
+			_gsxa1, _gsxerr := /*line home.gsx:35:70*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:35:50*/ GettingStarted{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
@@ -60,52 +60,52 @@ func (h Home) Page() _gsxrt.Node {
 				_gsxgw.S("Get Started")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:37:5
+//line home.gsx:36:5
 			_gsxgw.Node(ctx, ui.Button("outline", "lg", "https://github.com/gsxhq/gsxui", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("View on GitHub")
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "target", Value: "_blank"}}, _gsxrt.Attrs{{Key: "rel", Value: "noreferrer"}})))
-//line home.gsx:46:5
+//line home.gsx:45:5
 			_gsxgw.Node(ctx, ui.Button("ghost", "lg", "https://gsxhq.github.io/", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("gsx documentation ↗")
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "target", Value: "_blank"}}, _gsxrt.Attrs{{Key: "rel", Value: "noreferrer"}})))
 			_gsxgw.S("</div></section>")
-//line home.gsx:57:3
+//line home.gsx:56:3
 			_gsxgw.S("<section class=\"pb-10\">")
-//line home.gsx:58:4
+//line home.gsx:57:4
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line home.gsx:60:5
+//line home.gsx:59:5
 			_gsxgw.S("<code>")
-//line home.gsx:60:11
-			_gsxgw.Text(string( /*line home.gsx:60:13*/ installSnippet))
+//line home.gsx:59:11
+			_gsxgw.Text(string( /*line home.gsx:59:13*/ installSnippet))
 			_gsxgw.S("</code></pre></section>")
-//line home.gsx:62:3
+//line home.gsx:61:3
 			_gsxgw.S("<section id=\"components\" class=\"flex flex-col gap-6 border-t border-border py-10\">")
-//line home.gsx:63:4
+//line home.gsx:62:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-end justify-between gap-3\">")
-//line home.gsx:64:5
+//line home.gsx:63:5
 			_gsxgw.S("<h2 class=\"text-2xl font-semibold tracking-tight\">Built with gsxui</h2>")
-//line home.gsx:65:5
+//line home.gsx:64:5
 			_gsxgw.S("<a")
-			_gsxv2, _gsxerr := /*line home.gsx:66:33*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:66:12*/ ComponentsIndex{}))
+			_gsxv2, _gsxerr := /*line home.gsx:65:33*/ _gsxf0.URLFor(ctx, ( /*line home.gsx:65:12*/ ComponentsIndex{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
 			_gsxgw.S(" href=\"")
 			_gsxgw.URL(string(_gsxv2))
 			_gsxgw.S("\" class=\"text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline\">Browse all components →</a></div>")
-//line home.gsx:72:4
+//line home.gsx:71:4
 			_gsxgw.S("<div class=\"grid gap-4 md:grid-cols-2\">")
-//line home.gsx:73:5
+//line home.gsx:72:5
 			_gsxgw.Node(ctx, showcase.SignInCard())
-//line home.gsx:74:5
+//line home.gsx:73:5
 			_gsxgw.Node(ctx, showcase.SettingsCard())
-//line home.gsx:75:5
+//line home.gsx:74:5
 			_gsxgw.Node(ctx, showcase.StatsCard())
-//line home.gsx:76:5
+//line home.gsx:75:5
 			_gsxgw.Node(ctx, showcase.OverlaysCard())
 			_gsxgw.S("</div></section>")
 			return _gsxgw.Err()

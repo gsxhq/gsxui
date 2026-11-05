@@ -119,106 +119,106 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.Text(string( /*line theming.gsx:63:100*/ " "))
 //line theming.gsx:64:6
 			_gsxgw.S("<code>data-gsxui-slot-&lt;name&gt;</code> attribute. A composed part carries every role it plays — AlertDialog's action renders a Button whose element has both ")
-//line theming.gsx:65:67
+//line theming.gsx:66:11
 			_gsxgw.S("<code>data-gsxui-slot-button</code>")
-//line theming.gsx:65:102
-			_gsxgw.Text(string( /*line theming.gsx:65:104*/ " "))
+//line theming.gsx:66:46
+			_gsxgw.Text(string( /*line theming.gsx:66:48*/ " "))
 			_gsxgw.S("and ")
-//line theming.gsx:66:10
+//line theming.gsx:66:57
 			_gsxgw.S("<code>data-gsxui-slot-alert-dialog-action</code> — so each role stays targetable:</p>")
-//line theming.gsx:68:5
-			_gsxgw.S("<pre>")
-//line theming.gsx:68:10
-			_gsxgw.S("<code>")
-//line theming.gsx:68:16
-			_gsxgw.Node(ctx /*line theming.gsx:68:18*/, hl.Node("snippets/theme-slot.css"))
-			_gsxgw.S("</code></pre>")
 //line theming.gsx:69:5
+			_gsxgw.S("<pre>")
+//line theming.gsx:69:10
+			_gsxgw.S("<code>")
+//line theming.gsx:69:16
+			_gsxgw.Node(ctx /*line theming.gsx:69:18*/, hl.Node("snippets/theme-slot.css"))
+			_gsxgw.S("</code></pre>")
+//line theming.gsx:70:5
 			_gsxgw.S("<p>Match on bare presence only — value and operator forms are not part of the contract.</p></section>")
-//line theming.gsx:73:4
+//line theming.gsx:74:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theming.gsx:74:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:74:23*/, themingTOCItems[3], nil))
 //line theming.gsx:75:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:75:23*/, themingTOCItems[3], nil))
+//line theming.gsx:76:5
 			_gsxgw.S("<p>Pass an ordinary utility class and it wins — no ")
-//line theming.gsx:76:56
+//line theming.gsx:77:56
 			_gsxgw.S("<code>!important</code>:</p>")
-//line theming.gsx:78:5
-			_gsxgw.S("<pre>")
-//line theming.gsx:78:10
-			_gsxgw.S("<code>")
-//line theming.gsx:78:16
-			_gsxgw.Node(ctx /*line theming.gsx:78:18*/, hl.Node("snippets/theme-merge.gsx"))
-			_gsxgw.S("</code></pre>")
 //line theming.gsx:79:5
-			_gsxgw.S("<p>Two mechanisms make that hold:</p>")
-//line theming.gsx:80:5
-			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
-//line theming.gsx:81:6
-			_gsxgw.S("<li>Utilities a component carries in its own markup are settled by the vendored class merger (")
-//line theming.gsx:83:7
-			_gsxgw.S("<code>ui/merge/merge.go</code>): your ")
-//line theming.gsx:83:45
-			_gsxgw.S("<code>h-12</code> replaces the component's own height utility instead of conflicting with it.</li>")
-//line theming.gsx:86:6
-			_gsxgw.S("<li>Rules in ")
-//line theming.gsx:87:16
-			_gsxgw.S("<code>style.css</code> live in ")
-//line theming.gsx:87:47
-			_gsxgw.S("<code>@layer components</code>, while your class lands in Tailwind's later ")
-//line theming.gsx:88:13
-			_gsxgw.S("<code>@layer utilities</code> — the later layer wins regardless of specificity.</li></ul>")
-//line theming.gsx:91:5
-			_gsxgw.S("<p>Fallthrough attributes carry ids, ARIA, data, and HTMX attributes to the rendered element the same way:</p>")
-//line theming.gsx:94:5
 			_gsxgw.S("<pre>")
-//line theming.gsx:94:10
+//line theming.gsx:79:10
 			_gsxgw.S("<code>")
-//line theming.gsx:94:16
-			_gsxgw.Node(ctx /*line theming.gsx:94:18*/, hl.Node("snippets/theme-attrs.gsx"))
+//line theming.gsx:79:16
+			_gsxgw.Node(ctx /*line theming.gsx:79:18*/, hl.Node("snippets/theme-merge.gsx"))
 			_gsxgw.S("</code></pre>")
+//line theming.gsx:80:5
+			_gsxgw.S("<p>Two mechanisms make that hold:</p>")
+//line theming.gsx:81:5
+			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
+//line theming.gsx:82:6
+			_gsxgw.S("<li>Utilities a component carries in its own markup are settled by the vendored class merger (")
+//line theming.gsx:84:8
+			_gsxgw.S("<code>ui/merge/merge.go</code>): your ")
+//line theming.gsx:84:46
+			_gsxgw.S("<code>h-12</code> replaces the component's own height utility instead of conflicting with it.</li>")
+//line theming.gsx:87:6
+			_gsxgw.S("<li>Rules in ")
+//line theming.gsx:88:16
+			_gsxgw.S("<code>style.css</code> live in ")
+//line theming.gsx:88:47
+			_gsxgw.S("<code>@layer components</code>, while your class lands in Tailwind's later ")
+//line theming.gsx:89:13
+			_gsxgw.S("<code>@layer utilities</code> — the later layer wins regardless of specificity.</li></ul>")
+//line theming.gsx:92:5
+			_gsxgw.S("<p>Fallthrough attributes carry ids, ARIA, data, and HTMX attributes to the rendered element the same way:</p>")
 //line theming.gsx:95:5
-			_gsxgw.S("<p>Behaviour roles are opt-in data attributes: any element becomes a dialog trigger by carrying ")
-//line theming.gsx:97:15
-			_gsxgw.S("<code>data-gsxui-dialog-trigger</code>. The family's own Trigger components need no role attribute — their slot marker implies it:</p>")
-//line theming.gsx:100:5
 			_gsxgw.S("<pre>")
-//line theming.gsx:100:10
+//line theming.gsx:95:10
 			_gsxgw.S("<code>")
-//line theming.gsx:100:16
-			_gsxgw.Node(ctx /*line theming.gsx:100:18*/, hl.Node("snippets/theme-dataattr.gsx"))
+//line theming.gsx:95:16
+			_gsxgw.Node(ctx /*line theming.gsx:95:18*/, hl.Node("snippets/theme-attrs.gsx"))
+			_gsxgw.S("</code></pre>")
+//line theming.gsx:96:5
+			_gsxgw.S("<p>Behaviour roles are opt-in data attributes: any element becomes a dialog trigger by carrying ")
+//line theming.gsx:98:15
+			_gsxgw.S("<code>data-gsxui-dialog-trigger</code>. The family's own Trigger components need no role attribute — their slot marker implies it:</p>")
+//line theming.gsx:101:5
+			_gsxgw.S("<pre>")
+//line theming.gsx:101:10
+			_gsxgw.S("<code>")
+//line theming.gsx:101:16
+			_gsxgw.Node(ctx /*line theming.gsx:101:18*/, hl.Node("snippets/theme-dataattr.gsx"))
 			_gsxgw.S("</code></pre></section>")
-//line theming.gsx:102:4
+//line theming.gsx:103:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theming.gsx:103:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:103:23*/, themingTOCItems[4], nil))
 //line theming.gsx:104:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw /*line theming.gsx:104:23*/, themingTOCItems[4], nil))
+//line theming.gsx:105:5
 			_gsxgw.S("<p>Only projects from before the four-file split — a single ")
-//line theming.gsx:105:65
+//line theming.gsx:106:65
 			_gsxgw.S("<code>web/gsxui.css</code> entry and ")
-//line theming.gsx:106:10
+//line theming.gsx:107:10
 			_gsxgw.S("<code>data-slot</code> markers — need this. There is no compatibility layer; migrate in one pass:</p>")
-//line theming.gsx:108:5
+//line theming.gsx:109:5
 			_gsxgw.S("<ol class=\"list-decimal space-y-2 pl-6\">")
-//line theming.gsx:109:6
-			_gsxgw.S("<li>Change the CSS entry from ")
-//line theming.gsx:109:36
-			_gsxgw.S("<code>web/gsxui.css</code> to ")
-//line theming.gsx:109:66
-			_gsxgw.S("<code>web/gsxui/index.css</code>.</li>")
 //line theming.gsx:110:6
-			_gsxgw.S("<li>Review the four-file diff, then run ")
-//line theming.gsx:110:46
-			_gsxgw.S("<code>gsxui init --overwrite</code>.</li>")
+			_gsxgw.S("<li>Change the CSS entry from ")
+//line theming.gsx:110:36
+			_gsxgw.S("<code>web/gsxui.css</code> to ")
+//line theming.gsx:110:66
+			_gsxgw.S("<code>web/gsxui/index.css</code>.</li>")
 //line theming.gsx:111:6
+			_gsxgw.S("<li>Review the four-file diff, then run ")
+//line theming.gsx:111:46
+			_gsxgw.S("<code>gsxui init --overwrite</code>.</li>")
+//line theming.gsx:112:6
 			_gsxgw.S("<li>Run ")
-//line theming.gsx:112:11
+//line theming.gsx:113:11
 			_gsxgw.S("<code>gsxui add &lt;component&gt; --overwrite</code> for each vendored component you want to refresh.</li>")
-//line theming.gsx:114:6
+//line theming.gsx:115:6
 			_gsxgw.S("<li>Replace project ")
-//line theming.gsx:115:23
+//line theming.gsx:116:23
 			_gsxgw.S("<code>data-slot</code> selectors with exact presence selectors such as ")
-//line theming.gsx:116:10
+//line theming.gsx:117:10
 			_gsxgw.S("<code>[data-gsxui-slot-button]</code>.</li></ol></section></div>")
 			return _gsxgw.Err()
 		})))

@@ -21,16 +21,13 @@ component Basic() {
 		</ui.ContextMenuTrigger>
 		<ui.ContextMenuContent class="w-52">
 			<ui.ContextMenuItem>
-				Back
-				<ui.ContextMenuShortcut>⌘[</ui.ContextMenuShortcut>
+				Back <ui.ContextMenuShortcut>⌘[</ui.ContextMenuShortcut>
 			</ui.ContextMenuItem>
 			<ui.ContextMenuItem aria-disabled="true" data-disabled="true">
-				Forward
-				<ui.ContextMenuShortcut>⌘]</ui.ContextMenuShortcut>
+				Forward <ui.ContextMenuShortcut>⌘]</ui.ContextMenuShortcut>
 			</ui.ContextMenuItem>
 			<ui.ContextMenuItem>
-				Reload
-				<ui.ContextMenuShortcut>⌘R</ui.ContextMenuShortcut>
+				Reload <ui.ContextMenuShortcut>⌘R</ui.ContextMenuShortcut>
 			</ui.ContextMenuItem>
 			<ui.ContextMenuSeparator/>
 			<ui.ContextMenuItem variant="destructive">Delete</ui.ContextMenuItem>

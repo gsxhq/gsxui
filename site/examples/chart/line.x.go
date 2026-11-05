@@ -85,11 +85,11 @@ func Line() _gsxrt.Node {
 //line line.gsx:44:5
 				_gsxgw.S("<div class=\"grid gap-2\">")
 //line line.gsx:45:6
-				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line line.gsx:47:7
+				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month ")
+//line line.gsx:46:38
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line line.gsx:49:6
+//line line.gsx:48:6
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none text-muted-foreground\">Showing total visitors for the last 6 months</div></div></div>")
 				return _gsxgw.Err()
 			}), nil))

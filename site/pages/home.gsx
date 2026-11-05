@@ -28,8 +28,7 @@ component (h Home) Page() {
 					class="underline underline-offset-4 hover:text-foreground"
 				>
 					gsx
-				</a>
-				: copy-in, type-checked, server-rendered. Own the code, style it with Tailwind, ship it.
+				</a>: copy-in, type-checked, server-rendered. Own the code, style it with Tailwind, ship it.
 			</p>
 			<div class="flex flex-wrap items-center gap-3 pt-2">
 				<ui.Button size="lg" href={Theme{} |> url}>Create</ui.Button>
