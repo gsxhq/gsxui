@@ -75,6 +75,32 @@ checkout.
   `data-horizontal:mx-px`/`data-vertical:my-px` inset (`bases/radix`) vs the `m-0!` this port
   carries from `new-york-v4/ui/button-group.tsx`. Both are maintainer calls on an upstream
   inconsistency, not drift.
+- VERIFIED (2026-11-09, pin `ac60ef5c` vs upstream HEAD `8ab27715`): re-ran the
+  drift diff. `apps/v4/registry/styles/`, `apps/v4/registry/new-york-v4/` and
+  `apps/v4/registry/bases/` are ALL byte-unchanged across `481d5233..8ab27715`
+  (`git diff --stat` empty for each), so nothing gsxui ports moved and the pin
+  again holds unadvanced. Across the whole pin range the styles tree is still
+  purely additive (`ac60ef5c..HEAD`: 618 insertions, 0 deletions in all 8
+  sheets — no existing `.cn-*` rule has changed since the pin was taken), and
+  `stylegen port --style all --dry-run` against HEAD still reports
+  `unmapped=0`. Independently of the diff, every `.cn-*` rule was re-matched to
+  its `.gsxui-recipe-*` counterpart BY NAME (not through a re-port, which the
+  NOTE below rules out) in all 8 styles and compared variant-agnostically on
+  the base utility + value — the comparison that catches a token ported to the
+  right slot with the wrong value, which the earlier passes' translation
+  families could mask. Two real drifts fell out and are fixed here (see
+  `## field`'s and `## button-group`'s own 2026-11-09 FIX entries); every other
+  difference resolves to a ledgered ADAPT, a retained `@layer`-boundary rule in
+  `assets/css/styles/default*`, a slot or prop this port does not ship
+  (alert-dialog media, avatar badge/group, combobox chips, questionnaire,
+  Trace/Code Block, `size="sm"` on switch/alert-dialog, tabs' orientation and
+  line variant), or one of the standing translations. Also re-confirmed that
+  `apps/v4/registry/new-york-v4/`'s legacy class lists are NOT the presentation
+  reference — `bases/*/ui/*.tsx` carry only `cn-*` markers, so where the two
+  trees disagree (table head/cell's `[&>[role=checkbox]]:translate-y-[2px]`,
+  which no style sheet carries at all; navigation-menu link's accent/flex-col
+  treatment) this port correctly follows the styles sheets, except where a
+  ledgered ADAPT deliberately keeps new-york-v4's shape.
 - NOTE (do not re-port to fix drift): `stylegen port` is a bootstrapping tool,
   not an idempotent regenerator. Its carry policy works at whole-rule
   granularity, so re-running it over today's tree silently drops the
@@ -264,6 +290,26 @@ checkout.
 - NOTE: `ButtonGroupText` carries no `data-slot` in shadcn's own source either (every other button-group part does) — ported as-is, not "fixed," per the token-for-token rule.
 - FIX (dead selector, `group/button-group` marker added 2026-09-28): `ButtonGroup`'s root never declared the `group/button-group` marker shadcn's own styled base carries (`registry/bases/radix/ui/button-group.tsx`'s `cn-button-group group/button-group ...`), while the `sera` style's own `.cn-button-group-text` rule reaches the text part through it — `group-has-[>[data-variant=outline]]/button-group:border-border`, ported faithfully into `registry/styles/sera/button-group.css` and the only place any of the 8 styles uses the marker. Without it the utility compiled to `:is(:where(.group\/button-group):has(>[data-variant=outline]) *)` and could never match, so a `ButtonGroupText` beside an `outline` Button kept `border-transparent` instead of taking `border-border` — an invisible seam where sera shows a visible one, in sera only. Same dead-selector class, and same one-literal fix, as `## field-label focus ring`'s own `group/field-label` MECHANISM entry; no `registry/styles/*/button-group.css` changes (they were already byte-faithful), and the marker is added unconditionally because upstream carries it in the base shared by all 8 styles, where it is inert in the other 7. Distinct from the THREE `data-slot`-referencing ButtonGroup rules the porter deliberately leaves out of the recipe (`internal/stylegen/port/mapping.go`'s `slotAttributeDrops`, and `assets/css/styles/default/button-group.css`'s own header) — those moved to the `@layer utilities` escape hatch on purpose; this marker was simply never declared.
 - WIN: `ButtonGroupSeparator` calls `ui.Separator` directly (flat package, no re-implementation) — the `button-group` → `separator` dependency `internal/registry` derives and `registry_test.go` pins. Its `orientation = "vertical"` default (the opposite of `Separator`'s own `"horizontal"`) is resolved before the call via the same `|> default` mechanism, since `Separator`'s own default is baked into its own component.
+- FIX (`size="sm"` group-context radius, 2026-11-09 — a real drift, not a
+  ledgered divergence): `assets/css/styles/default.css`'s `@layer utilities`
+  bump — the home ButtonGroup's corner geometry deliberately uses instead of a
+  components-layer rule (see that block's own header) — listed
+  `[data-size="xs"]`, `[data-size="icon-xs"]` and `[data-size="icon-sm"]` but
+  not `[data-size="sm"]`, while upstream carries
+  `in-data-[slot=button-group]:rounded-lg` on all FOUR of
+  `.cn-button-size-{xs,sm,icon-xs,icon-sm}` (nova; vega's equivalent is
+  `rounded-md`, and the other six styles have no such bump). The omission
+  traces to `docs/superpowers/plans/2026-07-24-nova-density-map.md`, which
+  recorded nova's `.cn-button-size-sm` without the token — upstream had added
+  it by the time the pin was taken, and the density map was never re-read
+  against the pin. Effect: a `size="sm"` Button inside a ButtonGroup kept its
+  own `rounded-[min(var(--radius-md),12px)]` (8px at nova's `--radius:
+  0.625rem`) on its leading corners while the same block's own last-child
+  `rounded-e-lg`/`rounded-b-lg` restore already rounded its trailing corners to
+  `--radius-lg` (10px) — the two ends of one group visibly disagreed, which is
+  what distinguishes this from a deliberate drop. `sm` added to the existing
+  selector list rather than ported onto the per-style recipes, matching how
+  this file already handles the other three sizes.
 
 ## calendar
 - ADAPT (react-day-picker is not vendored — the month engine is ours): shadcn's `calendar.tsx` (`docs/superpowers/plans/2026-07-25-calendar-source-map.md`) wraps `react-day-picker`'s `DayPicker`, which owns date math, selection, and keyboard behavior internally. gsxui has no equivalent dependency to wrap, so `monthGrid` — the 42-cell six-week grid builder — is a from-scratch Go implementation in `ui/calendar.gsx`, with a byte-for-byte JS twin in `ui/calendar.js` (same contract, same UTC-throughout arithmetic, month 0-based in JS to match `Date`'s own convention). JavaScript constructs UTC dates through `utcDate`/`setUTCFullYear`, not `Date.UTC`: ECMAScript remaps numeric years 0–99 to 1900–1999, while Go preserves the exact year. The two must produce identical grids for the same `(year, month, weekStartsOn)` input — `jstest/specs/calendar.spec.ts`'s `"Go and JS agree on …"` tests (a family covering 28-day February, leap February, a month starting exactly on the week start, a month needing all 6 rows, a year boundary, and exact years 0000/0099, plus dedicated loaded/loaded-range variants for selection, disabled rules, and range flags) navigate client-side to a month and diff the resulting 42-cell state against the server's own render of that same month. This is the single largest risk this port carries (Task 6 review, fix round 1: an init-time repaint bug once made every agreement test compare JS to JS, masking a real JS-only `monthGrid` off-by-one for a full review round) and the reason the test exists at all, rather than trusting the two implementations to stay in sync by inspection.
@@ -425,6 +471,22 @@ The Base UI (`@base-ui/react`) filtered listbox (`registry/new-york-v4/ui/combob
 - NOTE: `FieldTitle` renders a `<div>` sharing `FieldLabel`'s exact `data-slot` value (`"field-label"`) in shadcn's own source — not a distinct `"field-title"` slot. Ported as-is (token-for-token), the same unmatched/shared-`data-slot` call as `EmptyMedia`'s `"empty-icon"` (`## empty`) and `ButtonGroupText`'s missing `data-slot` (`## button-group`).
 - MECHANISM: `FieldSeparator`'s `data-content={!!children}` boolean stamp ports as the presence marker `data-content={children != nil}` — GSX omits it when false and emits it bare when true. `PaginationLink`'s `data-active={isActive}` uses the same binary-marker contract. The optional `field-separator-content` label span is gated by the same `children != nil` check via `{ if … }`.
 - ADAPT: `FieldError`'s react-hook-form `errors` prop (`Array<{message?: string} | undefined>`, deduplicated and rendered as either a single message or a `<ul>` via `useMemo`) is dropped — there is no react-hook-form in a server-rendered gsx tree to produce that shape. `FieldError` keeps shadcn's other content path, plain `children`, unconditionally; a caller with more than one message renders its own `<ul>` child (the exact markup shadcn's own multi-error branch would have produced). `FieldError` renders nothing (not even a wrapper) when `children` is nil — the gsx `{ if cond { … } }` control-flow form (no `else`) standing in for shadcn's `if (!content) return null`.
+- FIX (vega choice-card padding, 2026-11-09 — a real drift, not a ledgered
+  divergence): `registry/styles/vega/field.css`'s `.gsxui-recipe-field-label`
+  carried `[&>[data-gsxui-slot-field]]:p-2` where upstream
+  `style-vega.css`'s `.cn-field-label` has `*:data-[slot=field]:p-3` (checked
+  at the pin `ac60ef5c` as well as at HEAD — the value has never been `p-2`
+  upstream). That token is the padding of the `Field` nested inside a
+  `FieldLabel`, i.e. the inner spacing of vega's choice card, so every vega
+  radio/checkbox card rendered 0.5rem of padding instead of 0.75rem. The other
+  seven styles match upstream exactly (luma/maia/rhea/sera `p-4`, lyra/mira
+  `p-2`, nova `p-2.5`), which is what made vega's value a single-style
+  outlier rather than a house decision. Found by matching `.cn-*` rules to
+  `.gsxui-recipe-*` rules by name and comparing base utility + value per style
+  (see `## upstream style pin`'s 2026-11-09 VERIFIED entry); the token had
+  been invisible to the earlier token-level passes because its gsxui form
+  rewrites upstream's `*:data-[slot=field]:` prefix, so it fell inside the
+  `data-[slot=` translation family they filtered out wholesale.
 
 ## icon
 - WIN: shadcn/templUI ports wrap each Lucide React component (or a `<template>`-per-icon component) individually; gsx's tag-callable values (`func(attrs ...gsx.Attr) gsx.Node`) let a single generated `New(name)` factory back every icon var (`var ChevronDown = New("chevron-down")`), so `<icon.ChevronDown class="size-4"/>` is both markup-callable and a plain Go value, generated from one shared `svgIcon` component instead of 1,748 near-duplicate wrapper components.
