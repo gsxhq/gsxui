@@ -37509,7 +37509,7 @@
               "w-fit",
               "has-[\u003e[data-gsxui-slot-field]]:w-full",
               "has-[\u003e[data-gsxui-slot-field]]:flex-col",
-              "[\u0026\u003e[data-gsxui-slot-field]]:p-2"
+              "[\u0026\u003e[data-gsxui-slot-field]]:p-3"
             ],
             "dimensions": {}
           },
