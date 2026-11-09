@@ -395,7 +395,16 @@
     ) {
     @apply rounded-b-lg;
   }
+  /* The group-context radius bump nova's own button sizes carry as
+     `in-data-[slot=button-group]:rounded-lg` (upstream
+     `.cn-button-size-{xs,sm,icon-xs,icon-sm}`). `sm` belongs here with the
+     other three: without it an sm button's leading corners kept its own
+     `rounded-[min(var(--radius-md),12px)]` (8px) while the group's own
+     last-child `rounded-e-lg`/`rounded-b-lg` restore above already rounded
+     its trailing corners to 10px — the two ends of the same group
+     disagreed. */
   :where([data-gsxui-slot-button-group]) > [data-size="xs"],
+  :where([data-gsxui-slot-button-group]) > [data-size="sm"],
   :where([data-gsxui-slot-button-group]) > [data-size="icon-xs"],
   :where([data-gsxui-slot-button-group]) > [data-size="icon-sm"] {
     @apply rounded-lg;

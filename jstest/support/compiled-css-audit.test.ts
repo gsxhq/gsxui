@@ -130,7 +130,14 @@ test("consumer composition selectors retain their owning marker specificity", ()
     }
   });
 
-  assert.deepEqual([...buttonGroupSizes].sort(), ["icon-sm", "icon-xs", "xs"]);
+  // The four sizes upstream gives a group-context radius bump
+  // (`in-data-[slot=button-group]:rounded-lg` on
+  // `.cn-button-size-{xs,sm,icon-xs,icon-sm}`). `sm` joined the other three on
+  // 2026-11-09 — see docs/jsx-parity.md's `## button-group` FIX entry.
+  assert.deepEqual(
+    [...buttonGroupSizes].sort(),
+    ["icon-sm", "icon-xs", "sm", "xs"],
+  );
 });
 
 // The "binary Sidebar markers use presence selectors" test lived here while
