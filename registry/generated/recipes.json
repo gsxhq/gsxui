@@ -32889,6 +32889,8 @@
               "has-[\u003e[data-align=block-start]]:flex-col",
               "has-[\u003e[data-align=block-end]]:[\u0026\u003einput]:pt-3",
               "has-[\u003e[data-align=block-start]]:[\u0026\u003einput]:pb-3",
+              "has-[\u003e[data-align=inline-end]]:[\u0026\u003einput]:pr-2",
+              "has-[\u003e[data-align=inline-start]]:[\u0026\u003einput]:pl-2",
               "flex",
               "relative",
               "w-full",
@@ -32937,12 +32939,10 @@
                   "justify-start"
                 ],
                 "inline-end": [
-                  "order-last",
-                  "pe-2"
+                  "order-last"
                 ],
                 "inline-start": [
-                  "order-first",
-                  "ps-2"
+                  "order-first"
                 ]
               }
             }

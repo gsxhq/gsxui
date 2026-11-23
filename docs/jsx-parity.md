@@ -101,6 +101,47 @@ checkout.
   which no style sheet carries at all; navigation-menu link's accent/flex-col
   treatment) this port correctly follows the styles sheets, except where a
   ledgered ADAPT deliberately keeps new-york-v4's shape.
+- VERIFIED (2026-11-23, pin `ac60ef5c` vs upstream HEAD `bfa64ff4`): re-ran the
+  drift diff. `apps/v4/registry/styles/`, `apps/v4/registry/new-york-v4/` and
+  `apps/v4/registry/bases/` are ALL byte-unchanged across `8ab27715..bfa64ff4`
+  (`git diff --stat` empty for each), so nothing gsxui ports has moved since the
+  last pass and the pin again holds unadvanced; across the whole pin range the
+  styles tree is still purely additive (618 insertions, 0 deletions in all 8
+  sheets). `stylegen port --style all --dry-run` against HEAD reports
+  `written=440 carried=1648 unmapped=0 skipped=64`. The re-audit this time was
+  aimed at the BLIND SPOT in every earlier pass rather than repeating them: the
+  by-name `.cn-*` -> `.gsxui-recipe-*` matching those passes used silently skips
+  every upstream rule whose slot gsxui RENAMED, because there is no same-named
+  recipe to match it against. 192 upstream rule names have no same-named recipe
+  slot; after excluding the `-aria`/`-logical` suffix families the porter ignores
+  by design and the components gsxui does not ship at all (attachment, bubble,
+  code-block, marker, message, questionnaire, trace, menu-translucent), the
+  remaining 71 were each resolved by hand against the component they belong to.
+  Two were only hyphenation renames (`cn-*-subcontent` -> `*-sub-content`) and
+  compare clean. The rest resolve to a slot or prop this port does not ship
+  (alert-action, alert-dialog media/overlay, avatar badge/group, combobox chips,
+  popover header/title/description, progress label/value, navigation-menu
+  viewport/popup/positioner, drawer popup/swipe-handle, scroll-area's Radix
+  scrollbar/thumb, select's scroll buttons), to a ledgered native-first ADAPT that
+  moves the tokens onto a pseudo-element or a native control (slider's
+  track/thumb/range onto `::-webkit-slider-runnable-track`/`::-webkit-slider-thumb`
+  and their `-moz-` twins; switch-thumb onto `before:*`; dialog/sheet overlays onto
+  `::backdrop`; native-select-icon onto `native-select-wrapper`'s own `[&>svg]:*`
+  block, which carries nova's `right-2.5`/`text-muted-foreground` verbatim despite
+  `## native-select`'s own MECHANISM entry still quoting the superseded literal
+  class), to one of this port's standing selector translations (`right-*` ->
+  `end-*` on the menu/sidebar indicators, `data-horizontal:` ->
+  `data-[orientation=horizontal]:`, `data-checked:` -> `checked:` on radio,
+  `[&_tr]:border-b`/`[&_tr:last-child]:border-0` re-slotted onto table's own row),
+  to a documented flattening (command's input-group/input-icon onto one element,
+  progress's track onto the root — upstream's `.cn-progress` and
+  `.cn-progress-track` carry byte-identical tokens), or to a rule retained in
+  `assets/css/styles/default*` or the `@layer utilities` escape hatch
+  (input-otp's caret pair, card-header's container properties, ButtonGroup's
+  corner geometry). Exactly ONE was a real drift and is fixed here: see
+  `## input-group`'s own 2026-11-23 FIX entry. The by-name and variant-agnostic
+  comparisons were re-run alongside it over all 440 sheets and surfaced nothing
+  new beyond that entry.
 - NOTE (do not re-port to fix drift): `stylegen port` is a bootstrapping tool,
   not an idempotent regenerator. Its carry policy works at whole-rule
   granularity, so re-running it over today's tree silently drops the
@@ -504,6 +545,50 @@ The Base UI (`@base-ui/react`) filtered listbox (`registry/new-york-v4/ui/combob
 - NOTE: `InputGroupText` carries no `data-slot` in shadcn's own source (unlike every other input-group part) — ported as-is, the same unmatched-`data-slot` call as `ButtonGroupText` (see `## button-group`).
 - GAP: `InputGroupAddon`'s `onClick` handler (focuses the group's own `<input>` when a click lands anywhere in the addon except on a nested `<button>`) is client JS with no equivalent here — zero client JS for this component, per the Tier 1 plan's Tech Stack constraint. The addon renders and styles identically; it just isn't click-to-focus.
 - GAP (narrow): shadcn's `InputGroupButton` accepts every `Button` prop except `size` (`Omit<ComponentProps<typeof Button>, "size">`), so it can render as a link via `Button`'s own mechanisms; this port's signature (`variant`, `size`, `children`, `attrs`) hard-codes `href=""` in the composed `Button` call, and `Button`'s `<a>`-vs-`<button>` tag choice is gated on that Go param — not on anything `attrs` can supply — so an `InputGroupButton` can never render as an `<a>`. `disabled` still works (flows through `attrs` into `Button`'s spread). Add an `href` param if a real use appears; none of shadcn's own input-group demos exercise it.
+
+- FIX (sera inline-addon padding slotted onto the wrong element, 2026-11-23 —
+  a real drift, not a ledgered divergence): `registry/styles/sera/input-group.css`
+  carried `ps-2`/`pe-2` on `.gsxui-recipe-input-group-addon-align-inline-start`/
+  `-end` and carried no inline-align input padding at all, where upstream sera
+  puts the padding on the INPUT and leaves the addon bare. Two halves, one
+  mis-slotting:
+  (1) sera is the ONE sheet in all 8 whose
+  `.cn-input-group-addon-align-inline-start`/`-end` rules are **commented out**
+  (`style-sera.css`, at the pin `ac60ef5c` as well as at HEAD — a repo-wide scan
+  of all 8 sheets finds no other commented-out `.cn-*` rule), so the only thing
+  upstream applies to a sera inline addon is `bases/radix/ui/input-group.tsx`'s
+  own non-`cn-*` `order-first`/`order-last`. The `ps-2`/`pe-2` has no upstream
+  counterpart on that element in any tree; it is pre-port hand-authored content
+  the porter's whole-rule carry policy preserved and never validated (the rules
+  read `/* carried: no upstream counterpart */` precisely because the commented
+  block parses as absent). Its logical spelling — the only `ps-`/`pe-` in any
+  `input-group.css` of the 8, where every sibling style uses physical `pl-`/`pr-`
+  — is the other tell.
+  (2) The padding upstream sera DOES specify is
+  `.cn-input-group-input`'s `group-has-[>[data-align=inline-start]]/input-group:pl-2`
+  and `...inline-end]]...:pr-2`, which this port had nowhere, while all seven
+  other styles carry the equivalent pair on the group root
+  (`has-[>[data-align=inline-start]]:[&>input]:pl-1.5` and its sibling, upstream's
+  own placement in those seven). Net render in sera: the addon's icon/button sat
+  0.5rem in from the group's left edge instead of flush against it, and the input
+  text sat flush against the addon instead of 0.5rem clear of it — the two ends of
+  one control disagreed, which is what distinguishes this from a deliberate drop.
+  Ported onto the ROOT as `has-[>[data-align=inline-end]]:[&>input]:pr-2
+  has-[>[data-align=inline-start]]:[&>input]:pl-2` rather than onto
+  `input-group-control`, for two reasons: the root is already where sera's own
+  `[&>input]` padding family lives (its `has-[>[data-align=block-*]]:[&>input]:p*`
+  pair, carried verbatim from `.cn-input-group`), and `inputGroup.Control()` backs
+  BOTH `InputGroupInput` and `InputGroupTextarea` (see the `data-slot` override
+  WIN above), so the literal `group-has-.../input-group:pl-2` placement would have
+  leaked the inline padding onto a `<textarea>` — which upstream's own separate,
+  rule-free `.cn-input-group-textarea` never gets. The root's `[&>input]` child
+  selector matches the input and not the textarea, so it is the strictly more
+  faithful slotting. Addon rules reduced to bare `order-first`/`order-last`.
+  Found by the renamed-slot sweep described in `## upstream style pin`'s
+  2026-11-23 VERIFIED entry; invisible to every earlier pass because those matched
+  `.cn-*` to `.gsxui-recipe-*` BY NAME, and `cn-input-group-input` has no
+  same-named recipe slot (gsxui calls it `input-group-control`), so the rule was
+  never compared at all.
 
 ## item
 - FIX (`role="listitem"`, issue #47): `ItemGroup` is `role="list"` and shadcn's `Item` has no role, so the list owned each Item's buttons directly (`aria-required-children`). `ItemGroup` marks the render `ctx` and an `Item` under it renders `role="listitem"`; a standalone Item, or one nested in a grouped Item's content, renders none (`aria-required-parent`). A caller's `role` replaces it.

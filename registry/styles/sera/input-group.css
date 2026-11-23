@@ -5,7 +5,7 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-group {
-    @apply border-transparent border-b-input bg-transparent has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-b-ring has-[[aria-invalid=true]]:border-b-destructive dark:has-[[aria-invalid=true]]:border-b-destructive/50 h-10 rounded-none border transition-[color,border-color] [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-data-[align=block-end]:rounded-none has-data-[align=block-start]:rounded-none has-[textarea]:rounded-none has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 flex relative w-full min-w-0 items-center outline-none has-[>textarea]:h-auto;
+    @apply border-transparent border-b-input bg-transparent has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-b-ring has-[[aria-invalid=true]]:border-b-destructive dark:has-[[aria-invalid=true]]:border-b-destructive/50 h-10 rounded-none border transition-[color,border-color] [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-data-[align=block-end]:rounded-none has-data-[align=block-start]:rounded-none has-[textarea]:rounded-none has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-2 has-[>[data-align=inline-start]]:[&>input]:pl-2 flex relative w-full min-w-0 items-center outline-none has-[>textarea]:h-auto;
   }
 
   /* carried: no upstream counterpart */
@@ -15,12 +15,12 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-group-addon-align-inline-start {
-    @apply order-first ps-2;
+    @apply order-first;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-group-addon-align-inline-end {
-    @apply order-last pe-2;
+    @apply order-last;
   }
 
   .gsxui-recipe-input-group-addon-align-block-start {
