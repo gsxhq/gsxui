@@ -29,7 +29,7 @@ component InputGroup(children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		class={
 			"group/input-group",
-			"border-transparent border-b-input bg-transparent has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-b-ring has-[[aria-invalid=true]]:border-b-destructive dark:has-[[aria-invalid=true]]:border-b-destructive/50 h-10 rounded-none border transition-[color,border-color] [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-data-[align=block-end]:rounded-none has-data-[align=block-start]:rounded-none has-[textarea]:rounded-none has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 flex relative w-full min-w-0 items-center outline-none has-[>textarea]:h-auto"
+			"border-transparent border-b-input bg-transparent has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-b-ring has-[[aria-invalid=true]]:border-b-destructive dark:has-[[aria-invalid=true]]:border-b-destructive/50 h-10 rounded-none border transition-[color,border-color] [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-data-[align=block-end]:rounded-none has-data-[align=block-start]:rounded-none has-[textarea]:rounded-none has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-2 has-[>[data-align=inline-start]]:[&>input]:pl-2 flex relative w-full min-w-0 items-center outline-none has-[>textarea]:h-auto"
 		}
 		{ attrs... }
 		data-gsxui-slot-input-group
@@ -48,13 +48,13 @@ component InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) {
 			"text-muted-foreground [&_[data-gsxui-slot-kbd]]:bg-muted-foreground/10 h-auto gap-2 py-2 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&_[data-gsxui-slot-kbd]]:rounded-none [&_[data-gsxui-slot-kbd]]:px-1.5 [&>svg:not([class*='size-'])]:size-3.5 flex cursor-text items-center justify-center select-none",
 			switch align {
 			case "inline-end":
-				"order-last pe-2"
+				"order-last"
 			case "block-start":
 				"pt-3 group-has-[>input]/input-group:pt-3.5 [.border-b]:pb-3.5 order-first w-full justify-start"
 			case "block-end":
 				"pb-3 group-has-[>input]/input-group:pb-3.5 [.border-t]:pt-3.5 order-last w-full justify-start"
 			default:
-				"order-first ps-2"
+				"order-first"
 			}
 		}
 		{ attrs... }
