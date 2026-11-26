@@ -21,6 +21,7 @@ gsxui init                        # in a Go module: gsxui.json, ui package, web/
 gsxui list                        # components and what they require
 gsxui add button card dialog      # vendor components (dependencies come along)
 gsxui add button --diff           # compare the vendored copy with the current release
+gsxui add --all --diff            # after upgrading gsxui: what changed for every vendored component
 gsxui apply --preset brand.json   # switch style and theme
 ```
 

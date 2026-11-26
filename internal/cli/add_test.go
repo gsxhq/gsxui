@@ -763,3 +763,114 @@ func TestAddWithRTLVendorsLogicalClasses(t *testing.T) {
 		t.Fatal("re-adding under rtl changed the vendored file")
 	}
 }
+
+func TestAddAllRefreshesEveryManagedComponent(t *testing.T) {
+	dir, _ := initedModule(t)
+	if err := Run([]string{"add", "dialog", "badge"}); err != nil {
+		t.Fatal(err)
+	}
+	badge := filepath.Join(dir, "ui/badge.gsx")
+	button := filepath.Join(dir, "ui/button.gsx")
+	wantBadge, err := os.ReadFile(badge)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, target := range []string{badge, button} {
+		if err := os.WriteFile(target, []byte("package ui // local\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	diffOutput, err := captureRunOutput(t, []string{"add", "--all", "--diff"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{"ui/badge.gsx (local)", "ui/button.gsx (local)"} {
+		if !strings.Contains(diffOutput, want) {
+			t.Errorf("--all --diff output missing %q:\n%s", want, diffOutput)
+		}
+	}
+
+	if err := Run([]string{"add", "--all"}); err == nil || !strings.Contains(err.Error(), "--overwrite") {
+		t.Fatalf("want overwrite-refusal error, got %v", err)
+	}
+	if err := Run([]string{"add", "--all", "--overwrite"}); err != nil {
+		t.Fatal(err)
+	}
+	got, err := os.ReadFile(badge)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(got, wantBadge) {
+		t.Errorf("--all --overwrite did not restore badge:\n%s", got)
+	}
+	got, err = os.ReadFile(button)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(got), "// local") {
+		t.Error("--all --overwrite did not restore the dependency button")
+	}
+	// Only what was vendored comes back: --all must not add new components.
+	if _, err := os.Stat(filepath.Join(dir, "ui/card.gsx")); err == nil {
+		t.Error("--all vendored a component the project never added")
+	}
+}
+
+func TestAddAllArgumentErrors(t *testing.T) {
+	initedModule(t)
+	if err := Run([]string{"add", "--all", "button"}); err == nil || !strings.Contains(err.Error(), "--all") {
+		t.Fatalf("want --all with names refused, got %v", err)
+	}
+	if err := Run([]string{"add"}); err == nil || !strings.Contains(err.Error(), "usage") {
+		t.Fatalf("want usage error for bare add, got %v", err)
+	}
+	output, err := captureRunOutput(t, []string{"add", "--all"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output, "nothing to refresh") {
+		t.Fatalf("empty --all output = %q", output)
+	}
+}
+
+func TestAddAcceptsFlagsAfterNames(t *testing.T) {
+	dir, _ := initedModule(t)
+	beforeDiff := snapshotFiles(t, dir)
+	output, err := captureRunOutput(t, []string{"add", "button", "--diff"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output, "+++ ui/button.gsx") {
+		t.Fatalf("trailing --diff output:\n%s", output)
+	}
+	if !equalFileSnapshots(beforeDiff, snapshotFiles(t, dir)) {
+		t.Fatal("trailing --diff wrote files")
+	}
+}
+
+func TestManagedComponents(t *testing.T) {
+	hash := strings.Repeat("a", 64)
+	cfg := DefaultConfig()
+	cfg.UI = "internal/ui"
+	for _, relative := range []string{
+		"internal/ui/button.gsx",
+		"internal/ui/NOTICE.md",
+		"internal/ui/merge/merge.go",
+		"internal/ui/icon/icon.gsx",
+		"internal/ui/icon/data.go",
+		"internal/ui/i18n/i18n.go",
+		"internal/ui/retired-thing.gsx",
+		"web/gsxui/button.js",
+		"ui/card.gsx", // outside cfg.UI
+	} {
+		cfg.Managed[relative] = hash
+	}
+	names, unknown := managedComponents(cfg)
+	if got, want := strings.Join(names, " "), "button i18n icon"; got != want {
+		t.Errorf("names = %q, want %q", got, want)
+	}
+	if got, want := strings.Join(unknown, " "), "retired-thing"; got != want {
+		t.Errorf("unknown = %q, want %q", got, want)
+	}
+}

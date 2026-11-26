@@ -11,6 +11,7 @@ import (
 
 var commandStdin io.Reader = os.Stdin
 var commandStdout io.Writer = os.Stdout
+var commandStderr io.Writer = os.Stderr
 
 // runCommand is the seam for external processes (go, gsx). Unit tests stub
 // it; the real implementation streams output through.

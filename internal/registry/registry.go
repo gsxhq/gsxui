@@ -167,6 +167,10 @@ func isVendorable(name string) bool {
 	return slices.Contains(c.components, name) || slices.Contains(c.helpers, name)
 }
 
+// IsVendorable reports whether name is a component or helper gsxui add
+// accepts.
+func IsVendorable(name string) bool { return isVendorable(name) }
+
 // parseX parses component name's committed generated source.
 func parseX(name string) (*ast.File, error) {
 	src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".x.go")
