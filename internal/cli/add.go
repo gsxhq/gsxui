@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	gsxui "github.com/gsxhq/gsxui"
@@ -26,15 +28,19 @@ func runAdd(args []string) error {
 	flags := flag.NewFlagSet("add", flag.ContinueOnError)
 	diff := flags.Bool("diff", false, "show selected source against local files without writing")
 	overwrite := flags.Bool("overwrite", false, "replace locally modified files")
-	if err := flags.Parse(args); err != nil {
+	all := flags.Bool("all", false, "select every component gsxui.json records as vendored (to refresh after upgrading gsxui)")
+	names, err := parseInterspersed(flags, args)
+	if err != nil {
 		return err
 	}
 	if *diff && *overwrite {
 		return fmt.Errorf("--diff and --overwrite are mutually exclusive")
 	}
-	names := flags.Args()
-	if len(names) == 0 {
-		return fmt.Errorf("usage: gsxui add [--diff|--overwrite] <component>...")
+	if *all && len(names) != 0 {
+		return fmt.Errorf("--all takes no component names")
+	}
+	if !*all && len(names) == 0 {
+		return fmt.Errorf("usage: gsxui add [--diff|--overwrite] <component>... | --all")
 	}
 	dir, err := os.Getwd()
 	if err != nil {
@@ -48,6 +54,17 @@ func runAdd(args []string) error {
 	cfg, err := LoadConfig(dir)
 	if err != nil {
 		return err
+	}
+	if *all {
+		var unknown []string
+		names, unknown = managedComponents(cfg)
+		for _, name := range unknown {
+			fmt.Fprintf(commandStderr, "warning: %s is recorded in gsxui.json but is no longer a gsxui component; left as is\n", name)
+		}
+		if len(names) == 0 {
+			fmt.Println("no vendored components recorded in gsxui.json — nothing to refresh")
+			return nil
+		}
 	}
 	selectedPreset, err := loadProjectPreset(dir)
 	if err != nil {
@@ -88,6 +105,72 @@ func runAdd(args []string) error {
 	}
 	fmt.Println("done — build with: go build ./...")
 	return nil
+}
+
+// parseInterspersed parses flags wherever they appear among the positional
+// arguments, so `gsxui add button --diff` works like `gsxui add --diff
+// button`. The standard flag package stops at the first non-flag. A "--"
+// still ends flag parsing: everything after it is positional.
+func parseInterspersed(flags *flag.FlagSet, args []string) ([]string, error) {
+	var positional []string
+	for {
+		if err := flags.Parse(args); err != nil {
+			return nil, err
+		}
+		rest := flags.Args()
+		if consumed := len(args) - len(rest); consumed > 0 && args[consumed-1] == "--" {
+			return append(positional, rest...), nil
+		}
+		if len(rest) == 0 {
+			return positional, nil
+		}
+		positional = append(positional, rest[0])
+		args = rest[1:]
+	}
+}
+
+// managedComponents names the components and helpers gsxui.json records as
+// vendored: a managed <ui>/<name>.gsx is the flat component <name>, and a
+// managed .gsx or .go file directly inside <ui>/<name>/ is the directory
+// package <name> (icon, i18n). ui/NOTICE.md and the init-owned ui/merge
+// package are not components. Names the current registry no longer knows
+// come back separately so the caller can report them instead of failing.
+func managedComponents(cfg Config) (names, unknown []string) {
+	prefix := path.Clean(filepath.ToSlash(cfg.UI)) + "/"
+	if prefix == "./" {
+		prefix = ""
+	}
+	seen := make(map[string]bool)
+	for relative := range cfg.Managed {
+		rest, ok := strings.CutPrefix(relative, prefix)
+		if !ok {
+			continue
+		}
+		var name string
+		if dirName, file, nested := strings.Cut(rest, "/"); nested {
+			if strings.Contains(file, "/") || dirName == "merge" ||
+				!(strings.HasSuffix(file, ".gsx") || strings.HasSuffix(file, ".go")) {
+				continue
+			}
+			name = dirName
+		} else if flat, ok := strings.CutSuffix(rest, ".gsx"); ok {
+			name = flat
+		} else {
+			continue
+		}
+		if seen[name] {
+			continue
+		}
+		seen[name] = true
+		if registry.IsVendorable(name) {
+			names = append(names, name)
+		} else {
+			unknown = append(unknown, name)
+		}
+	}
+	slices.Sort(names)
+	slices.Sort(unknown)
+	return names, unknown
 }
 
 func generateProject(dir string) error {

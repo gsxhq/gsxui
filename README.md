@@ -58,9 +58,10 @@ interactive. `icon` is the one exception, vendored as its own `ui/icon`
 package (generated Lucide data).
 
 You own the vendored code. `gsxui add` never touches a modified file
-unless you pass `--overwrite`. After upgrading the `gsxui` binary, re-run
-`gsxui add <name> --overwrite` to refresh components — that discards your
-local edits to those files.
+unless you pass `--overwrite`. After upgrading the `gsxui` binary,
+`gsxui add --all --diff` shows what changed for the components you have, and
+`gsxui add --all --overwrite` refreshes them all — that discards your local
+edits to those files. Name components instead of `--all` to refresh just those.
 
 Building for right-to-left languages? `gsxui init --rtl` vendors logical
 direction classes; see [RTL](https://ui.gsxhq.dev/docs/rtl).

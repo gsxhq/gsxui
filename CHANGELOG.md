@@ -2,6 +2,20 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## Unreleased
+
+### Added
+
+- **cli** — `gsxui add --all` selects every component `gsxui.json` records as
+  vendored, so `gsxui add --all --diff` shows what an upgrade changes and
+  `gsxui add --all --overwrite` refreshes them. Components the new release no
+  longer has are reported and left alone.
+
+### Fixed
+
+- **cli** — `gsxui add` accepts flags after component names (`gsxui add button
+  --diff`), as the README and skill already showed.
+
 ## 2026-11-05
 
 ### Fixed
